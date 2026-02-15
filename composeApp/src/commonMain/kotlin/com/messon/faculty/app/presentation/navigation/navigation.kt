@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.ui.screens.CsvPreviewScreen
 import com.messon.faculty.app.presentation.ui.screens.StudentScreen
+import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.theme.enterLeft
 import com.messon.faculty.app.theme.exitRight
@@ -16,7 +17,8 @@ import com.messon.faculty.app.utils.Screen
 @Composable
 fun AppNav(
     navController: NavHostController,
-    filePickerViewModel: FilePickerViewModel
+    filePickerViewModel: FilePickerViewModel,
+    csvUploadViewModel: CsvUploadViewModel
 ){
     NavHost(
         navController = navController,
@@ -55,7 +57,9 @@ fun AppNav(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onProceedClick = {},
+                    csvUploadViewModel = csvUploadViewModel,
+                    token = "",
+                    onUploadSuccess = {},
                     modifier = Modifier,
                 )
             }
