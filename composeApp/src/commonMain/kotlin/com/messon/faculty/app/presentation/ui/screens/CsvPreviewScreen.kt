@@ -28,6 +28,8 @@ import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.parseCsv
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
+import messon_faculty.composeapp.generated.resources.publicsansmedium
+import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 
@@ -39,6 +41,7 @@ fun CsvPreviewScreen(
     onProceedClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
 
     val filePickerState by filePickerViewModel.state.collectAsState(FilePickerState.Idle)
     val fileContent = (filePickerState as? FilePickerState.Success)?.fileContent
@@ -106,25 +109,25 @@ fun CsvPreviewScreen(
 
         Text(
             fontSize = 18.sp,
-            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+            fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
             text =when(filePickerState){
                 is FilePickerState.Success-> (filePickerState as FilePickerState.Success).selectedFile.name
                 else -> "Unable to load"
             },
-            color = Color.Black,
+            color = CustomColors.HoneyBronze,
             modifier = Modifier.constrainAs(fileNameRef){
-                top.linkTo(topBar.bottom, margin = 8.dp)
-                start.linkTo(topBar.start)
+                top.linkTo(topBar.bottom, margin = 4.dp)
+                start.linkTo(table.start, margin = 15.dp)
             }
         )
 
         Box(
             modifier = Modifier.wrapContentHeight()
                 .heightIn(max =400.dp)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 15.dp)
                 .constrainAs(table) {
-                    top.linkTo(topBar.bottom, margin = 5.dp)
-                    start.linkTo(parent.start)
+                    top.linkTo(fileNameRef.bottom, margin = 12.dp)
+                    start.linkTo(topBar.start)
                     end.linkTo(parent.end)
                 }
                 .border(1.dp, CustomColors.BlackberryCream.copy(alpha = 0.3f))
@@ -171,7 +174,11 @@ fun CsvPreviewScreen(
                 containerColor = RichCerulean
             )
         ) {
-            Text("Proceed")
+            Text(
+                text = "Continue",
+                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+                fontSize = 16.sp
+            )
         }
     }
 }

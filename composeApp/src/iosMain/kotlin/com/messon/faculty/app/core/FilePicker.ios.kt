@@ -6,49 +6,61 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.UIKit.*
 import kotlin.coroutines.resume
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.Foundation.NSString
-import platform.Foundation.NSUTF8StringEncoding
-import platform.Foundation.stringWithContentsOfFile
+import kotlinx.cinterop.refTo
 import platform.darwin.NSObject
 import platform.Foundation.NSURL
+import platform.Foundation.NSData
+import platform.Foundation.dataWithContentsOfURL
+import platform.posix.memcpy
+
 
 actual class FilePicker actual constructor() {
 
-    private var delegate: DocumentPickerDelegate? = null
-
     @OptIn(ExperimentalForeignApi::class)
-    actual suspend fun pickCsvFile(): PlatformFile? = suspendCancellableCoroutine { cont ->
+    actual suspend fun pickCsvFile(): PlatformFile? =
+        suspendCancellableCoroutine { cont ->
 
-        val vc = UIApplication.sharedApplication.keyWindow?.rootViewController
-        if (vc == null) { cont.resume(null); return@suspendCancellableCoroutine }
+            val picker = UIDocumentPickerViewController(
+                documentTypes = listOf("public.comma-separated-values-text"),
+                inMode = UIDocumentPickerMode.UIDocumentPickerModeImport
+            )
 
-        val picker = UIDocumentPickerViewController(
-            documentTypes = listOf("public.comma-separated-values-text"),
-            inMode = UIDocumentPickerMode.UIDocumentPickerModeImport
-        )
+            val delegate = object : NSObject(), UIDocumentPickerDelegateProtocol {
 
-        delegate = DocumentPickerDelegate { url ->
-            if (url == null) { cont.resume(null); return@DocumentPickerDelegate }
+                override fun documentPicker(
+                    controller: UIDocumentPickerViewController,
+                    didPickDocumentsAtURLs: List<*>
+                ) {
+                    val url = didPickDocumentsAtURLs.firstOrNull() as? NSURL
+                    if (url == null) {
+                        cont.resume(null)
+                        return
+                    }
 
-            val path = url.path ?: ""
-            val name = url.lastPathComponent ?: "file.csv"
-            val content = NSString.stringWithContentsOfFile(path, NSUTF8StringEncoding, null) ?: ""
-            cont.resume(PlatformFile(name = name, bytes = content.encodeToByteArray()))
+                    val data = NSData.dataWithContentsOfURL(url)
+                    val bytes = data?.toByteArray()
+
+                    cont.resume(
+                        PlatformFile(
+                            name = url.lastPathComponent ?: "file.csv",
+                            bytes = bytes ?: ByteArray(0)
+                        )
+                    )
+                }
+            }
+
+            picker.delegate = delegate
+
+            val root =
+                UIApplication.sharedApplication.keyWindow?.rootViewController
+
+            root?.presentViewController(picker, true, null)
         }
-
-        picker.delegate = delegate
-        picker.allowsMultipleSelection = false
-        vc.presentViewController(picker, true, null)
-    }
 }
 
-class DocumentPickerDelegate(private val callback: (NSURL?) -> Unit) :
-    NSObject(), UIDocumentPickerDelegateProtocol {
-    override fun documentPicker(controller: UIDocumentPickerViewController, didPickDocumentsAtURLs: List<*>) {
-        val url = didPickDocumentsAtURLs.firstOrNull() as? NSURL
-        callback(url)
-    }
-    override fun documentPickerWasCancelled(controller: UIDocumentPickerViewController) {
-        callback(null)
-    }
+@OptIn(ExperimentalForeignApi::class)
+fun NSData.toByteArray(): ByteArray {
+    val bytes = ByteArray(length.toInt())
+    memcpy(bytes.refTo(0), this.bytes, length)
+    return bytes
 }

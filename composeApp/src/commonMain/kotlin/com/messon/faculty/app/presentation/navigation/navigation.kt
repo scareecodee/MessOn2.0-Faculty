@@ -54,7 +54,7 @@ fun AppNav(
                     filePickerViewModel = filePickerViewModel,
                     onBackClick = {
                         navController.popBackStack()
-                                  },
+                    },
                     onProceedClick = {},
                     modifier = Modifier,
                 )

@@ -120,7 +120,7 @@ fun BottomSheetButton(
             containerColor = Color.White
         ),
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(width = 0.5.dp, CustomColors.RichCerulean),
+        border = BorderStroke(width = 1.dp, CustomColors.RichCerulean),
         onClick =onClick,
         modifier = Modifier.height(65.dp)
             .fillMaxWidth()

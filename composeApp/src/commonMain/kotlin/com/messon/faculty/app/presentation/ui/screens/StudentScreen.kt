@@ -77,14 +77,19 @@ fun StudentScreen(
     navController: NavController
 ) {
     val filePickerState by filePickerViewModel.state.collectAsState(initial = FilePickerState.Idle)
+    LaunchedEffect(Unit) {
+        filePickerViewModel.navigationEvent.collect { event ->
+            when (event) {
+                is FilePickerViewModel.NavigationEvent.NavigateToCsvPreview -> {
+                    navController.navigate(Screen.CsvPreviewScreen.route)
+                }
+            }
+        }
+    }
 
     LaunchedEffect(filePickerState) {
 
         when(filePickerState){
-
-            is FilePickerState.Success -> {
-                navController.navigate(Screen.CsvPreviewScreen.route)
-            }
 
             is FilePickerState.Error -> {
                 showToast((filePickerState as FilePickerState.Error).message)
@@ -92,10 +97,6 @@ fun StudentScreen(
 
             else -> Unit
         }
-    }
-
-    LaunchedEffect(Unit){
-        filePickerViewModel.clear()
     }
 
 
@@ -136,7 +137,10 @@ fun StudentScreen(
 
         IconButton(
             shape = CircleShape,
-            onClick = onBackBtnClick,
+            onClick = {
+                filePickerViewModel.clear()
+                onBackBtnClick()
+            },
             modifier = Modifier.constrainAs(backBtnRef) {
                 start.linkTo(parent.start, margin = 15.dp)
                 top.linkTo(statusBarBox.bottom, margin = 10.dp)
