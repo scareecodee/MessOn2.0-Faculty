@@ -1,13 +1,8 @@
 package com.messon.faculty.app.presentation.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,14 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -61,255 +55,204 @@ import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.Screen
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansregular
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onBackBtnClick: () -> Unit,
     studentsList: List<Student>,
     filePickerViewModel: FilePickerViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     val filePickerState by filePickerViewModel.state.collectAsState(initial = FilePickerState.Idle)
-    LaunchedEffect(Unit) {
-        filePickerViewModel.navigationEvent.collect { event ->
-            when (event) {
-                is FilePickerViewModel.NavigationEvent.NavigateToCsvPreview -> {
-                    navController.navigate(Screen.CsvPreviewScreen.route)
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(filePickerState) {
-
-        when(filePickerState){
-
-            is FilePickerState.Error -> {
-                showToast((filePickerState as FilePickerState.Error).message)
-            }
-
-            else -> Unit
-        }
-    }
-
-
+    var isLoading by remember { mutableStateOf(false) }
+    var isSheetOpen by remember { mutableStateOf(false) }
     var selectedFilter by remember { mutableStateOf(StudentListFilterType.ID) }
     var query by remember { mutableStateOf("") }
+
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
         confirmValueChange = { newValue ->
             newValue != SheetValue.Expanded
         }
     )
+    LaunchedEffect(Unit) {
+        filePickerViewModel.navigationEvent.collect { event ->
+            if (event is FilePickerViewModel.NavigationEvent.NavigateToCsvPreview) {
+                navController.navigate(Screen.CsvPreviewScreen.route)
+            }
+        }
+    }
 
-    var isSheetOpen by remember{mutableStateOf(false)}
+    LaunchedEffect(filePickerState) {
+        isLoading = filePickerState is FilePickerState.Loading
+        if (filePickerState is FilePickerState.Error) {
+            showToast((filePickerState as FilePickerState.Error).message)
+            filePickerViewModel.clear()
+        }
+    }
+
     val filteredStudents = remember(query, selectedFilter, studentsList) {
-        studentsList.filter { student ->
+        studentsList.filter {
             when (selectedFilter) {
-                StudentListFilterType.NAME -> student.name.contains(query, ignoreCase = true)
-                StudentListFilterType.ID -> student.studentId.contains(query, ignoreCase = true)
+                StudentListFilterType.NAME -> it.name.contains(query, ignoreCase = true)
+                StudentListFilterType.ID -> it.studentId.contains(query, ignoreCase = true)
             }
         }
     }
 
-    ConstraintLayout(
-        modifier = modifier.fillMaxSize()
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = Color.White
     ) {
-        val (statusBarBox, headingRef, listRef, backBtnRef, searchBarRef, addStudentBtnRef, totalStudentRef) = createRefs()
+        Box(modifier = Modifier.fillMaxSize()) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                .background(CustomColors.LightGrayBlue)
-                .constrainAs(statusBarBox) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }
-        )
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                val (
+                    statusBarBox, headingRef, listRef,
+                    backBtnRef, searchBarRef,
+                    addStudentBtnRef
+                ) = createRefs()
 
-        IconButton(
-            shape = CircleShape,
-            onClick = {
-                filePickerViewModel.clear()
-                onBackBtnClick()
-            },
-            modifier = Modifier.constrainAs(backBtnRef) {
-                start.linkTo(parent.start, margin = 15.dp)
-                top.linkTo(statusBarBox.bottom, margin = 10.dp)
-            }
-        ) {
-            Icon(
-                imageVector = Icons.Default.ChevronLeft,
-                contentDescription = "back btn",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        Text(
-            maxLines = 1,
-            text = "Students List",
-            fontSize = 18.sp,
-            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-            modifier = Modifier
-                .constrainAs(headingRef) {
-                    start.linkTo(backBtnRef.end, margin = 5.dp)
-                    top.linkTo(backBtnRef.top)
-                    bottom.linkTo(backBtnRef.bottom)
-                }
-        )
-
-        Box(
-            modifier = Modifier
-                .constrainAs(totalStudentRef) {
-                    top.linkTo(backBtnRef.bottom, margin = 8.dp)
-                    start.linkTo(backBtnRef.start)
-                }
-                .height(80.dp)
-                .width(180.dp)
-                .background(
-                    color = CustomColors.HoneyBronze.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(20.dp)
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
+                        .background(CustomColors.LightGrayBlue)
+                        .constrainAs(statusBarBox) {
+                            top.linkTo(parent.top)
+                        }
                 )
-                .border(
-                    width = 0.4.dp,
-                    color = CustomColors.HoneyBronze.copy(alpha = 0.6f),
-                    shape = RoundedCornerShape(20.dp)
-                )
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ) {
+
+
+                IconButton(
+                    onClick = {
+                        filePickerViewModel.clear()
+                        onBackBtnClick()
+                    },
+                    modifier = Modifier.constrainAs(backBtnRef) {
+                        start.linkTo(parent.start, 15.dp)
+                        top.linkTo(statusBarBox.bottom, 10.dp)
+                    }
+                ) {
+                    Icon(Icons.Default.ChevronLeft, contentDescription = "back", modifier = Modifier.size(28.dp)
+                    )
+                }
+
+
                 Text(
-                    text = "Total Enrolled Student",
-                    fontFamily = FontFamily(Font(Res.font.publicsansregular)),
-                    fontSize = 12.sp
+                    text = "Students List",
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                    modifier = Modifier.constrainAs(headingRef) {
+                        start.linkTo(backBtnRef.end, 5.dp)
+                        centerVerticallyTo(backBtnRef)
+                    }
                 )
-                Text(
-                    text = studentsList.size.toString(),
-                    fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                    fontSize = 25.sp,
-                    color = CustomColors.HoneyBronze
+
+
+                Button(
+                    shape = RoundedCornerShape(30.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CustomColors.OffWhite
+                    ),
+                    border = BorderStroke(width = 1.dp, color = CustomColors.RichCerulean),
+                    onClick = { isSheetOpen = true },
+                    modifier = Modifier.constrainAs(addStudentBtnRef) {
+                        end.linkTo(parent.end, 16.dp)
+                        centerVerticallyTo(backBtnRef)
+                    }
+                        .height(40.dp)
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Student",
+                        tint = CustomColors.RichCerulean,
+                        modifier = Modifier.size(20.dp)
+                    )
+
+                    Text(
+                        text = "Add Students ",
+                        fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
+                        fontSize = 10.sp,
+                        color = CustomColors.RichCerulean,
+                    )                }
+
+                SearchBar(
+                    query = query,
+                    onQueryChange = { query = it },
+                    selectedFilter = selectedFilter,
+                    onFilterSelected = { selectedFilter = it },
+                    modifier = Modifier.constrainAs(searchBarRef) {
+                        top.linkTo(backBtnRef.bottom, 20.dp)
+                        start.linkTo(parent.start, 10.dp)
+                        end.linkTo(parent.end, 10.dp)
+                        width = Dimension.fillToConstraints
+                    }
                 )
+
+                LazyColumn(
+                    modifier = Modifier.constrainAs(listRef) {
+                        top.linkTo(searchBarRef.bottom, 16.dp)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
+                ) {
+                    items(filteredStudents, key = { it.studentId }) { student ->
+                        StudentListItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            profileImageUrl = student.profileImg,
+                            name = student.name,
+                            studentId = student.studentId,
+                            isActive = student.isActive,
+                            onMoreClick = {},
+                            onClick = {}
+                        )
+                    }
+                }
+            }
+
+
+            if (isLoading) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = CustomColors.RichCerulean)
+                }
             }
         }
-
-
-        Button(
-            shape = RoundedCornerShape(30.dp),
-            onClick = {
-                isSheetOpen=true
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = CustomColors.OffWhite
-            ),
-            border = BorderStroke(width = 1.dp, color = CustomColors.RichCerulean),
-            modifier = Modifier.constrainAs(addStudentBtnRef) {
-                start.linkTo(totalStudentRef.end, margin = 14.dp)
-                end.linkTo(parent.end, margin = 16.dp)
-                top.linkTo(totalStudentRef.top)
-                bottom.linkTo(totalStudentRef.bottom)
-            }
-                .height(50.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Student",
-                tint = CustomColors.RichCerulean,
-                modifier = Modifier.size(20.dp)
-            )
-
-            Spacer(modifier = Modifier.size(5.dp))
-            Text(
-                text = "Add Students ",
-                fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
-                fontSize = 10.sp,
-                color = CustomColors.RichCerulean,
-            )
-        }
-
-        SearchBar(
-            query = query,
-            onQueryChange = {
-                query = it
-            },
-            selectedFilter = selectedFilter,
-            onFilterSelected = {
-                selectedFilter = it
-            },
-            modifier = Modifier.constrainAs(searchBarRef) {
-                top.linkTo(totalStudentRef.bottom, margin = 20.dp)
-                start.linkTo(parent.start, margin = 20.dp)
-                end.linkTo(parent.end, margin = 20.dp)
-            }
-        )
-
-        LazyColumn(
-            modifier = Modifier.constrainAs(listRef) {
-                top.linkTo(searchBarRef.bottom, margin = 16.dp)
-                start.linkTo(parent.start, margin = 10.dp)
-                end.linkTo(parent.end, margin = 10.dp)
-                bottom.linkTo(parent.bottom, margin = 8.dp)
-                height = Dimension.fillToConstraints
-            },
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            items(filteredStudents){student->
-                StudentListItem(
-                    modifier = Modifier,
-                    profileImageUrl =student.profileImg,
-                    name =student.name,
-                    studentId =student.studentId,
-                    isActive = student.isActive,
-                    onMoreClick ={},
-                    onClick ={},
-                )
-            }
-
-        }
-
     }
 
-    if(isSheetOpen){
+    if (isSheetOpen) {
         ModalBottomSheet(
-            dragHandle = { BottomSheetDefaults.DragHandle(
-                color=Color.Black
-            ) },
-            shape = RoundedCornerShape(45.dp),
-            sheetState =bottomSheetState ,
-            onDismissRequest = {
-                isSheetOpen=false
-            },
+            onDismissRequest = { isSheetOpen = false },
+            sheetState = bottomSheetState,
+            shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp),
             containerColor = Color.White,
-        ){
+            dragHandle = null
+        ) {
             BottomSheetContent(
-                modifier = Modifier,
+                modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),
                 onUploadCsvClick = {
                     filePickerViewModel.pickCsvFile()
+                    isSheetOpen = false
                 },
                 onAddManuallyClick = {
-
+                    navController.navigate(Screen.AddStudentManuallyScreen.route)
+                    isSheetOpen = false
                 }
             )
         }
     }
-
-    when(filePickerState){
-        is FilePickerState.Loading -> {
-            CircularProgressIndicator()
-        }
-        else -> Unit
-    }
-
 }

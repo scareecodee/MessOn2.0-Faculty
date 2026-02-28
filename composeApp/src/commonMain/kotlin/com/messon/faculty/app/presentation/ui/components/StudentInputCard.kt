@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.messon.faculty.app.domain.dataModel.StudentInput
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
+import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsansregular
 import org.jetbrains.compose.resources.Font
@@ -63,6 +64,14 @@ fun StudentInputCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(16.dp)
         ) {
+
+            Text(
+                maxLines = 1,
+                text = "Add Student",
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(Res.font.publicsansbold))
+            )
+
             InputField(placeholder = "Full Name", value = name, onValueChange = {name=it})
             InputField(placeholder = "Roll no.", value = roll, onValueChange = { roll = it })
             InputField(placeholder = "Email ID", value = email, onValueChange =  { email = it })

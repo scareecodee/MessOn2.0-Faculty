@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.StudentInput
 import com.messon.faculty.app.presentation.ui.components.AddStudentListItem
 import com.messon.faculty.app.presentation.ui.components.StudentInputCard
+import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -36,9 +37,16 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun AddStudentManuallyScreen(
-    onBackBtnClick:()->Unit
+    onBackBtnClick:()->Unit,
+    addStudentManuallyVM: AddStudentManuallyVM
 ) {
-    val students = remember { mutableStateListOf<StudentInput>() }
+    DisposableEffect(Unit) {
+        onDispose {
+            addStudentManuallyVM.clearCurrentStudents()
+        }
+    }
+
+    val students by addStudentManuallyVM.students.collectAsState()
     var showForm by remember { mutableStateOf(false) }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize().background(Color.White).imePadding()) {
@@ -96,13 +104,15 @@ fun AddStudentManuallyScreen(
             items(students) { student ->
                 AddStudentListItem(
                     student =student,
-                ) { students.remove(student) }
+                ) {
+                    addStudentManuallyVM.removeStudent(student)
+                }
             }
 
             item {
                 if (showForm) {
                     StudentInputCard(
-                        onAdd = { students.add(it); showForm = false },
+                        onAdd = { addStudentManuallyVM.addStudent(it); showForm = false },
                         onCancel = { showForm = false }
                     )
                 } else {
@@ -134,12 +144,13 @@ fun AddStudentManuallyScreen(
             colors = ButtonDefaults.buttonColors(
                 containerColor = CustomColors.RichCerulean
             ),
-            onClick = { /* Submit List */ },
+            onClick = {  },
             modifier = Modifier.constrainAs(bottomButton) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            }.fillMaxWidth().padding(16.dp,).height(50.dp)
+                start.linkTo(parent.start, margin = 16.dp)
+                end.linkTo(parent.end, margin = 16.dp)
+                bottom.linkTo(parent.bottom, margin = 30.dp)
+                width= Dimension.fillToConstraints
+            }.height(50.dp)
             ,
             shape = RoundedCornerShape(8.dp)
         ) {

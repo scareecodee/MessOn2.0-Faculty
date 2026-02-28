@@ -37,14 +37,16 @@ fun StudentListItem(
     name: String,
     studentId: String,
     isActive: Boolean,
-    onMoreClick: (() -> Unit)? = null,
-    onClick: (() -> Unit)? = null
+    onMoreClick: (() -> Unit),
+    onClick: (() -> Unit),
 ) {
 
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(enabled = onClick != null) { onClick?.invoke() }
+            .clickable{
+                onClick()
+            }
             .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
 

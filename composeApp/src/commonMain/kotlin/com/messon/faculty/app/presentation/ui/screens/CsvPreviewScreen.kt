@@ -12,10 +12,12 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.messon.faculty.app.presentation.ui.components.TableCell
@@ -26,16 +28,20 @@ import com.messon.faculty.app.theme.CustomColors.RichCerulean
 import com.messon.faculty.app.utils.CsvUploadState
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.parseCsv
+import messon_faculty.composeapp.generated.resources.Res
+import messon_faculty.composeapp.generated.resources.publicsansbold
+import messon_faculty.composeapp.generated.resources.publicsansmedium
 import multiplatform.network.cmptoast.showToast
+import org.jetbrains.compose.resources.Font
 
 
 @Composable
 fun CsvPreviewScreen(
     filePickerViewModel: FilePickerViewModel,
-    csvUploadViewModel: CsvUploadViewModel,   // 🔥 NEW
-    token: String,                            // 🔥 JWT
+    csvUploadViewModel: CsvUploadViewModel,
+    token: String,
     onBackClick: () -> Unit,
-    onUploadSuccess: () -> Unit,              // 🔥 Navigate next
+    onUploadSuccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -48,12 +54,10 @@ fun CsvPreviewScreen(
 
     val fileContent = (filePickerState as? FilePickerState.Success)?.fileContent
     val selectedFile = (filePickerState as? FilePickerState.Success)?.selectedFile
-
     val tableData = remember(fileContent) {
         fileContent?.let { parseCsv(it) } ?: emptyList()
     }
 
-    // 🔥 HANDLE UPLOAD STATE SIDE EFFECTS
     LaunchedEffect(uploadState) {
 
         when (uploadState) {
@@ -90,17 +94,68 @@ fun CsvPreviewScreen(
             .background(Color.White)
     ) {
 
-        val (topBar, table, proceedBtn, progress) = createRefs()
+        val (backBtnRef,headingRef, statusBarBox,table, proceedBtn, progress,fileNameRef) = createRefs()
 
-        // ----------- YOUR EXISTING UI -----------
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
+                .background(CustomColors.LightGrayBlue)
+                .constrainAs(statusBarBox) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
+        )
 
-        // TABLE UI (unchanged)
+        IconButton(
+            shape = CircleShape,
+            onClick = {
+               onBackClick()
+            },
+            modifier = Modifier.constrainAs(backBtnRef) {
+                start.linkTo(parent.start, margin = 15.dp)
+                top.linkTo(statusBarBox.bottom, margin = 10.dp)
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Default.ChevronLeft,
+                contentDescription = "back btn",
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        Text(
+            maxLines = 1,
+            text = "CSV Preview",
+            fontSize = 18.sp,
+            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+            modifier = Modifier
+                .constrainAs(headingRef) {
+                    start.linkTo(backBtnRef.end, margin = 5.dp)
+                    top.linkTo(backBtnRef.top)
+                    bottom.linkTo(backBtnRef.bottom)
+                }
+        )
+
+        Text(
+            maxLines = 1,
+            text = selectedFile?.name ?:"Empty File",
+            fontSize = 14.sp,
+            color = CustomColors.HoneyBronze,
+            fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
+            modifier = Modifier
+                .constrainAs(fileNameRef) {
+                    start.linkTo(backBtnRef.start, margin = 5.dp)
+                    top.linkTo(backBtnRef.bottom, margin = 15.dp)
+                }
+        )
+
         Box(
             modifier = Modifier
                 .heightIn(max = 400.dp)
                 .padding(horizontal = 15.dp)
                 .constrainAs(table) {
-                    top.linkTo(parent.top, margin = 80.dp)
+                    top.linkTo(fileNameRef.bottom, margin =20.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
@@ -132,7 +187,6 @@ fun CsvPreviewScreen(
             }
         }
 
-        // 🔥 CONTINUE BUTTON → START UPLOAD
         Button(
             onClick = {
                 selectedFile?.let {
@@ -141,8 +195,8 @@ fun CsvPreviewScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp)
                 .padding(16.dp)
+                .height(45.dp)
                 .constrainAs(proceedBtn) {
                     top.linkTo(table.bottom, margin = 20.dp)
                 },
@@ -150,10 +204,17 @@ fun CsvPreviewScreen(
                 containerColor = RichCerulean
             )
         ) {
-            Text("Continue")
+            Text(
+                text = "Continue",
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = Color.White,
+                fontFamily = FontFamily(Font(Res.font.publicsansbold))
+            )
         }
 
-        // 🔥 LOADING INDICATOR
+
         if (uploadState is CsvUploadState.Loading) {
             Box(
                 modifier = Modifier

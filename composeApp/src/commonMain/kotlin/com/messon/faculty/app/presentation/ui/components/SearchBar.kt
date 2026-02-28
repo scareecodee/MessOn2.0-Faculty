@@ -42,8 +42,8 @@ fun SearchBar(
     BoxWithConstraints(
         modifier = modifier
     ) {
-        val hPadding = maxWidth * 0.05f
-        val containerHeight = maxHeight * 0.068f
+        val hPadding = maxWidth * 0.04f
+        val containerHeight = maxHeight * 0.064f
         val cornerRadius = maxWidth * 0.075f
         val borderThickness = maxWidth * 0.00125f
         val iconSize = maxWidth * 0.06f
@@ -54,7 +54,7 @@ fun SearchBar(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
+            modifier =modifier
                 .fillMaxWidth()
                 .padding(horizontal = hPadding)
                 .height(containerHeight)

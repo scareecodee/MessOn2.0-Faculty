@@ -5,13 +5,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.messon.faculty.app.domain.repository.CsvRepository
 import com.messon.faculty.app.presentation.navigation.AppNav
+import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 
 @Composable
 fun App(
 filePickerViewModel: FilePickerViewModel,
-csvUploadViewModel: CsvUploadViewModel
+csvUploadViewModel: CsvUploadViewModel,
+addStudentManuallyVM: AddStudentManuallyVM
 ) {
 
     MaterialTheme {
@@ -19,12 +21,9 @@ csvUploadViewModel: CsvUploadViewModel
         AppNav(
             navController = navController,
             filePickerViewModel = filePickerViewModel,
-            csvUploadViewModel = csvUploadViewModel
+            csvUploadViewModel = csvUploadViewModel,
+            addStudentManuallyVM = addStudentManuallyVM
         )
-        AppNav(
-            navController =navController,
-            filePickerViewModel =filePickerViewModel,
-            csvUploadViewModel = csvUploadViewModel
-        )
+
 }
     }

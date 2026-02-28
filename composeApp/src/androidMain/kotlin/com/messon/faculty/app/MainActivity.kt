@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import com.messon.faculty.app.core.FilePickerManager
 import com.messon.faculty.app.domain.dataModel.PlatformFile
+import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -52,9 +53,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val filePickerViewModel: FilePickerViewModel = koinViewModel<FilePickerViewModel>()
             val csvUploadViewModel: CsvUploadViewModel =koinViewModel<CsvUploadViewModel>()
+            val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel<AddStudentManuallyVM>()
             App(
                 filePickerViewModel=filePickerViewModel,
-                csvUploadViewModel = csvUploadViewModel
+                csvUploadViewModel = csvUploadViewModel,
+                addStudentManuallyVM=addStudentManuallyVM
             )
         }
     }
