@@ -12,4 +12,10 @@ sealed class Screen(val route: String) {
     object StudentScreen: Screen(route ="student_screen")
     object AddStudentManuallyScreen: Screen(route ="add_student_manually_screen")
 
+    object StudentDetailScreen: Screen(route ="student_detail_screen")
+
+    object CsvPreviewResScreen: Screen(route ="csv_preview_res_screen")
+
+
+
 }

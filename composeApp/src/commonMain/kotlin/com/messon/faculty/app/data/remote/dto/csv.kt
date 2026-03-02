@@ -3,20 +3,39 @@ package com.messon.faculty.app.data.remote.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+
+
 @Serializable
-data class CsvPreviewResponseDto(
+data class PreviewImportResponseDto(
+
+    @SerialName("status")
+    val status: Boolean,
+
     @SerialName("import_token")
-    val importToken: String,
+    val importToken: String? = null,
 
-    @SerialName("total_rows")
-    val totalRows: Int,
+    @SerialName("new_rows")
+    val newRows: Int? = null,
 
-    @SerialName("to_insert")
-    val toInsert: Int,
+    @SerialName("update_rows")
+    val updateRows: Int? = null,
 
-    @SerialName("to_update")
-    val toUpdate: Int,
+    @SerialName("conflicts")
+    val conflicts: List<String> = emptyList(),
+
+    @SerialName("expires_at")
+    val expiresAt: String? = null,
 
     @SerialName("errors")
-    val errors: List<Map<String, String>>
+    val errors: List<ImportValidationErrorDto> = emptyList()
+)
+
+@Serializable
+data class ImportValidationErrorDto(
+
+    @SerialName("row_number")
+    val rowNumber: Int,
+
+    @SerialName("message")
+    val message: String
 )

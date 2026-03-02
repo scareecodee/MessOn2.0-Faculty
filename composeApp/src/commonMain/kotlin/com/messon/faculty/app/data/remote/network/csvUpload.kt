@@ -2,7 +2,7 @@ package com.messon.faculty.app.data.remote.network
 
 
 import co.touchlab.kermit.Logger
-import com.messon.faculty.app.data.remote.dto.CsvPreviewResponseDto
+import com.messon.faculty.app.data.remote.dto.PreviewImportResponseDto
 import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.utils.NetworkError
 import io.ktor.client.HttpClient
@@ -16,8 +16,8 @@ import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
 
-private const val BASE_URL = "https://172.18.9.63:8000/"
 
+private const val BASE_URL = "http://172.18.9.63:8000/"
 
 class CsvUpload(
     private val httpClient: HttpClient
@@ -26,42 +26,45 @@ class CsvUpload(
     private val log = Logger.withTag("CSV_UPLOAD")
 
     suspend fun uploadCsv(
-        token: String,
+//        token: String,
         file: PlatformFile
-    ): Result<CsvPreviewResponseDto, NetworkError> {
+    ): Result<PreviewImportResponseDto, NetworkError> {
 
-        val cleanToken = token
-            .replace("\n", "")
-            .replace("\r", "")
-            .trim()
+//        val cleanToken = token.trim()
 
         return try {
 
             val response = httpClient.submitFormWithBinaryData(
                 url = "${BASE_URL}admin/students/import/preview",
                 formData = formData {
+
+
+                    append("mode", "insert")
+
+
                     append(
                         key = "file",
                         value = file.bytes,
                         headers = Headers.build {
-                            append(HttpHeaders.ContentType, "text/csv")
                             append(
                                 HttpHeaders.ContentDisposition,
-                                "filename=\"${file.name}\""
+                                "form-data; name=\"file\"; filename=\"${file.name}\""
                             )
+                            append(HttpHeaders.ContentType, "text/csv")
                         }
                     )
                 }
-            ) {
-                header(HttpHeaders.Authorization, "Bearer $cleanToken")
-            }
+            )
+//            {
+//                header(HttpHeaders.Authorization, "Bearer $cleanToken")
+//            }
 
             log.d { "STATUS CODE = ${response.status}" }
 
             when (response.status.value) {
 
                 in 200..299 -> {
-                    val body = response.body<CsvPreviewResponseDto>()
+                    val body = response.body<PreviewImportResponseDto>()
                     Result.Success(body)
                 }
 

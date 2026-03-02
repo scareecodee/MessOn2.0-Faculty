@@ -5,13 +5,18 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.messon.faculty.app.domain.dataModel.CsvPreviewRes
+import com.messon.faculty.app.domain.dataModel.ImportValidationError
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.ui.screens.AddStudentManuallyScreen
+import com.messon.faculty.app.presentation.ui.screens.CsvPreviewResScreen
 import com.messon.faculty.app.presentation.ui.screens.CsvPreviewScreen
+import com.messon.faculty.app.presentation.ui.screens.StudentDetailScreen
 import com.messon.faculty.app.presentation.ui.screens.StudentScreen
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
+import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.theme.enterLeft
 import com.messon.faculty.app.theme.exitRight
 import com.messon.faculty.app.utils.Screen
@@ -22,17 +27,19 @@ fun AppNav(
     navController: NavHostController,
     filePickerViewModel: FilePickerViewModel,
     csvUploadViewModel: CsvUploadViewModel,
-    addStudentManuallyVM: AddStudentManuallyVM
+    addStudentManuallyVM: AddStudentManuallyVM,
+    studentDetailScreenVM: StudentDetailScreenVM
 ){
     val students = remember {
         List(20) {
             Student(
                 name = "Sundram Kumar",
                 studentId = "B524066$it",
-                year = 2,
+                batch= 2,
                 branch = "CE",
                 profileImg = "https://picsum.photos/seed/picsum/200/300",
-                isActive = true
+                isActive = true,
+                email = ""
             )
         }
     }
@@ -50,7 +57,11 @@ fun AppNav(
                 onBackBtnClick = {},
                 filePickerViewModel=filePickerViewModel,
                 studentsList =students,
-                navController=navController
+                navController=navController,
+                studentDetailScreenVM = studentDetailScreenVM,
+                onStudentClick = {
+                    navController.navigate(Screen.StudentDetailScreen.route)
+                }
             )
         }
 
@@ -66,8 +77,9 @@ fun AppNav(
                         navController.popBackStack()
                     },
                     csvUploadViewModel = csvUploadViewModel,
-                    token = "",
-                    onUploadSuccess = {},
+                    onUploadSuccess = {
+
+                    },
                     modifier = Modifier,
                 )
             }
@@ -84,6 +96,40 @@ fun AppNav(
                     addStudentManuallyVM.clearCurrentStudents()
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable (
+            route=Screen.StudentDetailScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            StudentDetailScreen(
+                onStatusChange = {
+
+                },
+                onViewBillClick = {},
+                studentDetailScreenVM =studentDetailScreenVM,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable (
+            route=Screen.CsvPreviewResScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            CsvPreviewResScreen(
+                onConfirm = {},
+                onCancel = {
+                    navController.popBackStack()
+                },
+                onBackBtnClick = {
+                    navController.popBackStack()
+                },
+                csvUploadViewModel =csvUploadViewModel
             )
         }
     }

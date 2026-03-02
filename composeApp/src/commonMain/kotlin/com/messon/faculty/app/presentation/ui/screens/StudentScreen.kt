@@ -46,10 +46,12 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.ui.components.BottomSheetContent
+import com.messon.faculty.app.presentation.ui.components.FilterChipsRow
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.components.StudentListFilterType
 import com.messon.faculty.app.presentation.ui.components.StudentListItem
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
+import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.Screen
@@ -67,7 +69,12 @@ fun StudentScreen(
     studentsList: List<Student>,
     filePickerViewModel: FilePickerViewModel,
     navController: NavController,
+    studentDetailScreenVM: StudentDetailScreenVM,
+    onStudentClick:()-> Unit
+
 ) {
+    val chips = listOf("All", "1st Year", "2nd Year", "3rd Year")
+    var selected by remember { mutableStateOf(setOf(0)) }
     val filePickerState by filePickerViewModel.state.collectAsState(initial = FilePickerState.Idle)
     var isLoading by remember { mutableStateOf(false) }
     var isSheetOpen by remember { mutableStateOf(false) }
@@ -115,7 +122,8 @@ fun StudentScreen(
                 val (
                     statusBarBox, headingRef, listRef,
                     backBtnRef, searchBarRef,
-                    addStudentBtnRef
+                    addStudentBtnRef,
+                    filterChipsRow
                 ) = createRefs()
 
                 Box(
@@ -196,9 +204,22 @@ fun StudentScreen(
                     }
                 )
 
+                FilterChipsRow(
+                    modifier= Modifier.constrainAs(filterChipsRow){
+                        top.linkTo(searchBarRef.bottom, margin = 16.dp)
+                        start.linkTo(parent.start, margin = 20.dp)
+                        end.linkTo(parent.end, margin = 20.dp)
+                    }.padding(horizontal = 15.dp),
+                    chips = chips,
+                    selectedChips =selected,
+                    onSelectionChange = {
+                        selected=it
+                    }
+                )
+
                 LazyColumn(
                     modifier = Modifier.constrainAs(listRef) {
-                        top.linkTo(searchBarRef.bottom, 16.dp)
+                        top.linkTo(filterChipsRow.bottom, 16.dp)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -214,7 +235,10 @@ fun StudentScreen(
                             studentId = student.studentId,
                             isActive = student.isActive,
                             onMoreClick = {},
-                            onClick = {}
+                            onClick = {
+                                    studentDetailScreenVM.selectStudent(student)
+                                    onStudentClick()
+                            }
                         )
                     }
                 }

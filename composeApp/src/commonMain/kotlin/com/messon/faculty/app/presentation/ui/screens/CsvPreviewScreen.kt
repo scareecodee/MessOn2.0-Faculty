@@ -39,18 +39,17 @@ import org.jetbrains.compose.resources.Font
 fun CsvPreviewScreen(
     filePickerViewModel: FilePickerViewModel,
     csvUploadViewModel: CsvUploadViewModel,
-    token: String,
     onBackClick: () -> Unit,
     onUploadSuccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
+    val uploadState by csvUploadViewModel.state
+        .collectAsStateWithLifecycle()
 
     val filePickerState by filePickerViewModel.state
         .collectAsState(FilePickerState.Idle)
 
-    val uploadState by csvUploadViewModel.state
-        .collectAsStateWithLifecycle()
 
     val fileContent = (filePickerState as? FilePickerState.Success)?.fileContent
     val selectedFile = (filePickerState as? FilePickerState.Success)?.selectedFile
@@ -190,7 +189,7 @@ fun CsvPreviewScreen(
         Button(
             onClick = {
                 selectedFile?.let {
-                    csvUploadViewModel.uploadCsv(token, it)
+                    csvUploadViewModel.uploadCsv(it)
                 }
             },
             modifier = Modifier
@@ -215,18 +214,23 @@ fun CsvPreviewScreen(
         }
 
 
-        if (uploadState is CsvUploadState.Loading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f))
-                    .constrainAs(progress) {
-                        top.linkTo(parent.top)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+        when (uploadState){
+            is CsvUploadState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .constrainAs(progress) {
+                            top.linkTo(parent.top)
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
+
+            else -> {}
         }
+
     }
 }

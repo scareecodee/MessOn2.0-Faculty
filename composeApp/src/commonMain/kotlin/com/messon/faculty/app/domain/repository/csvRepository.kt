@@ -13,11 +13,11 @@ class CsvRepository(
 ) {
 
     suspend fun uploadCsv(
-        token: String,
+//        token: String,
         file: PlatformFile
     ): Result<CsvPreviewRes, NetworkError> {
 
-        return when (val result = csvUpload.uploadCsv(token, file)) {
+        return when (val result = csvUpload.uploadCsv(file)) {
 
             is Result.Success -> {
 

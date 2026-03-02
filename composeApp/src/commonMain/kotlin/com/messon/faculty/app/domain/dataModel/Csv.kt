@@ -1,11 +1,24 @@
 package com.messon.faculty.app.domain.dataModel
 
+
 data class CsvPreviewRes(
 
-val importToken: String,
-val totalRows: Int,
-val toInsert: Int,
-val toUpdate: Int,
-val errors: List<Map<String, String>>
+    val status: Boolean,
+
+    val importToken: String?,
+
+    val newRows: Int?,
+
+    val updateRows: Int?,
+
+    val conflicts: List<String>,
+
+    val expiresAt: String?,
+
+    val errors: List<ImportValidationError>
 )
 
+data class ImportValidationError(
+    val rowNumber: Int,
+    val message: String
+)

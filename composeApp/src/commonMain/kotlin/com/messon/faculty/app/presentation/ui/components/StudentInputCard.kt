@@ -48,7 +48,7 @@ fun StudentInputCard(
     var roll by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var branch by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
+    var batch by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(false) }
 
 
@@ -76,7 +76,7 @@ fun StudentInputCard(
             InputField(placeholder = "Roll no.", value = roll, onValueChange = { roll = it })
             InputField(placeholder = "Email ID", value = email, onValueChange =  { email = it })
             InputField(placeholder = "Branch", value =branch , onValueChange = { branch = it })
-            InputField(placeholder = "Year", value = year, onValueChange =  { year = it}, isYear = true)
+            InputField(placeholder = "Year", value = batch, onValueChange =  { batch = it}, isYear = true)
 
 
             Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -102,11 +102,11 @@ fun StudentInputCard(
                             roll.isNotBlank() &&
                             email.isNotBlank() &&
                             branch.isNotBlank() &&
-                            year.isNotBlank() && year.toInt()>0 && year.toInt()<5,
+                            batch.isNotBlank() && batch.toInt()>0 && batch.toInt()<5,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = CustomColors.RichCerulean
                     ),
-                    onClick = { onAdd(StudentInput(name = name, studentId = roll, year =year.toInt(), branch = branch, isActive = isActive,email=email )) },
+                    onClick = { onAdd(StudentInput(name = name, studentId = roll, batch =batch.toInt(), branch = branch, isActive = isActive,email=email )) },
                     modifier = Modifier.weight(1f)
                         .height(45.dp)
                 ) {
