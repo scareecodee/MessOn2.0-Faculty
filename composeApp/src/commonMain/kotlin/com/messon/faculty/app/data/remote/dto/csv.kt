@@ -21,7 +21,7 @@ data class PreviewImportResponseDto(
     val updateRows: Int? = null,
 
     @SerialName("conflicts")
-    val conflicts: List<String> = emptyList(),
+    val conflicts: List<ImportValidationErrorDto> = emptyList(),
 
     @SerialName("expires_at")
     val expiresAt: String? = null,
@@ -38,4 +38,9 @@ data class ImportValidationErrorDto(
 
     @SerialName("message")
     val message: String
+)
+
+@Serializable
+data class ConfirmImportResponseDto(
+    val status: Boolean
 )

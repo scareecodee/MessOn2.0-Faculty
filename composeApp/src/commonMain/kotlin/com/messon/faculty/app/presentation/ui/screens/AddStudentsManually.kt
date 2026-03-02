@@ -1,13 +1,11 @@
 package com.messon.faculty.app.presentation.ui.screens
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,21 +22,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.domain.dataModel.StudentInput
+import androidx.navigation.NavController
 import com.messon.faculty.app.presentation.ui.components.AddStudentListItem
 import com.messon.faculty.app.presentation.ui.components.StudentInputCard
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.theme.CustomColors
+import com.messon.faculty.app.utils.AddStudentsManuallyState
+import com.messon.faculty.app.utils.Screen
+import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
+import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
 
 @Composable
 fun AddStudentManuallyScreen(
     onBackBtnClick:()->Unit,
-    addStudentManuallyVM: AddStudentManuallyVM
+    addStudentManuallyVM: AddStudentManuallyVM,
+    navController: NavController
 ) {
     DisposableEffect(Unit) {
         onDispose {
@@ -46,8 +49,42 @@ fun AddStudentManuallyScreen(
         }
     }
 
+    val uiState by addStudentManuallyVM.state.collectAsState()
+
     val students by addStudentManuallyVM.students.collectAsState()
     var showForm by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit){
+        addStudentManuallyVM.clearUiState()
+    }
+
+    LaunchedEffect(uiState) {
+
+        when (uiState) {
+
+            is AddStudentsManuallyState.Success -> {
+                if((uiState as AddStudentsManuallyState.Success).addStudentsManuallyRes.status){
+                    showToast(
+                        message ="Students added successfully"
+                    )
+                }
+                else{
+                    delay(300)
+                    navController.navigate(Screen.DataValidityScreen.route)
+                }
+            }
+
+            is AddStudentsManuallyState.Error -> {
+                showToast(
+                    message =(uiState as    AddStudentsManuallyState.Error).message
+                )
+
+                addStudentManuallyVM.clearUiState()
+            }
+
+            else -> Unit
+        }
+    }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize().background(Color.White).imePadding()) {
         val (content, bottomButton,statusBarBox,backBtnRef,headingRef) = createRefs()
@@ -141,10 +178,17 @@ fun AddStudentManuallyScreen(
         }
 
         Button(
+            enabled = uiState !is AddStudentsManuallyState.Loading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = CustomColors.RichCerulean
             ),
-            onClick = {  },
+            onClick = {
+                if (students.isNotEmpty()) {
+                    addStudentManuallyVM.addStudentsToDb()
+                } else {
+                    showToast("Add at least one student")
+                }
+            },
             modifier = Modifier.constrainAs(bottomButton) {
                 start.linkTo(parent.start, margin = 16.dp)
                 end.linkTo(parent.end, margin = 16.dp)

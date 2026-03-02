@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -33,12 +34,15 @@ import com.messon.faculty.app.presentation.ui.components.ConflictItem
 import com.messon.faculty.app.presentation.ui.components.ErrorItem
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.utils.CsvUploadState
+import com.messon.faculty.app.utils.CsvSaveChangesState
+import com.messon.faculty.app.utils.CsvState
+import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsansregular
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
 @Composable
@@ -48,12 +52,48 @@ fun CsvPreviewResScreen(
         onBackBtnClick:()-> Unit,
         csvUploadViewModel: CsvUploadViewModel
 ) {
+        val saveChangesState by csvUploadViewModel.saveChangesState.collectAsState()
         val uploadState by csvUploadViewModel.state.collectAsState()
         var activeTab by remember { mutableStateOf(0) }
 
 
-    val data = (uploadState as? CsvUploadState.Success)?.csvPreviewRes
+        val data = (uploadState as? CsvState.Success)?.csvPreviewRes
         ?: return
+
+    LaunchedEffect(Unit){
+        csvUploadViewModel.resetSaveChangesState()
+
+    }
+
+    LaunchedEffect(saveChangesState) {
+
+        when (saveChangesState) {
+
+            is CsvSaveChangesState.Success -> {
+               if((saveChangesState as CsvSaveChangesState.Success).status) {
+                   showToast(
+                       message ="Changes saved successfully"
+                   )
+               }
+                else{
+                   showToast(
+                       message ="Token Expired. Try again"
+                   )
+               }
+            }
+
+            is CsvSaveChangesState.Error -> {
+                showToast(
+                    message =(uploadState as CsvState.Error).message
+                )
+
+                csvUploadViewModel.resetSaveChangesState()
+            }
+
+            else -> Unit
+        }
+    }
+
 
         ConstraintLayout(
             modifier = Modifier
@@ -61,7 +101,7 @@ fun CsvPreviewResScreen(
                 .background(CustomColors.OffWhite)
         ) {
 
-            val (statusBarBox,backBtnRef,listRef, subtitle,headingRef) = createRefs()
+            val (statusBarBox,backBtnRef,listRef, subtitle,headingRef,progress) = createRefs()
 
             Box(
                 Modifier
@@ -192,7 +232,7 @@ fun CsvPreviewResScreen(
                         item { EmptyState("No conflicts detected") }
                     } else {
                         items(data.conflicts) { conflict ->
-                            ConflictItem(conflict)
+                            ConflictItem(conflict.toString())
                         }
                     }
                 }
@@ -201,10 +241,32 @@ fun CsvPreviewResScreen(
                     PreviewActionButtons(
                         isValid = data.errors.isEmpty(),
                         errorCount = data.errors.size,
-                        onConfirm = { data.importToken?.let { onConfirm(it) } },
+                        onConfirm = {
+                            data.importToken?.let {importToken->
+                                csvUploadViewModel.saveChanges(importToken)
+                            }
+                                    },
                         onCancel = onCancel
                     )
                 }
+            }
+
+            when (saveChangesState){
+                is CsvSaveChangesState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.3f))
+                            .constrainAs(progress) {
+                                top.linkTo(parent.top)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                else -> {}
             }
         }
 }

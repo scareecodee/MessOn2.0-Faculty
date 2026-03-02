@@ -19,15 +19,17 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.messon.faculty.app.presentation.ui.components.FilterChipsRow
 import com.messon.faculty.app.presentation.ui.components.TableCell
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.RichCerulean
-import com.messon.faculty.app.utils.CsvUploadState
+import com.messon.faculty.app.utils.CsvUploadMode
+import com.messon.faculty.app.utils.CsvState
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.parseCsv
+import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
@@ -45,29 +47,36 @@ fun CsvPreviewScreen(
 ) {
 
     val uploadState by csvUploadViewModel.state
-        .collectAsStateWithLifecycle()
+        .collectAsState()
 
     val filePickerState by filePickerViewModel.state
         .collectAsState(FilePickerState.Idle)
 
-
+    val chips = listOf(CsvUploadMode.INSERT.value, CsvUploadMode.UPDATE.value)
+    var selected by remember { mutableStateOf(setOf(0)) }
     val fileContent = (filePickerState as? FilePickerState.Success)?.fileContent
     val selectedFile = (filePickerState as? FilePickerState.Success)?.selectedFile
     val tableData = remember(fileContent) {
         fileContent?.let { parseCsv(it) } ?: emptyList()
     }
 
+    LaunchedEffect(Unit){
+        csvUploadViewModel.resetState()
+
+    }
+
     LaunchedEffect(uploadState) {
 
         when (uploadState) {
 
-            is CsvUploadState.Success -> {
+            is CsvState.Success -> {
+                delay(300)
                 onUploadSuccess()
             }
 
-            is CsvUploadState.Error -> {
+            is CsvState.Error -> {
                 showToast(
-                    message =(uploadState as CsvUploadState.Error).message
+                    message =(uploadState as CsvState.Error).message
                 )
 
                 csvUploadViewModel.resetState()
@@ -93,7 +102,7 @@ fun CsvPreviewScreen(
             .background(Color.White)
     ) {
 
-        val (backBtnRef,headingRef, statusBarBox,table, proceedBtn, progress,fileNameRef) = createRefs()
+        val (backBtnRef,headingRef, statusBarBox,table, proceedBtn, progress,fileNameRef,modeSelector) = createRefs()
 
         Box(
             modifier = Modifier
@@ -186,10 +195,30 @@ fun CsvPreviewScreen(
             }
         }
 
+
+
+        FilterChipsRow(
+            modifier= Modifier.constrainAs(modeSelector){
+                top.linkTo(table.bottom, margin = 20.dp)
+                start.linkTo(parent.start, margin = 20.dp)
+                end.linkTo(parent.end, margin = 20.dp)
+            }.padding(horizontal = 15.dp),
+            chips =chips ,
+            selectedChips = selected,
+            onSelectionChange = {
+                selected=it
+            }
+        )
+
         Button(
             onClick = {
                 selectedFile?.let {
-                    csvUploadViewModel.uploadCsv(it)
+                    val selectedIndex = selected.first()
+                    val mode = chips[selectedIndex]
+                    csvUploadViewModel.uploadCsv(
+                        file = it,
+                        mode = mode
+                    )
                 }
             },
             modifier = Modifier
@@ -197,7 +226,7 @@ fun CsvPreviewScreen(
                 .padding(16.dp)
                 .height(45.dp)
                 .constrainAs(proceedBtn) {
-                    top.linkTo(table.bottom, margin = 20.dp)
+                    top.linkTo(modeSelector.bottom, margin = 15.dp)
                 },
             colors = ButtonDefaults.buttonColors(
                 containerColor = RichCerulean
@@ -215,7 +244,7 @@ fun CsvPreviewScreen(
 
 
         when (uploadState){
-            is CsvUploadState.Loading -> {
+            is CsvState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

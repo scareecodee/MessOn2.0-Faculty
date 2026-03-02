@@ -11,6 +11,7 @@ import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.ui.screens.AddStudentManuallyScreen
 import com.messon.faculty.app.presentation.ui.screens.CsvPreviewResScreen
 import com.messon.faculty.app.presentation.ui.screens.CsvPreviewScreen
+import com.messon.faculty.app.presentation.ui.screens.DataValidityScreen
 import com.messon.faculty.app.presentation.ui.screens.StudentDetailScreen
 import com.messon.faculty.app.presentation.ui.screens.StudentScreen
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
@@ -73,12 +74,11 @@ fun AppNav(
                 CsvPreviewScreen(
                     filePickerViewModel = filePickerViewModel,
                     onBackClick = {
-
                         navController.popBackStack()
                     },
                     csvUploadViewModel = csvUploadViewModel,
                     onUploadSuccess = {
-
+                        navController.navigate(Screen.CsvPreviewResScreen.route)
                     },
                     modifier = Modifier,
                 )
@@ -95,7 +95,8 @@ fun AppNav(
                 onBackBtnClick ={
                     addStudentManuallyVM.clearCurrentStudents()
                     navController.popBackStack()
-                }
+                },
+                navController = navController
             )
         }
 
@@ -122,7 +123,9 @@ fun AppNav(
             exitTransition = exitRight
         ){
             CsvPreviewResScreen(
-                onConfirm = {},
+                onConfirm = {
+
+                },
                 onCancel = {
                     navController.popBackStack()
                 },
@@ -130,6 +133,22 @@ fun AppNav(
                     navController.popBackStack()
                 },
                 csvUploadViewModel =csvUploadViewModel
+            )
+        }
+
+        composable (
+            route=Screen.DataValidityScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            DataValidityScreen(
+                onCancel = {
+                    navController.popBackStack()
+                },
+                onBackBtnClick = {
+                    navController.popBackStack()
+                },
+                addStudentManuallyVM=addStudentManuallyVM
             )
         }
     }

@@ -11,7 +11,7 @@ data class CsvPreviewRes(
 
     val updateRows: Int?,
 
-    val conflicts: List<String>,
+    val conflicts: List<ImportValidationError>,
 
     val expiresAt: String?,
 
@@ -21,4 +21,9 @@ data class CsvPreviewRes(
 data class ImportValidationError(
     val rowNumber: Int,
     val message: String
+)
+
+
+data class ConfirmImportRes(
+    val status: Boolean
 )

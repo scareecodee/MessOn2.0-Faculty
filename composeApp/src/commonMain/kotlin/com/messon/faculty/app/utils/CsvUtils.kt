@@ -8,3 +8,9 @@ fun parseCsv(content: String): List<List<String>> {
             line.split(",")
         }
 }
+
+
+enum class CsvUploadMode(val value: String) {
+    UPDATE("update"),
+    INSERT("insert")
+}

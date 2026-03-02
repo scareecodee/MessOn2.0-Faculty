@@ -16,6 +16,6 @@ sealed class Screen(val route: String) {
 
     object CsvPreviewResScreen: Screen(route ="csv_preview_res_screen")
 
-
+    object DataValidityScreen: Screen(route = "data_validity_screen")
 
 }
