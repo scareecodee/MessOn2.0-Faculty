@@ -6,14 +6,44 @@ import com.messon.faculty.app.domain.dataModel.FetchStudentsRes
 import com.messon.faculty.app.domain.repository.StudentRepository
 import com.messon.faculty.app.presentation.ui.uiState.FetchStudentsState
 import com.messon.faculty.app.utils.NetworkError
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class StudentScreenVM(
     private val studentRepository: StudentRepository
 ) : ViewModel() {
+
+    private val _search=MutableStateFlow<String?>(null)
+    private val _batch=MutableStateFlow<Int?>(null)
+
+    init {
+        viewModelScope.launch {
+            combine(_search, _batch) { search, batch ->
+                search to batch
+            }
+                .drop(1)
+                .debounce(500)
+                .distinctUntilChanged()
+                .collect {
+                    refreshSilently()
+                }
+        }
+    }
+    fun setSearch(search: String?) {
+        _search.value = search
+    }
+
+    fun setBatch(batch:Int?){
+        _batch.value=batch
+    }
 
     private val _state = MutableStateFlow(FetchStudentsState())
     val state = _state.asStateFlow()
@@ -30,7 +60,7 @@ class StudentScreenVM(
         },
 
         onRequest = { cursor ->
-            studentRepository.fetchStudents(cursor)
+            studentRepository.fetchStudents(cursor=cursor, batch = _batch.value, search = _search.value)
         },
 
         getNextKey = { _, response ->
@@ -62,10 +92,6 @@ class StudentScreenVM(
         }
     )
 
-    fun loadIfEmpty() {
-        if (_state.value.students.isNotEmpty()) return
-        refresh()
-    }
 
     fun loadFirstPage() {
         _state.update {
@@ -91,7 +117,7 @@ class StudentScreenVM(
         }
     }
 
-    fun refresh() {
+    fun manualRefresh() {
         paginator.reset()
 
         _state.update {
@@ -100,6 +126,23 @@ class StudentScreenVM(
                 error = null,
                 endReached = false,
                 isRefreshing = true
+            )
+        }
+
+        viewModelScope.launch {
+            paginator.loadNextItems()
+        }
+    }
+
+    fun refreshSilently() {
+        paginator.reset()
+
+        _state.update {
+            it.copy(
+                students = emptyList(),
+                error = null,
+                endReached = false,
+                isRefreshing = false
             )
         }
 

@@ -58,11 +58,13 @@ class StudentRepository(
 
     suspend fun fetchStudents(
 //        token: String,
+        search: String?,
+        batch: Int?,
         cursor: String?,
 
     ): Result<FetchStudentsRes, NetworkError> {
 
-        return when (val result = student.fetchStudents(cursor=cursor)) {
+        return when (val result = student.fetchStudents(cursor=cursor,batch=batch, search = search)) {
 
             is Result.Success -> {
 

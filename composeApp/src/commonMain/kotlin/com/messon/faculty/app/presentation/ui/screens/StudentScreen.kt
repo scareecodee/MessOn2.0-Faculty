@@ -238,7 +238,9 @@ fun StudentScreen(
 
                 SearchBar(
                     query = query,
-                    onQueryChange = { query = it },
+                    onQueryChange = { query = it
+                        studentScreenVM.setSearch(query)
+                                    },
                     selectedFilter = selectedFilter,
                     onFilterSelected = { selectedFilter = it },
                     modifier = Modifier.constrainAs(searchBarRef) {
@@ -275,7 +277,7 @@ fun StudentScreen(
                     },
                     isRefreshing = isRefreshing,
                     onRefresh = {
-                        studentScreenVM.refresh()
+                        studentScreenVM.manualRefresh()
                     },
                     modifier = Modifier
                         .fillMaxSize()

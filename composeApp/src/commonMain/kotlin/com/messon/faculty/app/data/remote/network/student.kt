@@ -118,7 +118,9 @@ class Student(
     }
 
     suspend fun fetchStudents(
-        cursor: String?
+        cursor: String?,
+        search: String?,
+        batch:Int?,
 //        token: String,
     ): Result<FetchStudentsResDto, NetworkError>
     {
@@ -132,6 +134,12 @@ class Student(
                 contentType(ContentType.Application.Json)
                 parameter(
                     "cursor",cursor
+                )
+                parameter(
+                    "search",search
+                )
+                parameter(
+                    "batch",batch
                 )
             }
         } catch (e: UnresolvedAddressException){
