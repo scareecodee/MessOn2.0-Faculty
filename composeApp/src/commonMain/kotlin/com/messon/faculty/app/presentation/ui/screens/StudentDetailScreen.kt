@@ -21,30 +21,54 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.theme.CustomColors
+import com.messon.faculty.app.utils.CsvSaveChangesState
+import com.messon.faculty.app.utils.CsvState
+import com.messon.faculty.app.utils.ToggleStatusState
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
 @Composable
 fun StudentDetailScreen(
-    onStatusChange: (Boolean) -> Unit,
     onViewBillClick: () -> Unit,
     onBackClick: () -> Unit,
     studentDetailScreenVM: StudentDetailScreenVM
 ) {
     val scrollState = rememberScrollState()
-    val student by studentDetailScreenVM.selectedStudent.collectAsState()
+    val student by studentDetailScreenVM
+        .selectedStudent
+        .collectAsStateWithLifecycle()
 
-    if(student==null) return
+    val toggleStatusState by studentDetailScreenVM.toggleStatusState.collectAsStateWithLifecycle()
 
-    DisposableEffect(Unit) {
-        onDispose {
-            studentDetailScreenVM.clearSelectedStudent()
+
+    LaunchedEffect(toggleStatusState) {
+
+        when (toggleStatusState) {
+
+            is ToggleStatusState.Success -> {
+                showToast(
+                    message = "Updated detail of student"
+                )
+                studentDetailScreenVM.clearToggleStatusState()
+
+            }
+
+            is ToggleStatusState.Error -> {
+                showToast(
+                    message =(toggleStatusState as ToggleStatusState.Error).message
+                )
+                studentDetailScreenVM.clearToggleStatusState()
+            }
+
+            else -> Unit
         }
     }
 
@@ -54,7 +78,7 @@ fun StudentDetailScreen(
             .background(Color.White)
             .verticalScroll(scrollState)
     ) {
-        val (statusBarBox,headerBg, backBtn, title, profileHeader, name, email, infoCards, branchCard, statusSwitcher, billBtn) = createRefs()
+        val (statusBarBox,headerBg, circularProgress,backBtn, title, profileHeader, name, email, infoCards, branchCard, statusSwitcher, billBtn) = createRefs()
 
         Box(
             Modifier
@@ -190,8 +214,12 @@ fun StudentDetailScreen(
             }
         ) {
             StatusSwitcher(
+                enabled = toggleStatusState !is ToggleStatusState.Loading,
                 isActive = student!!.isActive,
-                onToggle = onStatusChange
+                isLoading = toggleStatusState is ToggleStatusState.Loading,
+                onToggle = {
+                    studentDetailScreenVM.toggleStatus(student!!.studentId)
+                }
             )
         }
 
@@ -223,6 +251,7 @@ fun StudentDetailScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Icon(Icons.Default.ChevronRight, contentDescription = null, tint = CustomColors.RichCerulean.copy(alpha = 0.4f))
         }
+
     }
 }
 
@@ -303,7 +332,9 @@ fun FullWidthInfoCard(
 
 @Composable
 fun StatusSwitcher(
+    enabled: Boolean,
     isActive: Boolean,
+    isLoading: Boolean,
     onToggle: (Boolean) -> Unit
 ) {
     Row(
@@ -311,40 +342,42 @@ fun StatusSwitcher(
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(if (isActive) CustomColors.Cream else CustomColors.OffWhite)
-            .border(
-                1.dp,
-                if (isActive) CustomColors.HoneyBronze.copy(alpha = 0.2f) else Color.Transparent,
-                RoundedCornerShape(24.dp)
-            )
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+
         Column {
-            Text(
-                "Status",
+            Text("Status",
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color = CustomColors.BlackberryCream.copy(alpha = 0.6f),
-                letterSpacing = 1.sp
-            )
-            Text(
-                if (isActive) "Active" else "Inactive",
+                color =Color.Black
+                )
+            Text(if (isActive) "Active" else "Inactive",
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                 color = if (isActive) CustomColors.HoneyBronze else CustomColors.LightGrayBlue
             )
         }
 
-        Switch(
-            checked = isActive,
-            onCheckedChange = onToggle,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = CustomColors.HoneyBronze,
-                uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = CustomColors.LightGrayBlue
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(22.dp),
+                strokeWidth = 2.dp,
+                color = CustomColors.HoneyBronze
             )
-        )
+        } else {
+            Switch(
+                enabled = enabled,
+                checked = isActive,
+                onCheckedChange = onToggle,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = CustomColors.HoneyBronze,
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = CustomColors.LightGrayBlue
+                )
+            )
+        }
     }
 }

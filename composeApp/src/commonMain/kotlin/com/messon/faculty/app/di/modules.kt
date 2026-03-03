@@ -36,7 +36,9 @@ val sharedModule = module {
     }
 
     viewModel {
-        StudentDetailScreenVM()
+        StudentDetailScreenVM(
+            studentRepository =get()
+        )
     }
 
 }

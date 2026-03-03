@@ -33,3 +33,8 @@ data class Conflict(
     val studentId: String,
     val message: String
 )
+
+
+data class ToggleStatusRes(
+    val isActive: Boolean
+)

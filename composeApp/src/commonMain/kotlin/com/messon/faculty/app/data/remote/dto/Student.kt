@@ -53,3 +53,8 @@ data class Conflict(
     val message: String
 )
 
+@Serializable
+data class ToggleStatusResDto(
+    @SerialName("is_active")
+    val isActive: Boolean
+)

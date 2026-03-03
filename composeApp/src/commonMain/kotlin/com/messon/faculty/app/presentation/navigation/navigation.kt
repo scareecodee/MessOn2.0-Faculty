@@ -35,7 +35,7 @@ fun AppNav(
         List(20) {
             Student(
                 name = "Sundram Kumar",
-                studentId = "B524066$it",
+                studentId = "B3240$it",
                 batch= 2,
                 branch = "CE",
                 profileImg = "https://picsum.photos/seed/picsum/200/300",
@@ -106,13 +106,12 @@ fun AppNav(
             exitTransition = exitRight
         ){
             StudentDetailScreen(
-                onStatusChange = {
-
-                },
                 onViewBillClick = {},
                 studentDetailScreenVM =studentDetailScreenVM,
                 onBackClick = {
                     navController.popBackStack()
+                    studentDetailScreenVM.clearSelectedStudent()
+                    studentDetailScreenVM.clearToggleStatusState()
                 }
             )
         }
