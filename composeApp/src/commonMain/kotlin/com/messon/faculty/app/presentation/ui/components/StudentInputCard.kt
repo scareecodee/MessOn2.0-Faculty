@@ -9,6 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.AltRoute
+import androidx.compose.material.icons.filled.AltRoute
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -68,15 +75,19 @@ fun StudentInputCard(
             Text(
                 maxLines = 1,
                 text = "Add Student",
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansbold))
             )
 
-            InputField(placeholder = "Full Name", value = name, onValueChange = {name=it})
-            InputField(placeholder = "Roll no.", value = roll, onValueChange = { roll = it })
-            InputField(placeholder = "Email ID", value = email, onValueChange =  { email = it })
-            InputField(placeholder = "Branch", value =branch , onValueChange = { branch = it })
-            InputField(placeholder = "Year", value = batch, onValueChange =  { batch = it}, isYear = true)
+            CustomInputField(label = "Full Name", value = name, onValueChange = {name=it}, icon = Icons.Default.Edit)
+            CustomInputField(label = "Roll no.", value = roll, onValueChange = { roll = it }, icon =Icons.Default.Info )
+            CustomInputField(label = "Email ID", value = email, onValueChange =  { email = it },icon=Icons.Default.Mail)
+            CustomInputField(label = "Branch", value =branch , onValueChange = { branch = it },icon= Icons.AutoMirrored.Filled.AltRoute)
+            CustomInputField(
+                label = "Year", value = batch, onValueChange = { batch = it },
+                icon = Icons.Default.CalendarMonth,
+                keyboardType = KeyboardType.Number,
+            )
             StatusSwitcher(
                 enabled =true,
                 isActive = isActive,
@@ -131,58 +142,4 @@ fun StudentInputCard(
     }
 }
 
-@Composable
-fun InputField(
-    value: String,
-    placeholder: String,
-    onValueChange: (String) -> Unit,
-    isYear: Boolean = false
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = {
-            if (isYear) {
-
-                if (it.all { char -> char.isDigit() }) {
-                    onValueChange(it)
-                }
-            } else {
-                onValueChange(it)
-            }
-        },
-
-        placeholder = {
-            Text(
-                text = placeholder,
-                color = Color.LightGray,
-                fontSize = 14.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontFamily = FontFamily(Font(Res.font.publicsansregular))
-            )
-        },
-
-        keyboardOptions = KeyboardOptions(
-            keyboardType = if (isYear) KeyboardType.Number else KeyboardType.Text
-        ),
-        textStyle = TextStyle(
-            fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-            fontSize = 12.sp
-        ),
-
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedLabelColor = Color.LightGray,
-            unfocusedLabelColor = Color.LightGray,
-            focusedBorderColor = Color.Black,
-            unfocusedBorderColor = Color.Black,
-            cursorColor = Color.Black,
-            unfocusedTextColor = Color.Black,
-            focusedTextColor = Color.Black
-        ),
-
-        shape = RoundedCornerShape(20.dp),
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth()
-    )
-}
 

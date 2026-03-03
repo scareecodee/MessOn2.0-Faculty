@@ -9,6 +9,7 @@ import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.domain.repository.CsvRepository
 import com.messon.faculty.app.presentation.navigation.AppNav
 import com.messon.faculty.app.presentation.ui.screens.CsvPreviewResScreen
+import com.messon.faculty.app.presentation.ui.screens.EditStudentScreen
 import com.messon.faculty.app.presentation.ui.screens.StudentDetailScreen
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
@@ -35,6 +36,13 @@ studentScreenVM: StudentScreenVM
             studentDetailScreenVM = studentDetailScreenVM,
             studentScreenVM=studentScreenVM
         )
+
+//        EditStudentScreen(
+//            onBackClick = {},
+//            onSaveClick = {
+//
+//            }
+//        )
 
 
 }
