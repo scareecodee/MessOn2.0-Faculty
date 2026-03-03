@@ -2,6 +2,7 @@ package com.messon.faculty.app.presentation.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -103,7 +104,7 @@ fun StudentScreen(
     )
 
     LaunchedEffect(Unit) {
-        studentScreenVM.loadIfEmpty()
+        studentScreenVM.loadFirstPage()
     }
 
     LaunchedEffect(Unit) {
@@ -160,7 +161,9 @@ fun StudentScreen(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
 
-            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            ConstraintLayout(modifier = Modifier.fillMaxSize()
+                .background(CustomColors.OffWhite)
+            ) {
                 val (
                     statusBarBox, headingRef, listRef,
                     backBtnRef, searchBarRef,
@@ -278,7 +281,7 @@ fun StudentScreen(
                         .fillMaxSize()
                         .constrainAs(listRef) {
                             top.linkTo(filterChipsRow.bottom, 16.dp)
-                            bottom.linkTo(parent.bottom)
+                            bottom.linkTo(parent.bottom, margin = 5.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             width = Dimension.fillToConstraints
@@ -287,8 +290,10 @@ fun StudentScreen(
                     contentAlignment = Alignment.TopCenter
                 ){
                     LazyColumn(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
                         state = lazyListState,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         items(filteredStudents, key = { it.studentId }) { student ->
                             StudentListItem(

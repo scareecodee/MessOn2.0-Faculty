@@ -22,6 +22,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
+import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.presentation.ui.uiState.ToggleStatusState
@@ -327,54 +328,3 @@ fun FullWidthInfoCard(
     }
 }
 
-@Composable
-fun StatusSwitcher(
-    enabled: Boolean,
-    isActive: Boolean,
-    isLoading: Boolean,
-    onToggle: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(if (isActive) CustomColors.Cream else CustomColors.OffWhite)
-            .padding(20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-
-        Column {
-            Text("Status",
-                fontSize = 14.sp,
-                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color =Color.Black
-                )
-            Text(if (isActive) "Active" else "Inactive",
-                fontSize = 14.sp,
-                fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                color = if (isActive) CustomColors.HoneyBronze else CustomColors.LightGrayBlue
-            )
-        }
-
-        if (isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(22.dp),
-                strokeWidth = 2.dp,
-                color = CustomColors.HoneyBronze
-            )
-        } else {
-            Switch(
-                enabled = enabled,
-                checked = isActive,
-                onCheckedChange = onToggle,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = CustomColors.HoneyBronze,
-                    uncheckedThumbColor = Color.White,
-                    uncheckedTrackColor = CustomColors.LightGrayBlue
-                )
-            )
-        }
-    }
-}

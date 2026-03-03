@@ -67,6 +67,22 @@ class StudentScreenVM(
         refresh()
     }
 
+    fun loadFirstPage() {
+        _state.update {
+            it.copy(
+                students = emptyList(),
+                error = null,
+                endReached = false
+            )
+        }
+
+        paginator.reset()
+
+        viewModelScope.launch {
+            paginator.loadNextItems()
+        }
+    }
+
     fun loadNextItems() {
         if (state.value.endReached) return
 

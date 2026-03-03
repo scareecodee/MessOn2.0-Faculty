@@ -77,7 +77,14 @@ fun StudentInputCard(
             InputField(placeholder = "Email ID", value = email, onValueChange =  { email = it })
             InputField(placeholder = "Branch", value =branch , onValueChange = { branch = it })
             InputField(placeholder = "Year", value = batch, onValueChange =  { batch = it}, isYear = true)
-
+            StatusSwitcher(
+                enabled =true,
+                isActive = isActive,
+                isLoading =false,
+                onToggle = {
+                    isActive=!isActive
+                }
+            )
 
             Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(
