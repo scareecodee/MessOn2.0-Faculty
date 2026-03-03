@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.messon.faculty.app.domain.dataModel.StudentInput
 import com.messon.faculty.app.domain.repository.StudentRepository
 import com.messon.faculty.app.presentation.mapper.toDto
-import com.messon.faculty.app.utils.AddStudentsManuallyState
+import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
 import com.messon.faculty.app.utils.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

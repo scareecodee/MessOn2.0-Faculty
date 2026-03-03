@@ -22,13 +22,23 @@ data class StudentDto(
     @SerialName("batch")
     val batch: Int,
 
-    @SerialName("isActive")
+    @SerialName("is_active")
     val isActive: Boolean,
 
     @SerialName("picture")
     val profileImg: String?
 
 )
+
+@Serializable
+data class FetchStudentsResDto(
+    @SerialName("students_list")
+    val students:List<StudentDto>,
+
+    @SerialName("next_cursor")
+    val nextCursor: String?
+)
+
 
 
 

@@ -26,7 +26,7 @@ import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.RichCerulean
 import com.messon.faculty.app.utils.CsvUploadMode
-import com.messon.faculty.app.utils.CsvState
+import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.parseCsv
 import kotlinx.coroutines.delay

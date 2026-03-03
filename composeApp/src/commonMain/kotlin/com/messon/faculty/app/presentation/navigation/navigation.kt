@@ -18,6 +18,7 @@ import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
+import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import com.messon.faculty.app.theme.enterLeft
 import com.messon.faculty.app.theme.exitRight
 import com.messon.faculty.app.utils.Screen
@@ -29,24 +30,12 @@ fun AppNav(
     filePickerViewModel: FilePickerViewModel,
     csvUploadViewModel: CsvUploadViewModel,
     addStudentManuallyVM: AddStudentManuallyVM,
-    studentDetailScreenVM: StudentDetailScreenVM
+    studentDetailScreenVM: StudentDetailScreenVM,
+    studentScreenVM: StudentScreenVM
 ){
-    val students = remember {
-        List(20) {
-            Student(
-                name = "Sundram Kumar",
-                studentId = "B3240$it",
-                batch= 2,
-                branch = "CE",
-                profileImg = "https://picsum.photos/seed/picsum/200/300",
-                isActive = true,
-                email = ""
-            )
-        }
-    }
     NavHost(
         navController = navController,
-        startDestination = Screen.StudentScreen.route
+        startDestination = Screen.StudentScreen.route,
     ){
         composable(
             route = Screen.StudentScreen.route,
@@ -57,12 +46,12 @@ fun AppNav(
                 modifier = Modifier,
                 onBackBtnClick = {},
                 filePickerViewModel=filePickerViewModel,
-                studentsList =students,
                 navController=navController,
                 studentDetailScreenVM = studentDetailScreenVM,
                 onStudentClick = {
                     navController.navigate(Screen.StudentDetailScreen.route)
-                }
+                },
+                studentScreenVM = studentScreenVM
             )
         }
 

@@ -25,7 +25,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.ConflictItem
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.utils.AddStudentsManuallyState
+import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium

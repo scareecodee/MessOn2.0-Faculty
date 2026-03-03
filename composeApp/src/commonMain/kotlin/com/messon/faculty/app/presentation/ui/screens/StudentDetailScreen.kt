@@ -1,7 +1,6 @@
 package com.messon.faculty.app.presentation.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,9 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.utils.CsvSaveChangesState
-import com.messon.faculty.app.utils.CsvState
-import com.messon.faculty.app.utils.ToggleStatusState
+import com.messon.faculty.app.presentation.ui.uiState.ToggleStatusState
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium

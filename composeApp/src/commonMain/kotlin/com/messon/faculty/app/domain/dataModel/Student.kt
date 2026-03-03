@@ -21,6 +21,11 @@ data class StudentInput(
     val email: String
 )
 
+data class FetchStudentsRes(
+    val students:List<Student>,
+    val cursor: String?
+)
+
 
 data class AddStudentsManuallyRes(
     val status:Boolean,

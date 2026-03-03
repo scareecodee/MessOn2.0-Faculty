@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.domain.repository.CsvRepository
-import com.messon.faculty.app.utils.CsvSaveChangesState
-import com.messon.faculty.app.utils.CsvState
+import com.messon.faculty.app.presentation.ui.uiState.CsvSaveChangesState
+import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import com.messon.faculty.app.utils.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

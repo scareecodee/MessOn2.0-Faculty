@@ -9,10 +9,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import com.messon.faculty.app.core.FilePickerManager
 import com.messon.faculty.app.domain.dataModel.PlatformFile
+import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
+import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -56,11 +58,13 @@ class MainActivity : ComponentActivity() {
             val csvUploadViewModel: CsvUploadViewModel =koinViewModel<CsvUploadViewModel>()
             val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel<AddStudentManuallyVM>()
             val studentDetailScreenVM: StudentDetailScreenVM=koinViewModel<StudentDetailScreenVM>()
+            val studentScreenVM: StudentScreenVM=koinViewModel<StudentScreenVM>()
             App(
                 filePickerViewModel=filePickerViewModel,
                 csvUploadViewModel = csvUploadViewModel,
                 addStudentManuallyVM=addStudentManuallyVM,
-                studentDetailScreenVM = studentDetailScreenVM
+                studentDetailScreenVM = studentDetailScreenVM,
+                studentScreenVM = studentScreenVM
             )
         }
     }

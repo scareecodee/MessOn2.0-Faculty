@@ -27,7 +27,7 @@ import com.messon.faculty.app.presentation.ui.components.AddStudentListItem
 import com.messon.faculty.app.presentation.ui.components.StudentInputCard
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.utils.AddStudentsManuallyState
+import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
 import com.messon.faculty.app.utils.Screen
 import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res

@@ -4,16 +4,13 @@ package com.messon.faculty.app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.domain.repository.StudentRepository
-import com.messon.faculty.app.utils.CsvState
 import com.messon.faculty.app.utils.Result
-import com.messon.faculty.app.utils.ToggleStatusState
+import com.messon.faculty.app.presentation.ui.uiState.ToggleStatusState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class StudentDetailScreenVM(

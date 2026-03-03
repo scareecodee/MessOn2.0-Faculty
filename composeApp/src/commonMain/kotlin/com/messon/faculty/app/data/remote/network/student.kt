@@ -2,6 +2,7 @@ package com.messon.faculty.app.data.remote.network
 
 import co.touchlab.kermit.Logger
 import com.messon.faculty.app.data.remote.dto.AddStudentsManuallyResDto
+import com.messon.faculty.app.data.remote.dto.FetchStudentsResDto
 import com.messon.faculty.app.data.remote.dto.StudentDto
 import com.messon.faculty.app.data.remote.dto.ToggleStatusResDto
 import com.messon.faculty.app.utils.NetworkError
@@ -10,6 +11,8 @@ import io.ktor.client.call.body
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -22,7 +25,6 @@ private const val BASE_URL = "http://172.18.9.63:8000/"
 class Student(
     private val httpClient: HttpClient
 ) {
-
     private val log = Logger.withTag("CSV_UPLOAD")
 
     suspend fun addStudentsManually(
@@ -114,4 +116,51 @@ class Student(
             else ->  Result.Error(NetworkError.UNKNOWN)
         }
     }
+
+    suspend fun fetchStudents(
+        cursor: String?
+//        token: String,
+    ): Result<FetchStudentsResDto, NetworkError>
+    {
+        log.d(tag = "Ktor", message ={"fetching students"})
+
+        val response= try {
+            httpClient.get(
+                urlString = "${BASE_URL}admin/get-students"
+            ) {
+//                header(HttpHeaders.Authorization, "Bearer $token")
+                contentType(ContentType.Application.Json)
+                parameter(
+                    "cursor",cursor
+                )
+            }
+        } catch (e: UnresolvedAddressException){
+            return  Result.Error(NetworkError.NO_INTERNET)
+        }
+        catch (e: SerializationException){
+            return  Result.Error(NetworkError.SERIALIZATION)
+        }
+        catch (e: Exception){
+            log.d(tag = "Ktor", message = {e.message.toString()})
+
+            return  Result.Error(NetworkError.UNKNOWN)
+        }
+        log.d(tag = "Ktor", message = {response.toString()})
+        println("STATUS CODE = ${response.status}")
+
+        return when(response.status.value){
+            in 200..299->{
+                val user=response.body<FetchStudentsResDto>()
+                Result.Success(user)
+            }
+            403->Result.Error(NetworkError.FORBIDDEN)
+            404->Result.Error(NetworkError.NOT_FOUND)
+            409 -> Result.Error(NetworkError.CONFLICT)
+            408 ->  Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 ->  Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599->  Result.Error(NetworkError.SERVER_ERROR)
+            else ->  Result.Error(NetworkError.UNKNOWN)
+        }
+    }
+
 }

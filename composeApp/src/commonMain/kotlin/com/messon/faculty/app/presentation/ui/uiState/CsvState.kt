@@ -1,4 +1,4 @@
-package com.messon.faculty.app.utils
+package com.messon.faculty.app.presentation.ui.uiState
 
 import com.messon.faculty.app.domain.dataModel.CsvPreviewRes
 

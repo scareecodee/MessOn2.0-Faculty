@@ -34,9 +34,8 @@ import com.messon.faculty.app.presentation.ui.components.ConflictItem
 import com.messon.faculty.app.presentation.ui.components.ErrorItem
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.utils.CsvSaveChangesState
-import com.messon.faculty.app.utils.CsvState
-import kotlinx.coroutines.delay
+import com.messon.faculty.app.presentation.ui.uiState.CsvSaveChangesState
+import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium

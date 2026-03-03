@@ -14,13 +14,15 @@ import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
+import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 
 @Composable
 fun App(
 filePickerViewModel: FilePickerViewModel,
 csvUploadViewModel: CsvUploadViewModel,
 addStudentManuallyVM: AddStudentManuallyVM,
-studentDetailScreenVM: StudentDetailScreenVM
+studentDetailScreenVM: StudentDetailScreenVM,
+studentScreenVM: StudentScreenVM
 ) {
 
     MaterialTheme {
@@ -30,7 +32,8 @@ studentDetailScreenVM: StudentDetailScreenVM
             filePickerViewModel = filePickerViewModel,
             csvUploadViewModel = csvUploadViewModel,
             addStudentManuallyVM = addStudentManuallyVM,
-            studentDetailScreenVM = studentDetailScreenVM
+            studentDetailScreenVM = studentDetailScreenVM,
+            studentScreenVM=studentScreenVM
         )
 
 

@@ -9,6 +9,7 @@ import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
+import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.koin.compose.viewmodel.dsl.viewModel
@@ -38,6 +39,12 @@ val sharedModule = module {
     viewModel {
         StudentDetailScreenVM(
             studentRepository =get()
+        )
+    }
+
+    viewModel {
+        StudentScreenVM(
+            get()
         )
     }
 

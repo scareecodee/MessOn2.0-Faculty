@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,10 +24,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,9 +40,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,31 +57,38 @@ import com.messon.faculty.app.presentation.ui.components.FilterChipsRow
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.components.StudentListFilterType
 import com.messon.faculty.app.presentation.ui.components.StudentListItem
+import com.messon.faculty.app.presentation.ui.uiState.FetchStudentsState
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
+import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.Screen
+import kotlinx.coroutines.flow.distinctUntilChanged
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
+import kotlin.collections.mutableListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentScreen(
     modifier: Modifier = Modifier,
     onBackBtnClick: () -> Unit,
-    studentsList: List<Student>,
     filePickerViewModel: FilePickerViewModel,
     navController: NavController,
     studentDetailScreenVM: StudentDetailScreenVM,
-    onStudentClick:()-> Unit
+    onStudentClick:()-> Unit,
+    studentScreenVM: StudentScreenVM
 
 ) {
     val chips = listOf("All", "1st Year", "2nd Year", "3rd Year")
+    val pullToRefreshState = rememberPullToRefreshState()
     var selected by remember { mutableStateOf(setOf(0)) }
+    val fetchStudentsState by studentScreenVM.state.collectAsState()
+    val isRefreshing: Boolean = fetchStudentsState.isRefreshing
     val filePickerState by filePickerViewModel.state.collectAsState(initial = FilePickerState.Idle)
     var isLoading by remember { mutableStateOf(false) }
     var isSheetOpen by remember { mutableStateOf(false) }
@@ -87,6 +101,11 @@ fun StudentScreen(
             newValue != SheetValue.Expanded
         }
     )
+
+    LaunchedEffect(Unit) {
+        studentScreenVM.loadIfEmpty()
+    }
+
     LaunchedEffect(Unit) {
         filePickerViewModel.navigationEvent.collect { event ->
             if (event is FilePickerViewModel.NavigationEvent.NavigateToCsvPreview) {
@@ -103,13 +122,36 @@ fun StudentScreen(
         }
     }
 
-    val filteredStudents = remember(query, selectedFilter, studentsList) {
-        studentsList.filter {
+
+    val filteredStudents = remember(query, selectedFilter, fetchStudentsState.students) {
+        fetchStudentsState.students.filter {
             when (selectedFilter) {
                 StudentListFilterType.NAME -> it.name.contains(query, ignoreCase = true)
                 StudentListFilterType.ID -> it.studentId.contains(query, ignoreCase = true)
             }
         }
+    }
+
+    val lazyListState= rememberLazyListState()
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow {
+            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+        }
+            .distinctUntilChanged()
+            .collect { lastVisibleIndex ->
+
+                val totalItems = fetchStudentsState.students.size
+
+                if (
+                    lastVisibleIndex != null &&
+                    lastVisibleIndex >= totalItems - 2 &&
+                    !fetchStudentsState.isLoadingMore &&
+                    !fetchStudentsState.endReached
+                ) {
+                    studentScreenVM.loadNextItems()
+                }
+            }
     }
 
     Surface(
@@ -217,29 +259,73 @@ fun StudentScreen(
                     }
                 )
 
-                LazyColumn(
-                    modifier = Modifier.constrainAs(listRef) {
-                        top.linkTo(filterChipsRow.bottom, 16.dp)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
-                    }
-                ) {
-                    items(filteredStudents, key = { it.studentId }) { student ->
-                        StudentListItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            profileImageUrl = student.profileImg,
-                            name = student.name,
-                            studentId = student.studentId,
-                            isActive = student.isActive,
-                            onMoreClick = {},
-                            onClick = {
+
+                PullToRefreshBox(
+                    state = pullToRefreshState,
+                    indicator = {
+                        PullToRefreshDefaults.Indicator(
+                            containerColor = CustomColors.RichCerulean,
+                            color = Color.White,
+                            isRefreshing = isRefreshing,
+                            state = pullToRefreshState
+                        )
+                    },
+                    isRefreshing = isRefreshing,
+                    onRefresh = {
+                        studentScreenVM.refresh()
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .constrainAs(listRef) {
+                            top.linkTo(filterChipsRow.bottom, 16.dp)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                            height = Dimension.fillToConstraints
+                        },
+                    contentAlignment = Alignment.TopCenter
+                ){
+                    LazyColumn(
+                        state = lazyListState,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(filteredStudents, key = { it.studentId }) { student ->
+                            StudentListItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                profileImageUrl = student.profileImg,
+                                name = student.name,
+                                studentId = student.studentId,
+                                isActive = student.isActive,
+                                onMoreClick = {},
+                                onClick = {
                                     studentDetailScreenVM.selectStudent(student)
                                     onStudentClick()
+                                }
+                            )
+                        }
+                        if (fetchStudentsState.isLoadingMore || fetchStudentsState.error != null) {
+                            item {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                ) {
+                                    when {
+                                        fetchStudentsState.isLoadingMore -> {
+                                            CircularProgressIndicator(
+                                                strokeCap = StrokeCap.Round,
+                                                color = CustomColors.RichCerulean
+                                            )
+                                        }
+                                        fetchStudentsState.error != null -> {
+                                            Text("Unable to load more")
+                                        }
+                                    }
+                                }
                             }
-                        )
+                        }
                     }
                 }
             }
