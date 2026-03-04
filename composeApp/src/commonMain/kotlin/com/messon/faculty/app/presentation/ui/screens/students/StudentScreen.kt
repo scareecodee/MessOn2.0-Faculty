@@ -1,9 +1,10 @@
-package com.messon.faculty.app.presentation.ui.screens
+package com.messon.faculty.app.presentation.ui.screens.students
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +26,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
@@ -52,13 +52,9 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.ui.components.BottomSheetContent
-import com.messon.faculty.app.presentation.ui.components.FilterChipsRow
 import com.messon.faculty.app.presentation.ui.components.SearchBar
-import com.messon.faculty.app.presentation.ui.components.StudentListFilterType
 import com.messon.faculty.app.presentation.ui.components.StudentListItem
-import com.messon.faculty.app.presentation.ui.uiState.FetchStudentsState
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
@@ -68,10 +64,10 @@ import com.messon.faculty.app.utils.Screen
 import kotlinx.coroutines.flow.distinctUntilChanged
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
+import messon_faculty.composeapp.generated.resources.publicsansregular
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
-import kotlin.collections.mutableListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,15 +81,12 @@ fun StudentScreen(
     studentScreenVM: StudentScreenVM
 
 ) {
-    val chips = listOf("All", "1st Year", "2nd Year", "3rd Year")
     val pullToRefreshState = rememberPullToRefreshState()
-    var selected by remember { mutableStateOf(setOf(0)) }
     val fetchStudentsState by studentScreenVM.state.collectAsState()
     val isRefreshing: Boolean = fetchStudentsState.isRefreshing
     val filePickerState by filePickerViewModel.state.collectAsState(initial = FilePickerState.Idle)
     var isLoading by remember { mutableStateOf(false) }
     var isSheetOpen by remember { mutableStateOf(false) }
-    var selectedFilter by remember { mutableStateOf(StudentListFilterType.ID) }
     var query by remember { mutableStateOf("") }
 
     val bottomSheetState = rememberModalBottomSheetState(
@@ -124,31 +117,21 @@ fun StudentScreen(
     }
 
 
-    val filteredStudents = remember(query, selectedFilter, fetchStudentsState.students) {
-        fetchStudentsState.students.filter {
-            when (selectedFilter) {
-                StudentListFilterType.NAME -> it.name.contains(query, ignoreCase = true)
-                StudentListFilterType.ID -> it.studentId.contains(query, ignoreCase = true)
-            }
-        }
-    }
 
-    val lazyListState= rememberLazyListState()
+    val lazyListState = rememberLazyListState()
 
-    LaunchedEffect(lazyListState) {
-        snapshotFlow {
-            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-        }
+    LaunchedEffect(lazyListState, fetchStudentsState) {
+        snapshotFlow { lazyListState.layoutInfo }
             .distinctUntilChanged()
-            .collect { lastVisibleIndex ->
+            .collect { layoutInfo ->
+                val totalItems = layoutInfo.totalItemsCount
+                val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
 
-                val totalItems = fetchStudentsState.students.size
-
-                if (
-                    lastVisibleIndex != null &&
-                    lastVisibleIndex >= totalItems - 2 &&
+                if (lastVisibleIndex >= totalItems - 3 &&
+                    totalItems > 0 &&
                     !fetchStudentsState.isLoadingMore &&
-                    !fetchStudentsState.endReached
+                    !fetchStudentsState.endReached&&
+                    fetchStudentsState.error == null
                 ) {
                     studentScreenVM.loadNextItems()
                 }
@@ -239,10 +222,8 @@ fun StudentScreen(
                 SearchBar(
                     query = query,
                     onQueryChange = { query = it
-                        studentScreenVM.setSearch(query)
+                        studentScreenVM.setSearch(search =query)
                                     },
-                    selectedFilter = selectedFilter,
-                    onFilterSelected = { selectedFilter = it },
                     modifier = Modifier.constrainAs(searchBarRef) {
                         top.linkTo(backBtnRef.bottom, 20.dp)
                         start.linkTo(parent.start, 10.dp)
@@ -250,20 +231,6 @@ fun StudentScreen(
                         width = Dimension.fillToConstraints
                     }
                 )
-
-                FilterChipsRow(
-                    modifier= Modifier.constrainAs(filterChipsRow){
-                        top.linkTo(searchBarRef.bottom, margin = 16.dp)
-                        start.linkTo(parent.start, margin = 20.dp)
-                        end.linkTo(parent.end, margin = 20.dp)
-                    }.padding(horizontal = 15.dp),
-                    chips = chips,
-                    selectedChips =selected,
-                    onSelectionChange = {
-                        selected=it
-                    }
-                )
-
 
                 PullToRefreshBox(
                     state = pullToRefreshState,
@@ -282,7 +249,7 @@ fun StudentScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .constrainAs(listRef) {
-                            top.linkTo(filterChipsRow.bottom, 16.dp)
+                            top.linkTo(searchBarRef.bottom, 16.dp)
                             bottom.linkTo(parent.bottom, margin = 5.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
@@ -291,13 +258,15 @@ fun StudentScreen(
                         },
                     contentAlignment = Alignment.TopCenter
                 ){
+                    Spacer(modifier= Modifier.height(6.dp))
+
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         state = lazyListState,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(filteredStudents, key = { it.studentId }) { student ->
+                        items(fetchStudentsState.students) { student ->
                             StudentListItem(
                                 modifier = Modifier.fillMaxWidth(),
                                 profileImageUrl = student.profileImg,
@@ -327,7 +296,12 @@ fun StudentScreen(
                                             )
                                         }
                                         fetchStudentsState.error != null -> {
-                                            Text("Unable to load more")
+                                            Text(
+                                                text = "Unable to load more",
+                                                fontSize = 14.sp,
+                                                fontFamily = FontFamily(Font(Res.font.publicsansregular)),
+                                                color =Color.Black,
+                                            )
                                         }
                                     }
                                 }

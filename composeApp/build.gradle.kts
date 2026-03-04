@@ -77,7 +77,7 @@ kotlin {
 
             implementation(compose.materialIconsExtended)
 
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
 
             implementation("co.touchlab:kermit:2.0.8")
 

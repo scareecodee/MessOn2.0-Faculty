@@ -12,6 +12,7 @@ import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
+import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
@@ -59,12 +60,14 @@ class MainActivity : ComponentActivity() {
             val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel<AddStudentManuallyVM>()
             val studentDetailScreenVM: StudentDetailScreenVM=koinViewModel<StudentDetailScreenVM>()
             val studentScreenVM: StudentScreenVM=koinViewModel<StudentScreenVM>()
+            val editStudentVM: EditStudentVM=koinViewModel<EditStudentVM>()
             App(
                 filePickerViewModel=filePickerViewModel,
                 csvUploadViewModel = csvUploadViewModel,
                 addStudentManuallyVM=addStudentManuallyVM,
                 studentDetailScreenVM = studentDetailScreenVM,
-                studentScreenVM = studentScreenVM
+                studentScreenVM = studentScreenVM,
+                editStudentVM = editStudentVM
             )
         }
     }

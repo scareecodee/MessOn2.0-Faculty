@@ -1,6 +1,7 @@
 package com.messon.faculty.app.presentation.ui.uiState
 
 import com.messon.faculty.app.domain.dataModel.AddStudentsManuallyRes
+import com.messon.faculty.app.domain.dataModel.EditStudentRes
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.domain.dataModel.ToggleStatusRes
 
@@ -28,3 +29,12 @@ data class FetchStudentsState(
     val error: String? = null,
     val endReached: Boolean = false
 )
+
+
+sealed class EditStudentState{
+    object Idle : EditStudentState()
+    object Loading :  EditStudentState()
+    data class Success(val editStudentRes: EditStudentRes ) :  EditStudentState()
+    data class Error(val message: String) :   EditStudentState()
+}
+

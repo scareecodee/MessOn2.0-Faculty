@@ -1,4 +1,4 @@
-package com.messon.faculty.app.presentation.ui.screens
+package com.messon.faculty.app.presentation.ui.screens.students
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

@@ -1,23 +1,38 @@
 package com.messon.faculty.app.domain.repository
 import com.messon.faculty.app.data.remote.dto.StudentDto
-import com.messon.faculty.app.data.remote.network.Student
+import com.messon.faculty.app.data.remote.dto.StudentInputDto
+import com.messon.faculty.app.data.remote.network.StudentApi
 import com.messon.faculty.app.domain.dataModel.AddStudentsManuallyRes
+import com.messon.faculty.app.domain.dataModel.EditStudentRes
 import com.messon.faculty.app.domain.dataModel.FetchStudentsRes
+import com.messon.faculty.app.domain.dataModel.Student
+import com.messon.faculty.app.domain.dataModel.StudentInput
 import com.messon.faculty.app.domain.dataModel.ToggleStatusRes
 import com.messon.faculty.app.presentation.mapper.toDomain
+import com.messon.faculty.app.presentation.mapper.toDto
 import com.messon.faculty.app.utils.NetworkError
 import com.messon.faculty.app.utils.Result
 
 class StudentRepository(
-    private val student: Student
+    private val studentApi: StudentApi
 ) {
 
     suspend fun addStudentsManually(
 //        token: String,
-        students:List<StudentDto>
+        students:List<StudentInput>
     ): Result<AddStudentsManuallyRes, NetworkError> {
 
-        return when (val result = student.addStudentsManually(students = students)) {
+        val studentsDto = students.map {student->
+            StudentInputDto(
+                name = student.name,
+                studentId = student.studentId,
+                email = student.email,
+                branch = student.branch,
+                batch = student.batch,
+                isActive = student.isActive,
+            )
+        }
+        return when (val result = studentApi.addStudentsManually(students = studentsDto)) {
 
             is Result.Success -> {
 
@@ -36,10 +51,10 @@ class StudentRepository(
 
     suspend fun toggleStatus(
 //        token: String,
-        studentId: String
+        uuid: String
     ): Result<ToggleStatusRes, NetworkError> {
 
-        return when (val result = student.toggleStudentStatus(studentId = studentId)) {
+        return when (val result = studentApi.toggleStudentStatus(uuid=uuid)) {
 
             is Result.Success -> {
 
@@ -59,12 +74,11 @@ class StudentRepository(
     suspend fun fetchStudents(
 //        token: String,
         search: String?,
-        batch: Int?,
         cursor: String?,
 
     ): Result<FetchStudentsRes, NetworkError> {
 
-        return when (val result = student.fetchStudents(cursor=cursor,batch=batch, search = search)) {
+        return when (val result = studentApi.fetchStudents(cursor=cursor, search = search)) {
 
             is Result.Success -> {
 
@@ -76,6 +90,31 @@ class StudentRepository(
                 )
             }
 
+            is Result.Error -> Result.Error(result.error)
+        }
+    }
+
+    suspend fun editStudent(
+//        token: String,
+        uuid: String,
+        updatedStudent:Student
+
+        ): Result<EditStudentRes, NetworkError> {
+
+
+        val updatedStudentDto=updatedStudent.toDto()
+
+        return when (val result = studentApi.editStudent(updatedStudent=updatedStudentDto,uuid=uuid)) {
+
+            is Result.Success -> {
+
+                val dto = result.data
+
+
+                Result.Success(
+                    data =dto.toDomain()
+                )
+            }
             is Result.Error -> Result.Error(result.error)
         }
     }

@@ -18,4 +18,7 @@ sealed class Screen(val route: String) {
 
     object DataValidityScreen: Screen(route = "data_validity_screen")
 
+    object EditStudentScreen: Screen(route = "edit_student_screen")
+
 }
+

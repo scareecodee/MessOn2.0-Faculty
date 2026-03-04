@@ -1,21 +1,19 @@
 package com.messon.faculty.app.presentation.navigation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.messon.faculty.app.domain.dataModel.CsvPreviewRes
-import com.messon.faculty.app.domain.dataModel.ImportValidationError
-import com.messon.faculty.app.domain.dataModel.Student
-import com.messon.faculty.app.presentation.ui.screens.AddStudentManuallyScreen
-import com.messon.faculty.app.presentation.ui.screens.CsvPreviewResScreen
-import com.messon.faculty.app.presentation.ui.screens.CsvPreviewScreen
-import com.messon.faculty.app.presentation.ui.screens.DataValidityScreen
-import com.messon.faculty.app.presentation.ui.screens.StudentDetailScreen
-import com.messon.faculty.app.presentation.ui.screens.StudentScreen
+import com.messon.faculty.app.presentation.ui.screens.students.AddStudentManuallyScreen
+import com.messon.faculty.app.presentation.ui.screens.students.CsvPreviewResScreen
+import com.messon.faculty.app.presentation.ui.screens.students.CsvPreviewScreen
+import com.messon.faculty.app.presentation.ui.screens.students.DataValidityScreen
+import com.messon.faculty.app.presentation.ui.screens.students.EditStudentScreen
+import com.messon.faculty.app.presentation.ui.screens.students.StudentDetailScreen
+import com.messon.faculty.app.presentation.ui.screens.students.StudentScreen
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
+import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
@@ -31,7 +29,8 @@ fun AppNav(
     csvUploadViewModel: CsvUploadViewModel,
     addStudentManuallyVM: AddStudentManuallyVM,
     studentDetailScreenVM: StudentDetailScreenVM,
-    studentScreenVM: StudentScreenVM
+    studentScreenVM: StudentScreenVM,
+    editStudentVM: EditStudentVM
 ){
     NavHost(
         navController = navController,
@@ -101,6 +100,13 @@ fun AppNav(
                     navController.popBackStack()
                     studentDetailScreenVM.clearSelectedStudent()
                     studentDetailScreenVM.clearToggleStatusState()
+                },
+                onEditClick = {
+                    navController.navigate(
+                        Screen.EditStudentScreen.route
+                    ){
+                      launchSingleTop=true
+                    }
                 }
             )
         }
@@ -137,6 +143,20 @@ fun AppNav(
                     navController.popBackStack()
                 },
                 addStudentManuallyVM=addStudentManuallyVM
+            )
+        }
+
+        composable (
+            route=Screen.EditStudentScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            EditStudentScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                studentDetailScreenVM = studentDetailScreenVM,
+                editStudentVM =editStudentVM
             )
         }
     }

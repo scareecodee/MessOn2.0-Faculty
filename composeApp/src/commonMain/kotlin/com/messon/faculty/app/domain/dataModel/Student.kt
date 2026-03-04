@@ -8,7 +8,8 @@ data class Student(
     val branch: String,
     val profileImg: String,
     val isActive: Boolean,
-    val email: String
+    val email: String,
+    val uuid: String
 )
 
 
@@ -32,6 +33,10 @@ data class AddStudentsManuallyRes(
     val conflicts:List<Conflict>
 )
 
+data class EditStudentRes(
+    val status:Boolean,
+    val conflict: Conflict
+)
 
 data class Conflict(
     val email: String,

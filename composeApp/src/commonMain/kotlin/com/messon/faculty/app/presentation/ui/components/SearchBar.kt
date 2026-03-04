@@ -24,17 +24,12 @@ import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsansregular
 import org.jetbrains.compose.resources.Font
 
-enum class StudentListFilterType {
-    NAME, ID
-}
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    selectedFilter: StudentListFilterType,
-    onFilterSelected: (StudentListFilterType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -82,17 +77,6 @@ fun SearchBar(
             TextField(
                 value = query,
                 onValueChange = { onQueryChange(it) },
-                placeholder = {
-                    Text(
-                        when (selectedFilter) {
-                            StudentListFilterType.NAME -> "Search by name..."
-                            StudentListFilterType.ID -> "Search by id..."
-                        },
-                        fontSize = placeholderFont.sp,
-                        fontFamily = FontFamily(Font(Res.font.publicsansregular)),
-                        color = Color.LightGray
-                    )
-                },
                 modifier = Modifier.weight(1f)
                 ,
                 colors = TextFieldDefaults.colors(
@@ -111,53 +95,6 @@ fun SearchBar(
                 ),
                 singleLine = true
             )
-
-
-            Box {
-                Icon(
-                    imageVector = Icons.Default.FilterList,
-                    contentDescription = "Filter Icon",
-                    tint = Color.Black,
-                    modifier = Modifier
-                        .size(iconSize)
-                        .clip(CircleShape)
-                        .clickable { expanded = true }
-                )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                   containerColor = CustomColors.OffWhite
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Name",
-                                fontSize = dropdownFont.sp,
-                                color = Color.Black,
-                                fontFamily = FontFamily(Font(Res.font.publicsansmedium))
-                            )
-                        },
-                        onClick = {
-                            onFilterSelected(StudentListFilterType.NAME)
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Id",
-                                color =Color.Black,
-                                fontSize = dropdownFont.sp,
-                                fontFamily = FontFamily(Font(Res.font.publicsansmedium))
-                            )
-                        },
-                        onClick = {
-                            onFilterSelected(StudentListFilterType.ID)
-                            expanded = false
-                        }
-                    )
-                }
-            }
         }
     }
 }

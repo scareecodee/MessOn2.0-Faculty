@@ -1,12 +1,16 @@
-package com.messon.faculty.app.presentation.ui.screens
+package com.messon.faculty.app.presentation.ui.screens.students
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.messon.faculty.app.presentation.ui.components.BoxedIcon
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
 import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
@@ -37,6 +43,7 @@ import org.jetbrains.compose.resources.Font
 fun StudentDetailScreen(
     onViewBillClick: () -> Unit,
     onBackClick: () -> Unit,
+    onEditClick:()-> Unit,
     studentDetailScreenVM: StudentDetailScreenVM
 ) {
     val scrollState = rememberScrollState()
@@ -76,7 +83,10 @@ fun StudentDetailScreen(
             .background(Color.White)
             .verticalScroll(scrollState)
     ) {
-        val (statusBarBox,headerBg, circularProgress,backBtn, title, profileHeader, name, email, infoCards, branchCard, statusSwitcher, billBtn) = createRefs()
+        val (statusBarBox,headerBg,backBtn, title, profileHeader,
+            name, email, infoCards, branchCard, statusSwitcher, billBtn,
+            editBtn
+        ) = createRefs()
 
         Box(
             Modifier
@@ -123,6 +133,26 @@ fun StudentDetailScreen(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }
+        )
+
+
+        BoxedIcon(
+            modifier = Modifier.constrainAs(editBtn){
+                end.linkTo(parent.end, margin = 16.dp)
+                centerVerticallyTo(backBtn)
+            }
+                .padding(5.dp)
+                .clip(CircleShape)
+                .clickable{
+                    onEditClick()
+                }
+            ,
+            boxColor = CustomColors.RichCerulean.copy(0.2f),
+            iconColor = CustomColors.RichCerulean,
+            iconsSize = 17.dp,
+            painter = rememberVectorPainter(image = Icons.Outlined.Edit),
+            contentDescription = "edit btn",
+            shape = CircleShape
         )
 
 
@@ -216,7 +246,7 @@ fun StudentDetailScreen(
                 isActive = student!!.isActive,
                 isLoading = toggleStatusState is ToggleStatusState.Loading,
                 onToggle = {
-                    studentDetailScreenVM.toggleStatus(student!!.studentId)
+                    studentDetailScreenVM.toggleStatus(student!!.uuid)
                 }
             )
         }
@@ -235,7 +265,7 @@ fun StudentDetailScreen(
                 },
             colors = ButtonDefaults.buttonColors(containerColor = CustomColors.LightBlue),
             shape = RoundedCornerShape(16.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, CustomColors.RichCerulean)
+            border = BorderStroke(1.dp, CustomColors.RichCerulean)
         ) {
             Icon(Icons.Default.Receipt, contentDescription = null, tint = CustomColors.RichCerulean)
             Spacer(modifier = Modifier.width(12.dp))

@@ -1,4 +1,4 @@
-package com.messon.faculty.app.presentation.ui.screens
+package com.messon.faculty.app.presentation.ui.screens.students
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -428,7 +429,7 @@ fun EmptyState(message: String) {
             fontSize = 12.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
             color = CustomColors.LightGrayBlue,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            textAlign = TextAlign.Center
         )
     }
 }

@@ -48,8 +48,7 @@ class AddStudentManuallyVM(
         viewModelScope.launch {
 
             _state.value = AddStudentsManuallyState.Loading
-            val dtoList = students.value.map { it.toDto() }
-            when (val result = repository.addStudentsManually(students =dtoList)) {
+            when (val result = repository.addStudentsManually(students =students.value)) {
 
                 is Result.Success -> {
 

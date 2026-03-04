@@ -40,11 +40,6 @@ class StudentScreenVM(
     fun setSearch(search: String?) {
         _search.value = search
     }
-
-    fun setBatch(batch:Int?){
-        _batch.value=batch
-    }
-
     private val _state = MutableStateFlow(FetchStudentsState())
     val state = _state.asStateFlow()
 
@@ -60,7 +55,7 @@ class StudentScreenVM(
         },
 
         onRequest = { cursor ->
-            studentRepository.fetchStudents(cursor=cursor, batch = _batch.value, search = _search.value)
+            studentRepository.fetchStudents(cursor=cursor, search = _search.value)
         },
 
         getNextKey = { _, response ->
@@ -71,7 +66,8 @@ class StudentScreenVM(
             _state.update {
                 it.copy(
                     error = error.toString(),
-                    isRefreshing = false
+                    isRefreshing = false,
+                    endReached = true
                 )
             }
         },

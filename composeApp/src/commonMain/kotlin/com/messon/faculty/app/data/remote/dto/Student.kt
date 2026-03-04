@@ -1,11 +1,14 @@
 package com.messon.faculty.app.data.remote.dto
 
+import com.messon.faculty.app.domain.dataModel.Conflict
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
 @Serializable
 data class StudentDto(
+    @SerialName("student_uuid")
+    val uuid: String,
 
     @SerialName("name")
     val name: String,
@@ -30,6 +33,31 @@ data class StudentDto(
 
 )
 
+
+
+@Serializable
+data class StudentInputDto(
+
+    @SerialName("name")
+    val name: String,
+
+    @SerialName("roll_number")
+    val studentId: String,
+
+    @SerialName("email")
+    val email: String,
+
+    @SerialName("branch")
+    val branch: String,
+
+    @SerialName("batch")
+    val batch: Int,
+
+    @SerialName("is_active")
+    val isActive: Boolean,
+
+)
+
 @Serializable
 data class FetchStudentsResDto(
     @SerialName("students_list")
@@ -48,11 +76,11 @@ data class AddStudentsManuallyResDto(
     val status: Boolean,
 
     @SerialName("conflicts")
-    val conflicts:List<Conflict>
+    val conflicts:List<ConflictDto>
 )
 
 @Serializable
-data class Conflict(
+data class ConflictDto(
     @SerialName("email")
     val email: String,
 
@@ -68,3 +96,15 @@ data class ToggleStatusResDto(
     @SerialName("is_active")
     val isActive: Boolean
 )
+
+
+@Serializable
+data class EditStudentResDto(
+    @SerialName("status")
+    val status: Boolean,
+
+    @SerialName("conflicts")
+    val conflict: ConflictDto
+
+)
+
