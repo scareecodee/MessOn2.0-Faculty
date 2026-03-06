@@ -34,6 +34,12 @@ sealed class Screen(val route: String) {
 
     object AddManagerScreen: Screen(route = "add_manager_screen")
 
+    object CollegeAdminScreen: Screen(route = "college_admin_screen")
+
+    object CollegeListScreen: Screen(route = "college_list_screen")
+
+
+
 
 }
 

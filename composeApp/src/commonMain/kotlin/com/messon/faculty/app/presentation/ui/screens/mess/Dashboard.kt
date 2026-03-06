@@ -41,15 +41,6 @@ fun DashboardScreen(
 
     val items = listOf(
         ManageItem(
-            "Mess",
-            "Change staus and other detail of mess",
-            Icons.Default.Restaurant,
-            listOf(
-                CustomColors.Teal,
-                CustomColors.Mint
-            )
-        ),
-        ManageItem(
             "Mess Managers",
             "Manage mess staff",
             Icons.Default.Person,
@@ -77,7 +68,7 @@ fun DashboardScreen(
             .background(CustomColors.OffWhite)
     ) {
 
-        val (title, subtitle, list,statusBarBox,backBtnRef,headingRef) = createRefs()
+        val (title, list,statusBarBox,backBtnRef,headingRef) = createRefs()
 
         Box(
             Modifier

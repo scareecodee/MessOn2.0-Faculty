@@ -7,7 +7,9 @@ import com.messon.faculty.app.core.auth.GoogleAuth
 import com.messon.faculty.app.domain.dataModel.LoginRequest
 import com.messon.faculty.app.domain.dataModel.User
 import com.messon.faculty.app.domain.repository.AuthRepository
+import com.messon.faculty.app.domain.repository.CollegeRepository
 import com.messon.faculty.app.presentation.ui.uiState.AuthState
+import com.messon.faculty.app.utils.UserRole
 import com.messon.faculty.app.utils.onError
 import com.messon.faculty.app.utils.onSuccess
 import kotlinx.coroutines.launch
@@ -20,7 +22,8 @@ import kotlinx.coroutines.cancel
 class AuthViewModel(
     private val secureStorage: AuthSecureStorage,
     private val authRepository: AuthRepository,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
+    private val collegeRepository: CollegeRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AuthState>(AuthState.Idle)
@@ -50,7 +53,11 @@ class AuthViewModel(
         viewModelScope.launch(dispatcher) {
             googleAuth.getGoogleToken()
                 .onSuccess { token ->
-                    authRepository.login(loginRequest = LoginRequest(idToken = token))
+                    authRepository.login(loginRequest = LoginRequest(
+                        idToken = token,
+                        role = UserRole.COLLEGE_ADMIN.value,
+                        collegeId = collegeRepository.selectedCollege.value?.collegeId ?:""
+                    ))
                         .onSuccess { loginResponse ->
                             secureStorage.saveLogin(response = loginResponse)
                             _uiState.value = AuthState.Success(loginResponse.user)

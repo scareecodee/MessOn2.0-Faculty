@@ -11,5 +11,6 @@ data class Mess(
     val name: String,
     val managers: List<Manager>,
     val status: Boolean,
-    val location: String="D Block G Floor"
+    val location: String="D Block G Floor",
+
 )

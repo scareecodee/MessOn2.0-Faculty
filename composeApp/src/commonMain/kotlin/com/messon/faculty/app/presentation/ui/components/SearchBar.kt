@@ -14,8 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.platform.annotation.SuppressLint
 import com.messon.faculty.app.theme.CustomColors
@@ -28,6 +31,7 @@ import org.jetbrains.compose.resources.Font
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun SearchBar(
+    placeholderText: String="",
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -75,6 +79,15 @@ fun SearchBar(
 
 
             TextField(
+                placeholder = {
+                    Text(
+                        text = placeholderText,
+                        fontFamily = FontFamily(Font(Res.font.publicsansregular)),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 12.sp
+                    )
+                },
                 value = query,
                 onValueChange = { onQueryChange(it) },
                 modifier = Modifier.weight(1f)
@@ -93,7 +106,7 @@ fun SearchBar(
                     fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                     color = Color.Black
                 ),
-                singleLine = true
+                singleLine = true,
             )
         }
     }

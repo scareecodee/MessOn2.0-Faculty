@@ -32,7 +32,7 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun MessManagerListScreen(
-    onDetailClick:()->Unit,
+    onCardClick:()->Unit,
     onBackClick:()-> Unit,
     onFabClick:()-> Unit,
     messVM: MessVM
@@ -143,7 +143,9 @@ fun MessManagerListScreen(
                     items(mess!!.managers) { manager ->
                         ManagerCard(
                             manager = manager,
-                            onDetailClick = onDetailClick
+                            onCardClick = onCardClick,
+                            onDeleteConfirm = {
+                            }
                         )
                     }
             }

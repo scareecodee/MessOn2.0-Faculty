@@ -47,7 +47,6 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun CsvPreviewResScreen(
-        onConfirm: (String) -> Unit,
         onCancel: () -> Unit,
         onBackBtnClick:()-> Unit,
         csvUploadViewModel: CsvUploadViewModel

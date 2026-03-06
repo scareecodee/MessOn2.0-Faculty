@@ -1,5 +1,7 @@
 package com.messon.faculty.app.domain.dataModel
 
+import com.messon.faculty.app.utils.UserRole
+
 data class  LoginResponse(
     val accessToken: String,
     val tokenType: String = "bearer",
@@ -7,7 +9,8 @@ data class  LoginResponse(
     val expiresIn: String? = null,
 )
 
-
 data class LoginRequest(
-    val idToken: String
+    val idToken: String,
+    val role: String= UserRole.COLLEGE_ADMIN.value,
+    val collegeId: String
 )

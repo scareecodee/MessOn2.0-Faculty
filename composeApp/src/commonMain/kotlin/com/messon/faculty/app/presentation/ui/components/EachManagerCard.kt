@@ -1,7 +1,7 @@
 package com.messon.faculty.app.presentation.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,27 +37,49 @@ import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.runtime.*
+import com.messon.faculty.app.utils.DialogVariant
+
+
 @Composable
 fun ManagerCard(
     manager: Manager,
-    onDetailClick:()-> Unit
+    onCardClick: () -> Unit,
+    onDeleteConfirm: (Manager) -> Unit
 ) {
+
+    var showDeleteIcon by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     Surface(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .height(80.dp)
             .clip(RoundedCornerShape(24.dp))
-            .clickable{
-                onDetailClick()
-            },
+            .combinedClickable(
+                onClick = {
+                    if (!showDeleteIcon) {
+                        onCardClick()
+                    } else {
+                        showDeleteIcon = false
+                    }
+                },
+                onLongClick = {
+                    showDeleteIcon = true
+                }
+            ),
         shape = RoundedCornerShape(24.dp),
         color = Color.White,
         shadowElevation = 1.dp
     ) {
+
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
+
             val (avatar, info, action) = createRefs()
 
             Box(
@@ -80,14 +102,17 @@ fun ManagerCard(
             }
 
             Column(
-                modifier = Modifier.constrainAs(info) {
-                    start.linkTo(avatar.end, margin = 10.dp)
-                    top.linkTo(avatar.top)
-                    bottom.linkTo(avatar.bottom)
-                    end.linkTo(action.start, margin = 8.dp)
-                    width = Dimension.fillToConstraints
-                }.padding(horizontal = 7.dp)
+                modifier = Modifier
+                    .constrainAs(info) {
+                        start.linkTo(avatar.end, margin = 10.dp)
+                        top.linkTo(avatar.top)
+                        bottom.linkTo(avatar.bottom)
+                        end.linkTo(action.start, margin = 8.dp)
+                        width = Dimension.fillToConstraints
+                    }
+                    .padding(horizontal = 7.dp)
             ) {
+
                 Text(
                     text = manager.name,
                     maxLines = 1,
@@ -96,9 +121,17 @@ fun ManagerCard(
                     fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                     color = CustomColors.BlackberryCream
                 )
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Email, contentDescription = null, tint = CustomColors.LightGrayBlue)
+
+                    Icon(
+                        Icons.Default.Email,
+                        contentDescription = null,
+                        tint = CustomColors.LightGrayBlue
+                    )
+
                     Spacer(modifier = Modifier.width(6.dp))
+
                     Text(
                         text = manager.email,
                         fontSize = 11.sp,
@@ -109,19 +142,39 @@ fun ManagerCard(
                     )
                 }
             }
-                Icon(
-                    Icons.Default.ChevronRight,
-                    contentDescription = "detail",
-                    modifier = Modifier.size(24.dp)
-                        .constrainAs(action) {
-                            end.linkTo(parent.end, margin = 10.dp)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
+
+            Icon(
+                imageVector = if (showDeleteIcon) Icons.Default.Delete else Icons.Default.ChevronRight,
+                contentDescription = "action",
+                modifier = Modifier
+                    .size(24.dp)
+                    .constrainAs(action) {
+                        end.linkTo(parent.end, margin = 10.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .clip(CircleShape)
+                    .combinedClickable(
+                        onClick = {
+                            if (showDeleteIcon) {
+                                showDeleteDialog = true
+                            } else {
+                                onCardClick()
+                            }
                         }
-                    ,
-                    tint = CustomColors.RichCerulean
-                )
-            }
+                    ),
+                tint = if (showDeleteIcon) Color.Red else CustomColors.RichCerulean
+            )
         }
     }
 
+    ConfirmDeleteDialog(
+        isOpen = showDeleteDialog,
+        onDismiss = { showDeleteDialog = false },
+        onConfirm = {
+            showDeleteDialog = false
+            onDeleteConfirm(manager)
+        },
+        variant = DialogVariant.DANGER
+    )
+}

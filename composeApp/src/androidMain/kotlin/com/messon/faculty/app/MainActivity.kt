@@ -15,6 +15,7 @@ import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.viewmodel.AuthViewModel
+import com.messon.faculty.app.presentation.viewmodel.CollegeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
@@ -64,24 +65,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val activity = LocalActivity.current as Activity
             val googleAuth: GoogleAuth = koinInject { parametersOf(activity) }
-            val filePickerViewModel: FilePickerViewModel = koinViewModel<FilePickerViewModel>()
-            val csvUploadViewModel: CsvUploadViewModel =koinViewModel<CsvUploadViewModel>()
-            val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel<AddStudentManuallyVM>()
-            val studentDetailScreenVM: StudentDetailScreenVM=koinViewModel<StudentDetailScreenVM>()
-            val studentScreenVM: StudentScreenVM=koinViewModel<StudentScreenVM>()
-            val editStudentVM: EditStudentVM=koinViewModel<EditStudentVM>()
-            val authViewModel: AuthViewModel=koinViewModel<AuthViewModel>()
-            val messVM : MessVM=koinViewModel<MessVM>()
             App(
-                filePickerViewModel=filePickerViewModel,
-                csvUploadViewModel = csvUploadViewModel,
-                addStudentManuallyVM=addStudentManuallyVM,
-                studentDetailScreenVM = studentDetailScreenVM,
-                studentScreenVM = studentScreenVM,
-                editStudentVM = editStudentVM,
-                authViewModel= authViewModel,
                 googleAuth=googleAuth,
-                messVM = messVM
             )
         }
     }

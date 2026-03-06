@@ -16,6 +16,8 @@ fun LoginResponseDto.toDomain(): LoginResponse {
 
 fun LoginRequest.toDto(): LoginRequestDto{
     return LoginRequestDto(
-        idToken=idToken
+        idToken = idToken,
+        role = role,
+        collegeId = collegeId
     )
 }

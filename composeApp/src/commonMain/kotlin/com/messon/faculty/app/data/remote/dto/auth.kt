@@ -1,11 +1,18 @@
 package com.messon.faculty.app.data.remote.dto
+import com.messon.faculty.app.utils.UserRole
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginRequestDto(
     @SerialName("id_token")
-    val idToken: String
+    val idToken: String,
+
+    @SerialName("role")
+    val role: String= UserRole.COLLEGE_ADMIN.value,
+
+    @SerialName("college_id")
+    val collegeId: String
 )
 
 

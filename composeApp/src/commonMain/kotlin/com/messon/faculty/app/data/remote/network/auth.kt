@@ -28,14 +28,13 @@ class Auth(
         loginRequestDto: LoginRequestDto
     ): Result<LoginResponseDto, NetworkError>
     {
-        Log.d(tag = "Ktor", message = {"in login block"})
+        Log.d(tag = "Ktor", message = {loginRequestDto.toString()})
 
         val response=try {
             httpClient.post(
                 urlString = "${BASE_URL}login/google"
             ) {
                 contentType(ContentType.Application.Json)
-                parameter("role", UserRole.COLLEGE_ADMIN)
                 setBody(
                     loginRequestDto
                 )
