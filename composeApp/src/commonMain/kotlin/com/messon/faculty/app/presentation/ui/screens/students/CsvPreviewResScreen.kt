@@ -56,7 +56,6 @@ fun CsvPreviewResScreen(
         val uploadState by csvUploadViewModel.state.collectAsState()
         var activeTab by remember { mutableStateOf(0) }
 
-
         val data = (uploadState as? CsvState.Success)?.csvPreviewRes
         ?: return
 

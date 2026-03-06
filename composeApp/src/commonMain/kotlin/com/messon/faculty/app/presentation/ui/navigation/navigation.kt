@@ -1,9 +1,18 @@
-package com.messon.faculty.app.presentation.navigation
+package com.messon.faculty.app.presentation.ui.navigation
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.messon.faculty.app.core.auth.GoogleAuth
+import com.messon.faculty.app.presentation.ui.screens.mess.AddManagerScreen
+import com.messon.faculty.app.presentation.ui.screens.mess.AddMessScreen
+import com.messon.faculty.app.presentation.ui.screens.mess.DashboardScreen
+import com.messon.faculty.app.presentation.ui.screens.mess.MessListScreen
+import com.messon.faculty.app.presentation.ui.screens.mess.MessManagerListScreen
 import com.messon.faculty.app.presentation.ui.screens.students.AddStudentManuallyScreen
 import com.messon.faculty.app.presentation.ui.screens.students.CsvPreviewResScreen
 import com.messon.faculty.app.presentation.ui.screens.students.CsvPreviewScreen
@@ -12,14 +21,17 @@ import com.messon.faculty.app.presentation.ui.screens.students.EditStudentScreen
 import com.messon.faculty.app.presentation.ui.screens.students.StudentDetailScreen
 import com.messon.faculty.app.presentation.ui.screens.students.StudentScreen
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
+import com.messon.faculty.app.presentation.viewmodel.AuthViewModel
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
+import com.messon.faculty.app.presentation.viewmodel.MessVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import com.messon.faculty.app.theme.enterLeft
 import com.messon.faculty.app.theme.exitRight
 import com.messon.faculty.app.utils.Screen
+import kotlin.math.sin
 
 
 @Composable
@@ -30,12 +42,54 @@ fun AppNav(
     addStudentManuallyVM: AddStudentManuallyVM,
     studentDetailScreenVM: StudentDetailScreenVM,
     studentScreenVM: StudentScreenVM,
-    editStudentVM: EditStudentVM
+    editStudentVM: EditStudentVM,
+    authViewModel: AuthViewModel,
+    googleAuth: GoogleAuth,
+    messVM: MessVM
 ){
+
+    val authState by authViewModel.uiState.collectAsStateWithLifecycle()
+
+//    LaunchedEffect(authState) {
+//        when (authState) {
+//            is AuthState.Success -> {
+//                navController.navigate(Screen.MainScreen.route) {
+//                    popUpTo(0) { inclusive = true }
+//                    launchSingleTop = true
+//                }
+//            }
+//
+//            AuthState.Unauthenticated -> {
+//                navController.navigate(Screen.LoginScreen.route) {
+//                    popUpTo(0) { inclusive = true }
+//                    launchSingleTop = true
+//                }
+//            }
+//
+//            else -> Unit
+//        }
+//    }
+
+
+//    if (authState is AuthState.Idle || authState is AuthState.Loading) {
+//        Box(
+//            modifier = Modifier.fillMaxSize(),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            CircularProgressIndicator(
+//                color = CustomColors.RichCerulean,
+//                strokeCap = StrokeCap.Round,
+//            )
+//        }
+//        return
+//    }
+
     NavHost(
         navController = navController,
-        startDestination = Screen.StudentScreen.route,
+        startDestination = Screen.MessListScreen.route,
+        modifier = Modifier.fillMaxSize()
     ){
+
         composable(
             route = Screen.StudentScreen.route,
             enterTransition = enterLeft,
@@ -43,7 +97,9 @@ fun AppNav(
         ) {
             StudentScreen(
                 modifier = Modifier,
-                onBackBtnClick = {},
+                onBackBtnClick = {
+                    navController.popBackStack()
+                },
                 filePickerViewModel=filePickerViewModel,
                 navController=navController,
                 studentDetailScreenVM = studentDetailScreenVM,
@@ -53,11 +109,27 @@ fun AppNav(
                 studentScreenVM = studentScreenVM
             )
         }
+//
+//        composable(
+//            route = Screen.LoginScreen.route,
+//            enterTransition = enterLeft,
+//            exitTransition = exitRight
+//        ) {
+//            SignInRoute(
+//                viewModel = authViewModel,
+//                onLoginSuccess = {
+//                    navController.navigate(Screen.MainScreen.route){
+//                        launchSingleTop=true
+//                    }
+//                },
+//                googleAuth = googleAuth
+//            )
+//        }
 
             composable(
                 route=Screen.CsvPreviewScreen.route,
                 enterTransition = enterLeft,
-                exitTransition = exitRight
+                exitTransition = exitRight,
             ) {
                 CsvPreviewScreen(
                     filePickerViewModel = filePickerViewModel,
@@ -157,6 +229,90 @@ fun AppNav(
                 },
                 studentDetailScreenVM = studentDetailScreenVM,
                 editStudentVM =editStudentVM
+            )
+        }
+
+        composable (
+            route=Screen.DashboardScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            DashboardScreen(
+                onBackClick = { navController.popBackStack() },
+                onStudentsClick = {
+                    navController.navigate(Screen.StudentScreen.route)
+                },
+                onManagersClick = {
+                    navController.navigate(Screen.MessManagerListScreen.route)
+                },
+                onAdminsClick = {},
+                messVM = messVM
+            )
+        }
+
+        composable (
+            route=Screen.MessListScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            MessListScreen(
+                onBackBtnClick = {},
+                onFabClick = {
+                    navController.navigate(Screen.AddMessScreen.route){
+                        launchSingleTop=true
+                    }
+                },
+                messVM = messVM,
+                onCardClick = {
+                    navController.navigate(Screen.DashboardScreen.route){
+                        launchSingleTop=true
+                    }
+                }
+            )
+        }
+
+        composable (
+            route=Screen.MessManagerListScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            MessManagerListScreen(
+                onDetailClick = {
+
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onFabClick = {
+                    navController.navigate(Screen.AddManagerScreen.route){
+                        launchSingleTop=true
+                    }
+                },
+                messVM = messVM
+            )
+        }
+
+        composable (
+            route=Screen.AddMessScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            AddMessScreen(
+                onBackBtnClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable (
+            route=Screen.AddManagerScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            AddManagerScreen(
+                onBackBtnClick = {
+                    navController.popBackStack()
+                }
             )
         }
     }

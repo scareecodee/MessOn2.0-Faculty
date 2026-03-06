@@ -1,22 +1,29 @@
 package com.messon.faculty.app
 
+import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import com.messon.faculty.app.core.FilePickerManager
+import com.messon.faculty.app.core.auth.GoogleAuth
 import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.domain.dataModel.Student
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
+import com.messon.faculty.app.presentation.viewmodel.AuthViewModel
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
+import com.messon.faculty.app.presentation.viewmodel.MessVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {
 
@@ -55,19 +62,26 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
+            val activity = LocalActivity.current as Activity
+            val googleAuth: GoogleAuth = koinInject { parametersOf(activity) }
             val filePickerViewModel: FilePickerViewModel = koinViewModel<FilePickerViewModel>()
             val csvUploadViewModel: CsvUploadViewModel =koinViewModel<CsvUploadViewModel>()
             val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel<AddStudentManuallyVM>()
             val studentDetailScreenVM: StudentDetailScreenVM=koinViewModel<StudentDetailScreenVM>()
             val studentScreenVM: StudentScreenVM=koinViewModel<StudentScreenVM>()
             val editStudentVM: EditStudentVM=koinViewModel<EditStudentVM>()
+            val authViewModel: AuthViewModel=koinViewModel<AuthViewModel>()
+            val messVM : MessVM=koinViewModel<MessVM>()
             App(
                 filePickerViewModel=filePickerViewModel,
                 csvUploadViewModel = csvUploadViewModel,
                 addStudentManuallyVM=addStudentManuallyVM,
                 studentDetailScreenVM = studentDetailScreenVM,
                 studentScreenVM = studentScreenVM,
-                editStudentVM = editStudentVM
+                editStudentVM = editStudentVM,
+                authViewModel= authViewModel,
+                googleAuth=googleAuth,
+                messVM = messVM
             )
         }
     }

@@ -1,7 +1,10 @@
 package com.messon.faculty.app.utils
 
 
+
 sealed class Screen(val route: String) {
+
+
     object MainScreen: Screen("main_screen")
     object LoginScreen: Screen("login_screen")
 
@@ -19,6 +22,18 @@ sealed class Screen(val route: String) {
     object DataValidityScreen: Screen(route = "data_validity_screen")
 
     object EditStudentScreen: Screen(route = "edit_student_screen")
+
+    object DashboardScreen: Screen(route = "dashboard_screen")
+
+    object MessListScreen: Screen(route = "mess_list_screen")
+
+    object MessManagerListScreen: Screen(route = "mess_manager_list_screen")
+
+    object AddMessScreen: Screen(route = "add_mess_screen")
+
+
+    object AddManagerScreen: Screen(route = "add_manager_screen")
+
 
 }
 

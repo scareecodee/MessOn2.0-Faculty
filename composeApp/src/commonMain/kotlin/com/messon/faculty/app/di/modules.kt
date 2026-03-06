@@ -1,16 +1,22 @@
 package com.messon.faculty.app.di
 
 
+import com.messon.faculty.app.data.remote.network.Auth
 import com.messon.faculty.app.data.remote.network.CsvUpload
 import com.messon.faculty.app.data.remote.network.StudentApi
+import com.messon.faculty.app.domain.repository.AuthRepository
 import com.messon.faculty.app.domain.repository.CsvRepository
 import com.messon.faculty.app.domain.repository.StudentRepository
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
+import com.messon.faculty.app.presentation.viewmodel.AuthViewModel
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
+import com.messon.faculty.app.presentation.viewmodel.MessVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.koin.compose.viewmodel.dsl.viewModel
@@ -20,6 +26,10 @@ val sharedModule = module {
     single { CsvRepository(get()) }
     single { StudentApi(get()) }
     single{ StudentRepository(get()) }
+
+
+    single { Auth(get()) }
+    single { AuthRepository(get()) }
 
     viewModel {
         CsvUploadViewModel(
@@ -53,10 +63,19 @@ val sharedModule = module {
         EditStudentVM(get())
     }
 
+    viewModel {
+        AuthViewModel(
+            secureStorage = get(),
+            authRepository = get(),
+            dispatcher = Dispatchers.IO
+        )
+    }
+
+    viewModel {
+        MessVM()
+    }
+
 }
-
-
-
 
 
 expect val platformModule: Module

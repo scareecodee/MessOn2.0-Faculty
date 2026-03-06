@@ -36,7 +36,6 @@ import messon_faculty.composeapp.generated.resources.publicsansmedium
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
-
 @Composable
 fun CsvPreviewScreen(
     filePickerViewModel: FilePickerViewModel,
@@ -194,8 +193,6 @@ fun CsvPreviewScreen(
                 }
             }
         }
-
-
 
         FilterChipsRow(
             modifier= Modifier.constrainAs(modeSelector){

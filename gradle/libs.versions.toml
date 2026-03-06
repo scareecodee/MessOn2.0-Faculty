@@ -22,14 +22,17 @@ lifecycleViewModel = "2.10.0"
 
 
 credentialsPlayServicesAuth = "1.5.0"
-playServicesAuth = "21.5.0"
+playServicesAuth = "21.5.1"
 googleid = "1.2.0"
 
-coil = "3.3.0"
+coil = "3.4.0"
 
 room = "2.8.4"
 ksp = "2.3.5"
 sqlite = "2.6.2"
+
+multiplatform-nav3-ui = "1.0.0-alpha06"
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -79,6 +82,8 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-runtime-android = { module = "androidx.room:room-runtime-android", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+
+jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

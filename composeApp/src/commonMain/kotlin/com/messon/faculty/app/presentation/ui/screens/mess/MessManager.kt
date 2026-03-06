@@ -1,14 +1,11 @@
 package com.messon.faculty.app.presentation.ui.screens.mess
 
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -19,60 +16,32 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.domain.dataModel.Caterer
-import com.messon.faculty.app.domain.dataModel.Manager
 import com.messon.faculty.app.presentation.ui.components.ManagerCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
-import com.messon.faculty.app.presentation.ui.components.StudentListItem
+import com.messon.faculty.app.presentation.viewmodel.MessVM
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansregular
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 
 @Composable
-fun CatererDirectoryScreen(
+fun MessManagerListScreen(
     onDetailClick:()->Unit,
     onBackClick:()-> Unit,
-    onFabClick:()-> Unit
+    onFabClick:()-> Unit,
+    messVM: MessVM
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
 
-    val catererData = remember {
-        listOf(
-            Caterer(
-                1, "Annapurna Hospitality Services", listOf(
-                    Manager(101, "Rajesh Kumar", "rajesh.k@annapurna.com", "+91 98765 43210"),
-                    Manager(102, "Suman Lata", "suman.l@annapurna.com", "+91 98765 43211"),
-                    Manager(201, "Vikram Singh", "v.singh@elitedining.in", "+91 88888 77777"),
-                    Manager(202, "Anita Desai", "anita.d@elitedining.in", "+91 88888 77778"),
-                    Manager(203, "Manoj Tiwary", "manoj.t@elitedining.in", "+91 88888 77779"),
-                    Manager(201, "Vikram Singh", "v.singh@elitedining.in", "+91 88888 77777"),
-                    Manager(202, "Anita Desai", "anita.d@elitedining.in", "+91 88888 77778"),
-                    Manager(203, "Manoj Tiwary", "manoj.t@elitedining.in", "+91 88888 77779"),
-                    Manager(201, "Vikram Singh", "v.singh@elitedining.in", "+91 88888 77777"),
-                    Manager(202, "Anita Desai", "anita.d@elitedining.in", "+91 88888 77778"),
-                    Manager(203, "Manoj Tiwary", "manoj.t@elitedining.in", "+91 88888 77779"),  Manager(201, "Vikram Singh", "v.singh@elitedining.in", "+91 88888 77777"),
-                    Manager(202, "Anita Desai", "anita.d@elitedining.in", "+91 88888 77778"),
-                    Manager(203, "Manoj Tiwary", "manoj.t@elitedining.in", "+91 88888 77779")
-                )
-            )
-        )
-    }
-
-
+    val mess by messVM.selectedMess.collectAsState()
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()
         .background(CustomColors.OffWhite)
@@ -108,7 +77,7 @@ fun CatererDirectoryScreen(
         }
 
         Text(
-            text = "Caterer Directory",
+            text = "Mess Manager",
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(headingRef) {
@@ -129,6 +98,7 @@ fun CatererDirectoryScreen(
                 width = Dimension.fillToConstraints
             }
         )
+
 
         PullToRefreshBox(
             state = pullToRefreshState,
@@ -162,26 +132,20 @@ fun CatererDirectoryScreen(
                 modifier = Modifier.padding(horizontal = 12.dp)
                     .fillMaxSize()
             ) {
-                catererData.forEach { caterer ->
-                    item {
-                        Text(
-                            text = caterer.name,
-                            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                            fontSize = 14.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = CustomColors.BlackberryCream,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 7.dp)
-                        )
-                    }
 
-                    items(caterer.managers) { manager ->
+                item{
+                    Text(
+                        text =mess!!.name,
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                    )
+                }
+                    items(mess!!.managers) { manager ->
                         ManagerCard(
                             manager = manager,
                             onDetailClick = onDetailClick
                         )
                     }
-                }
             }
         }
 
