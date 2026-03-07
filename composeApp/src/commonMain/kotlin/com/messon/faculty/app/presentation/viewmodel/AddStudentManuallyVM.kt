@@ -51,8 +51,6 @@ class AddStudentManuallyVM(
             when (val result = repository.addStudentsManually(students =students.value)) {
 
                 is Result.Success -> {
-
-
                     _state.value = AddStudentsManuallyState.Success(
                         addStudentsManuallyRes = result.data
                     )

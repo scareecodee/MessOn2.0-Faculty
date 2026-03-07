@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
@@ -12,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.messon.faculty.app.core.auth.GoogleAuth
+import com.messon.faculty.app.presentation.ui.screens.HomeScreen
 import com.messon.faculty.app.presentation.ui.screens.auth.SignInRoute
 import com.messon.faculty.app.presentation.ui.screens.college.*
 import com.messon.faculty.app.presentation.ui.screens.mess.*
@@ -31,7 +33,8 @@ fun AppNav(
 ) {
     val filePickerVM: FilePickerViewModel = koinViewModel()
     val authViewModel: AuthViewModel = koinViewModel()
-    val messVM: MessVM = koinViewModel()
+    val createMessVM: CreateMessVM = koinViewModel()
+    val messListVM: MessListVM=koinViewModel()
     val csvUploadViewModel: CsvUploadViewModel=koinViewModel()
     val studentDetailVM: StudentDetailScreenVM = koinViewModel()
     val editStudentVM: EditStudentVM=koinViewModel()
@@ -39,17 +42,24 @@ fun AppNav(
 
     val authState by authViewModel.uiState.collectAsStateWithLifecycle()
 
+    var hasNavigated by rememberSaveable{ mutableStateOf(false) }
+
     LaunchedEffect(authState) {
+
+        if (hasNavigated) return@LaunchedEffect
+
         when (authState) {
 
             is AuthState.Success -> {
-                navController.navigate(Screen.MessListScreen.route) {
+                hasNavigated = true
+                navController.navigate(Screen.HomeScreen.route) {
                     popUpTo(0) { inclusive = true }
                     launchSingleTop = true
                 }
             }
 
             AuthState.Unauthenticated -> {
+                hasNavigated = true
                 navController.navigate(Screen.CollegeListScreen.route) {
                     popUpTo(0) { inclusive = true }
                     launchSingleTop = true
@@ -111,7 +121,7 @@ fun AppNav(
                 viewModel = authViewModel,
                 googleAuth = googleAuth,
                 onLoginSuccess = {
-                    navController.navigate(Screen.MessListScreen.route) {
+                    navController.navigate(Screen.HomeScreen.route) {
                         launchSingleTop = true
                     }
                 }
@@ -126,7 +136,7 @@ fun AppNav(
         ) {
 
             DashboardScreen(
-                messVM = messVM,
+                messVM = messListVM,
                 onBackClick = { navController.popBackStack() },
                 onStudentsClick = {
                     navController.navigate(Screen.StudentScreen.route)
@@ -148,8 +158,10 @@ fun AppNav(
         ) {
 
             MessListScreen(
-                messVM = messVM,
-                onBackBtnClick = {},
+                messListVM = messListVM,
+                onBackBtnClick = {
+                    navController.popBackStack()
+                },
                 onFabClick = {
                     navController.navigate(Screen.AddMessScreen.route) {
                         launchSingleTop = true
@@ -171,7 +183,7 @@ fun AppNav(
         ) {
 
             MessManagerListScreen(
-                messVM = messVM,
+//                messListVM=messListVM,
                 onBackClick = { navController.popBackStack() },
                 onFabClick = {
                     navController.navigate(Screen.AddManagerScreen.route) {
@@ -192,7 +204,8 @@ fun AppNav(
             AddMessScreen(
                 onBackBtnClick = {
                     navController.popBackStack()
-                }
+                },
+                createMessVM = createMessVM
             )
         }
 
@@ -218,9 +231,13 @@ fun AppNav(
         ) {
 
             CollegeAdminScreen(
-                messVM = messVM,
+                messListVM=messListVM,
                 onBackClick = { navController.popBackStack() },
-                onFabClick = {}
+                onFabClick = {
+                    navController.navigate(Screen.AddCollegeAdminScreen.route){
+                        launchSingleTop=true
+                    }
+                }
             )
         }
 
@@ -287,6 +304,47 @@ fun AppNav(
                 },
                 studentDetailScreenVM = studentDetailVM,
                 editStudentVM =editStudentVM
+            )
+        }
+
+        composable (
+            route=Screen.AddCollegeAdminScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+           AddCollegeAdminScreen(
+               onBackBtnClick ={navController.popBackStack()}
+           )
+        }
+
+
+        composable (
+            route=Screen.AddStudentManuallyScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel()
+            AddStudentManuallyScreen(
+                onBackBtnClick ={
+                    navController.popBackStack()
+                },
+                addStudentManuallyVM = addStudentManuallyVM,
+                navController = navController
+            )
+        }
+
+        composable (
+            route=Screen.HomeScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            HomeScreen(
+                onRatingCardClick = {},
+                onBillCardClick = {},
+                onNoticeCardClick = {},
+                onMessCardClick = {
+                    navController.navigate(Screen.MessListScreen.route)
+                }
             )
         }
     }

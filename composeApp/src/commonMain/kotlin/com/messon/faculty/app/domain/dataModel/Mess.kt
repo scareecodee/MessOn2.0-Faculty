@@ -11,6 +11,19 @@ data class Mess(
     val name: String,
     val managers: List<Manager>,
     val status: Boolean,
-    val location: String="D Block G Floor",
+    val location: String="D Block G Floor"
+)
 
+data class MessCreateReq(
+    val name: String,
+    val isActive: Boolean,
+    val location: String
+)
+
+
+data class MessCreateRes(
+    val id: String,
+    val name: String,
+    val isActive: Boolean,
+    val location: String
 )

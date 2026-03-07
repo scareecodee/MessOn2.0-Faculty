@@ -23,7 +23,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.ManagerCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
-import com.messon.faculty.app.presentation.viewmodel.MessVM
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -35,13 +35,11 @@ fun MessManagerListScreen(
     onCardClick:()->Unit,
     onBackClick:()-> Unit,
     onFabClick:()-> Unit,
-    messVM: MessVM
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
 
-    val mess by messVM.selectedMess.collectAsState()
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()
         .background(CustomColors.OffWhite)
@@ -133,21 +131,21 @@ fun MessManagerListScreen(
                     .fillMaxSize()
             ) {
 
-                item{
-                    Text(
-                        text =mess!!.name,
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-                    )
-                }
-                    items(mess!!.managers) { manager ->
-                        ManagerCard(
-                            manager = manager,
-                            onCardClick = onCardClick,
-                            onDeleteConfirm = {
-                            }
-                        )
-                    }
+//                item{
+//                    Text(
+//                        text =mess!!.name,
+//                        fontSize = 14.sp,
+//                        fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+//                    )
+//                }
+//                    items(mess!!.managers) { manager ->
+//                        ManagerCard(
+//                            manager = manager,
+//                            onCardClick = onCardClick,
+//                            onDeleteConfirm = {
+//                            }
+//                        )
+//                    }
             }
         }
 

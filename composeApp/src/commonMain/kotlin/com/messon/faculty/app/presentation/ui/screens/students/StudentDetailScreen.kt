@@ -156,64 +156,77 @@ fun StudentDetailScreen(
         )
 
 
-        ProfilePicWithBadge(
-            imageUrl = student!!.profileImg,
-            isActive = student!!.isActive,
-            modifier = Modifier.constrainAs(profileHeader) {
-                top.linkTo(headerBg.bottom)
-                bottom.linkTo(headerBg.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        )
-
-        Text(
-            text = student!!.name,
-            fontSize = 14.sp,
-            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-            color = CustomColors.BlackberryCream,
-            modifier = Modifier.constrainAs(name) {
-                top.linkTo(profileHeader.bottom, 12.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        )
-
-        Text(
-            text = student!!.email,
-            fontSize = 10.sp,
-            fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-            color = CustomColors.BlackberryCream.copy(alpha = 0.6f),
-            modifier = Modifier.constrainAs(email) {
-                top.linkTo(name.bottom, 4.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        )
-
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .constrainAs(infoCards) {
-                    top.linkTo(email.bottom, 32.dp)
+        student?.let {student->
+            ProfilePicWithBadge(
+                imageUrl = student.profileImg,
+                isActive = student.isActive,
+                modifier = Modifier.constrainAs(profileHeader) {
+                    top.linkTo(headerBg.bottom)
+                    bottom.linkTo(headerBg.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                },
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            InfoCard(
-                label = "Student Id",
-                value = student!!.studentId,
-                icon = Icons.Default.Tag,
-                modifier = Modifier.weight(1f)
-            )
-            InfoCard(
-                label = "Batch",
-                value = "Class of ${student!!.batch}",
-                icon = Icons.Default.DateRange,
-                modifier = Modifier.weight(1f)
+                }
             )
         }
+
+
+        student?.let {student->
+            Text(
+                text = student.name,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+                color = CustomColors.BlackberryCream,
+                modifier = Modifier.constrainAs(name) {
+                    top.linkTo(profileHeader.bottom, 12.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+        }
+
+
+        student?.let {student->
+            Text(
+                text = student.email,
+                fontSize = 10.sp,
+                fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
+                color = CustomColors.BlackberryCream.copy(alpha = 0.6f),
+                modifier = Modifier.constrainAs(email) {
+                    top.linkTo(name.bottom, 4.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+        }
+
+
+
+        student?.let {student->
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .constrainAs(infoCards) {
+                        top.linkTo(email.bottom, 32.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                InfoCard(
+                    label = "Student Id",
+                    value = student.studentId,
+                    icon = Icons.Default.Tag,
+                    modifier = Modifier.weight(1f)
+                )
+                InfoCard(
+                    label = "Batch",
+                    value = "Class of ${student.batch}",
+                    icon = Icons.Default.DateRange,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
 
 
         Box(modifier = Modifier

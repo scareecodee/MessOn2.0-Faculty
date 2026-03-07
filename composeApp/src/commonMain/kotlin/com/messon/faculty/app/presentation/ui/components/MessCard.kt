@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.messon.faculty.app.domain.dataModel.Mess
+import com.messon.faculty.app.domain.dataModel.MessCreateRes
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.BlackberryCream
 import com.messon.faculty.app.theme.CustomColors.LightBlue
@@ -47,7 +48,7 @@ import org.jetbrains.compose.resources.Font
 @Composable
 fun MessCard(
     onCardClick:()->Unit,
-    mess: Mess
+    mess: MessCreateRes
 ) {
     Card(
         modifier = Modifier
@@ -124,20 +125,13 @@ fun MessCard(
                     Row(Modifier.padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.People, null, tint = BlackberryCream, modifier = Modifier.size(12.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text("${mess.managers.size}",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = BlackberryCream,
-                            fontFamily = FontFamily(Font((Res.font.publicsansmedium))),
-
-                        )
                     }
                 }
                 Spacer(Modifier.width(12.dp))
-                Box(Modifier.size(6.dp).background(if (mess.status) CustomColors.HoneyBronze else Color.LightGray, CircleShape))
+                Box(Modifier.size(6.dp).background(if (mess.isActive) CustomColors.HoneyBronze else Color.LightGray, CircleShape))
                 Spacer(Modifier.width(6.dp))
                 Text(
-                  text = if( mess.status) "Active" else "Inactive",
+                  text = if( mess.isActive) "Active" else "Inactive",
                     fontFamily = FontFamily(Font((Res.font.publicsansregular))),
                     fontSize = 12.sp,
                 )

@@ -29,12 +29,12 @@ data class FetchStudentsRes(
 
 
 data class AddStudentsManuallyRes(
-    val status:Boolean,
+    val isActive:Boolean,
     val conflicts:List<Conflict>
 )
 
 data class EditStudentRes(
-    val status:Boolean,
+    val isActive:Boolean,
     val conflict: Conflict
 )
 

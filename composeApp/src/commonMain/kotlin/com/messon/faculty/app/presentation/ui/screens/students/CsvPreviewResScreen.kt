@@ -68,7 +68,7 @@ fun CsvPreviewResScreen(
         when (saveChangesState) {
 
             is CsvSaveChangesState.Success -> {
-               if((saveChangesState as CsvSaveChangesState.Success).status) {
+               if((saveChangesState as CsvSaveChangesState.Success).isActive) {
                    showToast(
                        message ="Changes saved successfully"
                    )

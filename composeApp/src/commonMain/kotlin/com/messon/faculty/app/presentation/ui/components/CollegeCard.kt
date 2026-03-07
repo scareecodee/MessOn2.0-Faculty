@@ -16,12 +16,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.theme.CustomColors
+import messon_faculty.composeapp.generated.resources.Res
+import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import org.jetbrains.compose.resources.Font
 
 @Composable
 fun CollegeCard(
@@ -90,9 +94,8 @@ fun CollegeCard(
             Text(
                 text = collegeName,
                 color = CustomColors.BlackberryCream,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 20.sp,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                 modifier = Modifier.constrainAs(nameText) {
                     start.linkTo(iconBox.end, margin = 16.dp)
                     end.linkTo(arrowBtn.start, margin = 8.dp)

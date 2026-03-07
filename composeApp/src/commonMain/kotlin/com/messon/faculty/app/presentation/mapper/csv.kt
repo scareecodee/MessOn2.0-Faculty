@@ -10,7 +10,7 @@ import com.messon.faculty.app.domain.dataModel.ImportValidationError
 
 fun PreviewImportResponseDto.toDomain(): CsvPreviewRes {
     return CsvPreviewRes(
-        status = status,
+        isActive = isActive,
         importToken = importToken,
         newRows = newRows,
         updateRows = updateRows,
@@ -32,6 +32,6 @@ fun PreviewImportResponseDto.toDomain(): CsvPreviewRes {
 
 fun ConfirmImportResponseDto.toDomain(): ConfirmImportRes{
     return ConfirmImportRes(
-        status=status
+        isActive=isActive
     )
 }

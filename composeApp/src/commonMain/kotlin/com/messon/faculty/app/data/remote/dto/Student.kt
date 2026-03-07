@@ -72,8 +72,8 @@ data class FetchStudentsResDto(
 
 @Serializable
 data class AddStudentsManuallyResDto(
-    @SerialName("status")
-    val status: Boolean,
+    @SerialName("is_active")
+    val isActive: Boolean,
 
     @SerialName("conflicts")
     val conflicts:List<ConflictDto>
@@ -100,8 +100,8 @@ data class ToggleStatusResDto(
 
 @Serializable
 data class EditStudentResDto(
-    @SerialName("status")
-    val status: Boolean,
+    @SerialName("is_Active")
+    val isActive: Boolean,
 
     @SerialName("conflicts")
     val conflict: ConflictDto

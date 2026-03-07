@@ -17,7 +17,7 @@ import com.messon.faculty.app.domain.dataModel.ToggleStatusRes
 
 fun AddStudentsManuallyResDto.toDomain(): AddStudentsManuallyRes{
     return AddStudentsManuallyRes(
-        status=status,
+        isActive=isActive,
         conflicts =conflicts.map {
             Conflict(
                 email =it.email,
@@ -74,7 +74,7 @@ fun FetchStudentsResDto.toDomain(): FetchStudentsRes{
 
 fun EditStudentResDto.toDomain(): EditStudentRes {
     return EditStudentRes(
-        status = status,
+        isActive= isActive,
         conflict=conflict.toDomain()
     )
 }

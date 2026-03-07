@@ -2,7 +2,6 @@ package com.messon.faculty.app.presentation.ui.screens.mess
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,6 +25,8 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -44,9 +43,10 @@ import com.messon.faculty.app.domain.dataModel.Manager
 import com.messon.faculty.app.domain.dataModel.Mess
 import com.messon.faculty.app.presentation.ui.components.MessCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
-import com.messon.faculty.app.presentation.viewmodel.MessVM
+import com.messon.faculty.app.presentation.ui.uiState.FetchCollegesState
+import com.messon.faculty.app.presentation.ui.uiState.FetchMessState
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.theme.CustomColors.BlackberryCream
 import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
 import com.messon.faculty.app.theme.CustomColors.OffWhite
 import com.messon.faculty.app.theme.CustomColors.RichCerulean
@@ -59,40 +59,17 @@ fun MessListScreen(
     onCardClick:()-> Unit,
     onBackBtnClick:()-> Unit,
     onFabClick:()-> Unit,
-    messVM: MessVM
+    messListVM: MessListVM
 ) {
-    val dummyManagers = listOf(
-        Manager(
-            1, "Alex Rivera",
-            email = "",
-        ),
-        Manager(2, "Sarah Chen"),
-        Manager(3, "Marcus Thorne"),
-        Manager(4, "Priya Sharma"),
-        Manager(5, "Jordan Smith")
-    )
-
-    val messes = listOf(
-        Mess(
-            1,
-            "North Campus Mess",
-            listOf(dummyManagers[0], dummyManagers[1]),
-            true,
-        ),
-        Mess(2, "South Wing Dining", listOf(dummyManagers[2]), true),
-        Mess(3, "Executive Faculty Club", listOf(dummyManagers[3]), true),
-        Mess(4, "Night Canteen Hub", listOf(dummyManagers[4]), false),
-        Mess(5, "Annex Cafeteria", listOf(dummyManagers[1], dummyManagers[2]), true),
-        Mess(6, "Skyline Rooftop Mess", listOf(dummyManagers[0]), true),
-        Mess(7, "West Side Bistro", listOf(dummyManagers[3]), false),
-        Mess(8, "Global Flavors Hall", listOf(dummyManagers[4], dummyManagers[2]), true),
-        Mess(9, "The Garden Cafe", listOf(dummyManagers[1]), true),
-        Mess(10, "Central Pantry", listOf(dummyManagers[0], dummyManagers[3]), false)
-    )
 
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
+    val uiState by messListVM.uiState.collectAsState()
 
+    LaunchedEffect(Unit){
+        messListVM.fetchAllMess()
+    }
+    val messes = (uiState as? FetchMessState.Success)?.messes ?: emptyList()
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize().background(OffWhite)
@@ -178,9 +155,9 @@ fun MessListScreen(
             ) {
                 items(messes) { mess ->
                     MessCard(
-                        mess=mess,
+                        mess = mess,
                         onCardClick = {
-                            messVM.selectMess(mess = mess)
+                            messListVM.selectMess(mess = mess)
                             onCardClick()
                         }
                     )

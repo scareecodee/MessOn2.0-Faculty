@@ -13,6 +13,6 @@ sealed class CsvState {
 sealed class CsvSaveChangesState {
     object Idle : CsvSaveChangesState()
     object Loading :CsvSaveChangesState()
-    data class Success(val status: Boolean) : CsvSaveChangesState()
+    data class Success(val isActive: Boolean) : CsvSaveChangesState()
     data class Error(val message: String) : CsvSaveChangesState()
 }

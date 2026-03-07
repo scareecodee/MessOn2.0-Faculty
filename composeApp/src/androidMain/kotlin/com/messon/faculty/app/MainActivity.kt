@@ -12,18 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.messon.faculty.app.core.FilePickerManager
 import com.messon.faculty.app.core.auth.GoogleAuth
 import com.messon.faculty.app.domain.dataModel.PlatformFile
-import com.messon.faculty.app.domain.dataModel.Student
-import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
-import com.messon.faculty.app.presentation.viewmodel.AuthViewModel
-import com.messon.faculty.app.presentation.viewmodel.CollegeScreenVM
-import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
-import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
-import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
-import com.messon.faculty.app.presentation.viewmodel.MessVM
-import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
-import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {

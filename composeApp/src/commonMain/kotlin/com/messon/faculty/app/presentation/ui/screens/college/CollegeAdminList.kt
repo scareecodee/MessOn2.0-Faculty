@@ -24,7 +24,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.CollegeAdmin
 import com.messon.faculty.app.presentation.ui.components.CollegeAdminCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
-import com.messon.faculty.app.presentation.viewmodel.MessVM
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -35,7 +35,7 @@ import org.jetbrains.compose.resources.Font
 fun CollegeAdminScreen(
     onBackClick:()-> Unit,
     onFabClick:()-> Unit,
-    messVM: MessVM
+    messListVM: MessListVM
 ) {
     val dummyCollegeAdmins = listOf(
         CollegeAdmin(
@@ -79,7 +79,7 @@ fun CollegeAdminScreen(
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
 
-    val mess by messVM.selectedMess.collectAsState()
+    val mess by messListVM.selectedMess.collectAsState()
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()
         .background(CustomColors.OffWhite)
@@ -137,16 +137,18 @@ fun CollegeAdminScreen(
             }
         )
 
-        Text(
-            text = mess!!.name,
-            fontSize = 16.sp,
-            color = CustomColors.BlackberryCream,
-            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-            modifier = Modifier.constrainAs(messNameRef) {
-                top.linkTo(searchBarRef.bottom, 16.dp)
-                start.linkTo(searchBarRef.start, margin = 4.dp)
-            }
-        )
+        mess?.let { mess->
+            Text(
+                text = mess.name,
+                fontSize = 16.sp,
+                color = CustomColors.BlackberryCream,
+                fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                modifier = Modifier.constrainAs(messNameRef) {
+                    top.linkTo(searchBarRef.bottom, 16.dp)
+                    start.linkTo(searchBarRef.start, margin = 4.dp)
+                }
+            )
+        }
 
 
         PullToRefreshBox(

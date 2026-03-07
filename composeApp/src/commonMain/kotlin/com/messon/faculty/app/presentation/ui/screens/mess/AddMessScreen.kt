@@ -17,21 +17,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.messon.faculty.app.domain.dataModel.MessCreateReq
 import com.messon.faculty.app.presentation.ui.components.CustomInputField
 import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
+import com.messon.faculty.app.presentation.ui.uiState.AddMessState
+import com.messon.faculty.app.presentation.viewmodel.CreateMessVM
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
+import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
 @Composable
 fun AddMessScreen(
-    onBackBtnClick:()-> Unit
+    onBackBtnClick:()-> Unit,
+    createMessVM: CreateMessVM
 ) {
     var messName by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
-    var isActive by remember { mutableStateOf(true) }
+    var isActive by remember { mutableStateOf(false) }
+
+    val uiState by createMessVM.uiState.collectAsState()
+
+    LaunchedEffect(uiState){
+        if(uiState is AddMessState.Error){
+            showToast((uiState as AddMessState.Error).message)
+        }
+        if(uiState is AddMessState.Error){
+            showToast("Mess added successfully")
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -141,33 +158,66 @@ fun AddMessScreen(
                     )
                 }
 
-                item{
+                item {
                     Button(
-                        onClick = {   },
+                        onClick = {
+                            createMessVM.addMess(
+                                mess = MessCreateReq(
+                                    name = messName,
+                                    isActive = isActive,
+                                    location = location
+                                )
+                            )
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp)
                             .shadow(12.dp, RoundedCornerShape(24.dp)),
                         shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = CustomColors.RichCerulean)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = CustomColors.RichCerulean
+                        )
                     ) {
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
+
                             Text(
-                                "Add Mess",
+                                text = if (uiState is AddMessState.Loading) "Adding..." else "Add Mess",
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                                color = Color.White
                             )
+
                             Spacer(modifier = Modifier.width(12.dp))
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .background(Color.White.copy(alpha = 0.2f), CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+
+                            if (uiState is AddMessState.Loading) {
+
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = Color.White
+                                )
+
+                            } else {
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .background(
+                                            Color.White.copy(alpha = 0.2f),
+                                            CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = null,
+                                        tint = Color.White
+                                    )
+                                }
                             }
                         }
                     }
