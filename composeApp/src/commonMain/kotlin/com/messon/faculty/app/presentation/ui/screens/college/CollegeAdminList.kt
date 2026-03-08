@@ -35,7 +35,6 @@ import org.jetbrains.compose.resources.Font
 fun CollegeAdminScreen(
     onBackClick:()-> Unit,
     onFabClick:()-> Unit,
-    messListVM: MessListVM
 ) {
     val dummyCollegeAdmins = listOf(
         CollegeAdmin(
@@ -79,7 +78,6 @@ fun CollegeAdminScreen(
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
 
-    val mess by messListVM.selectedMess.collectAsState()
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()
         .background(CustomColors.OffWhite)
@@ -87,7 +85,7 @@ fun CollegeAdminScreen(
         val (
             statusBarBox, headingRef, listRef,
             backBtnRef, searchBarRef,
-            fabRef, messNameRef
+            fabRef
         ) = createRefs()
 
         Box(
@@ -137,19 +135,6 @@ fun CollegeAdminScreen(
             }
         )
 
-        mess?.let { mess->
-            Text(
-                text = mess.name,
-                fontSize = 16.sp,
-                color = CustomColors.BlackberryCream,
-                fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-                modifier = Modifier.constrainAs(messNameRef) {
-                    top.linkTo(searchBarRef.bottom, 16.dp)
-                    start.linkTo(searchBarRef.start, margin = 4.dp)
-                }
-            )
-        }
-
 
         PullToRefreshBox(
             state = pullToRefreshState,
@@ -167,7 +152,7 @@ fun CollegeAdminScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .constrainAs(listRef) {
-                    top.linkTo(messNameRef.bottom, 16.dp)
+                    top.linkTo(searchBarRef.bottom, 16.dp)
                     bottom.linkTo(parent.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
@@ -179,7 +164,7 @@ fun CollegeAdminScreen(
             Spacer(modifier= Modifier.height(6.dp))
             LazyColumn(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(7.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier
                     .fillMaxSize()
             ) {

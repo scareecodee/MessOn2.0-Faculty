@@ -34,7 +34,6 @@ fun DashboardScreen(
     onBackClick: ()->Unit={},
     onStudentsClick: () -> Unit = {},
     onManagersClick: () -> Unit = {},
-    onAdminsClick: () -> Unit = {}
 ) {
 
     val items = listOf(
@@ -49,12 +48,6 @@ fun DashboardScreen(
             "Add or remove mess students",
             Icons.Default.Groups,
             listOf(CustomColors.RichCerulean, CustomColors.LightGrayBlue)
-        ),
-        ManageItem(
-            "College Admin",
-            "Manage college administrators",
-            Icons.Default.AdminPanelSettings,
-            listOf(CustomColors.BlackberryCream, CustomColors.LightLavender)
         )
     )
 
@@ -135,8 +128,7 @@ fun DashboardScreen(
                         when (item.title) {
                             "Students" -> onStudentsClick()
                             "Mess Managers" -> onManagersClick()
-                            "College Admin" -> onAdminsClick()
-                        }
+                       }
                     }
                 ) {
 

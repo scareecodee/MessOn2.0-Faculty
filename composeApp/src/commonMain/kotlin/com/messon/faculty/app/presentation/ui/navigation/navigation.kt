@@ -147,9 +147,6 @@ fun AppNav(
                 onManagersClick = {
                     navController.navigate(Screen.MessManagerListScreen.route)
                 },
-                onAdminsClick = {
-                    navController.navigate(Screen.CollegeAdminScreen.route)
-                }
             )
         }
 
@@ -239,7 +236,6 @@ fun AppNav(
         ) {
 
             CollegeAdminScreen(
-                messListVM=messListVM,
                 onBackClick = { navController.popBackStack() },
                 onFabClick = {
                     navController.navigate(Screen.AddCollegeAdminScreen.route){
@@ -349,12 +345,16 @@ fun AppNav(
             exitTransition = exitRight
         ){
             HomeScreen(
-                onRatingCardClick = {},
                 onBillCardClick = {},
                 onNoticeCardClick = {},
                 onMessCardClick = {
                     navController.navigate(Screen.MessListScreen.route)
-                }
+                },
+                onAdminCardClick ={
+                    navController.navigate(Screen.CollegeAdminScreen.route)
+                },
+                onClosureCardClick ={},
+                onFeedbackCardClick = {}
             )
         }
 
