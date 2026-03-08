@@ -37,6 +37,7 @@ import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.presentation.ui.uiState.CsvSaveChangesState
 import com.messon.faculty.app.presentation.ui.uiState.CsvState
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
@@ -49,7 +50,8 @@ import org.jetbrains.compose.resources.Font
 fun CsvPreviewResScreen(
         onCancel: () -> Unit,
         onBackBtnClick:()-> Unit,
-        csvUploadViewModel: CsvUploadViewModel
+        csvUploadViewModel: CsvUploadViewModel,
+        messListVM: MessListVM
 ) {
         val saveChangesState by csvUploadViewModel.saveChangesState.collectAsState()
         val uploadState by csvUploadViewModel.state.collectAsState()
@@ -58,6 +60,7 @@ fun CsvPreviewResScreen(
         val data = (uploadState as? CsvState.Success)?.csvPreviewRes
         ?: return
 
+        val selectedMess by messListVM.selectedMess.collectAsState()
     LaunchedEffect(Unit){
         csvUploadViewModel.resetSaveChangesState()
 
@@ -241,7 +244,12 @@ fun CsvPreviewResScreen(
                         errorCount = data.errors.size,
                         onConfirm = {
                             data.importToken?.let {importToken->
-                                csvUploadViewModel.saveChanges(importToken)
+                                selectedMess?.id?.let { messId->
+                                    csvUploadViewModel.saveChanges(
+                                        importToken = importToken,
+                                        messId = messId
+                                    )
+                                }
                             }
                                     },
                         onCancel = onCancel

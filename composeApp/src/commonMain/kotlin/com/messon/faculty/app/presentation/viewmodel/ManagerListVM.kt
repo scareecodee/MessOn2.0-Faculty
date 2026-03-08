@@ -40,7 +40,9 @@ class ManagerListVM(
     private val _uiState = MutableStateFlow<FetchManagerState>(FetchManagerState.Idle)
     val uiState: StateFlow<FetchManagerState> = _uiState.asStateFlow()
 
-    fun fetchAllMess() {
+    fun fetchAllManagers(
+        messId: String
+    ) {
         _uiState.value = FetchManagerState.Loading
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -55,6 +57,7 @@ class ManagerListVM(
 
             managerRepository.fetchAllManagers(
                 token = token,
+                messId = messId
             )
                 .onSuccess {
                     _uiState.value = FetchManagerState.Success(it)

@@ -38,6 +38,8 @@ fun AppNav(
     val csvUploadViewModel: CsvUploadViewModel=koinViewModel()
     val studentDetailVM: StudentDetailScreenVM = koinViewModel()
     val editStudentVM: EditStudentVM=koinViewModel()
+    val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel()
+
 
 
     val authState by authViewModel.uiState.collectAsStateWithLifecycle()
@@ -106,7 +108,8 @@ fun AppNav(
                 studentScreenVM = studentScreenVM,
                 onStudentClick = {
                     navController.navigate(Screen.StudentDetailScreen.route)
-                }
+                },
+                messListVM = messListVM
             )
         }
 
@@ -182,15 +185,17 @@ fun AppNav(
             exitTransition = exitRight
         ) {
 
+            val managerListVM: ManagerListVM=koinViewModel()
             MessManagerListScreen(
-//                messListVM=messListVM,
                 onBackClick = { navController.popBackStack() },
                 onFabClick = {
                     navController.navigate(Screen.AddManagerScreen.route) {
                         launchSingleTop = true
                     }
                 },
-                onCardClick = {}
+                onCardClick = {},
+                managerListVM = managerListVM,
+                messListVM = messListVM,
             )
         }
 
@@ -216,10 +221,13 @@ fun AppNav(
             exitTransition = exitRight
         ) {
 
+            val addManagerVM: AddManagerVM=koinViewModel()
             AddManagerScreen(
                 onBackBtnClick = {
                     navController.popBackStack()
-                }
+                },
+                messListVM =messListVM,
+                addManagerVM = addManagerVM
             )
         }
 
@@ -271,8 +279,9 @@ fun AppNav(
                 CsvPreviewScreen(
                     filePickerViewModel = filePickerVM,
                     csvUploadViewModel = csvUploadViewModel,
-                    onBackClick = {  navController.popBackStack()},
+                    onBackClick = { navController.popBackStack() },
                     onUploadSuccess = { navController.navigate(Screen.CsvPreviewResScreen.route) },
+                    messListVM = messListVM,
                 )
 
         }
@@ -289,7 +298,8 @@ fun AppNav(
                 onBackBtnClick = {
                     navController.popBackStack()
                 },
-                csvUploadViewModel =csvUploadViewModel
+                csvUploadViewModel = csvUploadViewModel,
+                messListVM = messListVM
             )
         }
 
@@ -323,13 +333,13 @@ fun AppNav(
             enterTransition = enterLeft,
             exitTransition = exitRight
         ){
-            val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel()
             AddStudentManuallyScreen(
-                onBackBtnClick ={
+                onBackBtnClick = {
                     navController.popBackStack()
                 },
                 addStudentManuallyVM = addStudentManuallyVM,
-                navController = navController
+                navController = navController,
+                messListVM = messListVM
             )
         }
 
@@ -346,6 +356,37 @@ fun AppNav(
                     navController.navigate(Screen.MessListScreen.route)
                 }
             )
+        }
+
+        composable (
+            route=Screen.StudentDetailScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            StudentDetailScreen(
+                onViewBillClick = {},
+                onBackClick ={navController.popBackStack()} ,
+                onEditClick ={
+                  navController.navigate( Screen.EditStudentScreen.route)
+                },
+                studentDetailScreenVM =studentDetailVM
+            )
+        }
+
+        composable (
+            route=Screen.DataValidityScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+           DataValidityScreen(
+               onCancel = {
+                   navController.popBackStack()
+               },
+               onBackBtnClick = {
+                   navController.popBackStack()
+               },
+               addStudentManuallyVM =addStudentManuallyVM
+           )
         }
     }
 }

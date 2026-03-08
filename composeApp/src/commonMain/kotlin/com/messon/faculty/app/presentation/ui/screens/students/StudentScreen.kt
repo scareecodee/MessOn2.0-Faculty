@@ -54,8 +54,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.messon.faculty.app.presentation.ui.components.BottomSheetContent
 import com.messon.faculty.app.presentation.ui.components.SearchBar
-import com.messon.faculty.app.presentation.ui.components.StudentListItem
+import com.messon.faculty.app.presentation.ui.components.StudentCard
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import com.messon.faculty.app.theme.CustomColors
@@ -78,7 +79,8 @@ fun StudentScreen(
     navController: NavController,
     studentDetailScreenVM: StudentDetailScreenVM,
     onStudentClick:()-> Unit,
-    studentScreenVM: StudentScreenVM
+    studentScreenVM: StudentScreenVM,
+    messListVM: MessListVM
 
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -89,6 +91,9 @@ fun StudentScreen(
     var isSheetOpen by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
 
+    val selectedMess by messListVM.selectedMess.collectAsState()
+
+
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
         confirmValueChange = { newValue ->
@@ -97,7 +102,10 @@ fun StudentScreen(
     )
 
     LaunchedEffect(Unit) {
-        studentScreenVM.loadFirstPage()
+        selectedMess?.id?.let {
+            studentScreenVM.setMessId(it)
+            studentScreenVM.loadFirstPage()
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -262,14 +270,16 @@ fun StudentScreen(
 
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(7.dp),
                         state = lazyListState,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(fetchStudentsState.students) { student ->
-                            StudentListItem(
+                        items(fetchStudentsState.students,
+                            key = {it.studentId}
+                        ) { student ->
+                            StudentCard(
                                 modifier = Modifier.fillMaxWidth(),
-                                profileImageUrl = student.profileImg,
+                                imageUrl = student.profileImg,
                                 name = student.name,
                                 studentId = student.studentId,
                                 isActive = student.isActive,

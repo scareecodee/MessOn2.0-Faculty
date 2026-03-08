@@ -17,8 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.messon.faculty.app.domain.dataModel.Manager
+import com.messon.faculty.app.domain.dataModel.ManagerCreateReq
 import com.messon.faculty.app.presentation.ui.components.CustomInputField
 import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
+import com.messon.faculty.app.presentation.viewmodel.AddManagerVM
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -27,12 +31,15 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun AddManagerScreen(
-    onBackBtnClick:()-> Unit
+    onBackBtnClick:()-> Unit,
+    messListVM: MessListVM,
+    addManagerVM: AddManagerVM
 ) {
     var managerName by remember { mutableStateOf("") }
     var mail by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(true) }
 
+    val selectedMess by messListVM.selectedMess.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -143,7 +150,16 @@ fun AddManagerScreen(
 
                 item{
                     Button(
-                        onClick = {   },
+                        onClick = {
+                            addManagerVM.addManager(
+                                manager = ManagerCreateReq(
+                                    name = managerName,
+                                    mailId =mail,
+                                    isActive = isActive
+                                ),
+                                messId = selectedMess?.id ?:""
+                            )
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp)

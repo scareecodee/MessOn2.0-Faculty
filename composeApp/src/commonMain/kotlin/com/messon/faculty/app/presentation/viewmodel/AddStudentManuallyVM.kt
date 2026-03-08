@@ -3,11 +3,15 @@ package com.messon.faculty.app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.messon.faculty.app.core.auth.AuthSecureStorage
 import com.messon.faculty.app.domain.dataModel.StudentInput
 import com.messon.faculty.app.domain.repository.StudentRepository
 import com.messon.faculty.app.presentation.mapper.toDto
 import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
+import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import com.messon.faculty.app.utils.Result
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class AddStudentManuallyVM(
     private val repository: StudentRepository,
+    private val secureStorage: AuthSecureStorage
 
     ) : ViewModel() {
 
@@ -44,11 +49,23 @@ class AddStudentManuallyVM(
     }
 
     fun addStudentsToDb(
+        messId: String
     ){
-        viewModelScope.launch {
-
+        viewModelScope.launch (Dispatchers.IO){
             _state.value = AddStudentsManuallyState.Loading
-            when (val result = repository.addStudentsManually(students =students.value)) {
+            val token = secureStorage.getAccessToken()
+
+            if (token.isNullOrBlank()) {
+                _state.value =
+                    AddStudentsManuallyState.Error("Session expired. Please login again")
+                return@launch
+            }
+
+            when (val result = repository.addStudentsManually(
+                students = students.value,
+                token = token,
+                messId =messId
+            )) {
 
                 is Result.Success -> {
                     _state.value = AddStudentsManuallyState.Success(

@@ -13,10 +13,11 @@ class ManagerRepository(
 ) {
     suspend fun addManager(
         token: String,
+        messId: String,
         managerCreateReq: ManagerCreateReq
     ): Result<ManagerCreateRes, NetworkError> {
 
-        return when (val result =managerApi.createManager(token=token, managerCreateReqDto = managerCreateReq.toDto())) {
+        return when (val result =managerApi.createManager(token=token, managerCreateReqDto = managerCreateReq.toDto(), messId = messId)) {
 
             is Result.Success -> {
 
@@ -33,9 +34,10 @@ class ManagerRepository(
 
     suspend fun fetchAllManagers(
         token: String,
+        messId: String
     ): Result<List<ManagerCreateRes>, NetworkError> {
 
-        return when (val result = managerApi.fetchAllManagers(token=token)) {
+        return when (val result = managerApi.fetchAllManagers(token=token, messId = messId)) {
 
             is Result.Success -> {
 

@@ -2,6 +2,7 @@ package com.messon.faculty.app.presentation.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,14 +40,15 @@ import org.jetbrains.compose.resources.Font
 
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
+import com.messon.faculty.app.domain.dataModel.ManagerCreateRes
 import com.messon.faculty.app.utils.DialogVariant
 
 
 @Composable
 fun ManagerCard(
-    manager: Manager,
+    manager: ManagerCreateRes,
     onCardClick: () -> Unit,
-    onDeleteConfirm: (Manager) -> Unit
+    onDeleteConfirm: (ManagerCreateRes) -> Unit
 ) {
 
     var showDeleteIcon by remember { mutableStateOf(false) }
@@ -55,7 +57,7 @@ fun ManagerCard(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .height(130.dp)
             .clip(RoundedCornerShape(24.dp))
             .combinedClickable(
                 onClick = {
@@ -79,12 +81,11 @@ fun ManagerCard(
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-
             val (avatar, info, action) = createRefs()
 
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(52.dp)
                     .background(CustomColors.LightLavender, RoundedCornerShape(16.dp))
                     .constrainAs(avatar) {
                         start.linkTo(parent.start)
@@ -96,12 +97,13 @@ fun ManagerCard(
                 Text(
                     text = manager.name.take(1),
                     fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                    fontSize = 12.sp,
+                    fontSize = 17.sp,
                     color = CustomColors.BlackberryCream
                 )
             }
 
             Column(
+                verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier
                     .constrainAs(info) {
                         start.linkTo(avatar.end, margin = 10.dp)
@@ -133,7 +135,7 @@ fun ManagerCard(
                     Spacer(modifier = Modifier.width(6.dp))
 
                     Text(
-                        text = manager.email,
+                        text = manager.mailId,
                         fontSize = 11.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -141,6 +143,11 @@ fun ManagerCard(
                         fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                     )
                 }
+
+                Spacer(modifier = Modifier.width(4.dp))
+                StatusBadge(
+                    isActive = manager.isActive,
+                )
             }
 
             Icon(

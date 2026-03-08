@@ -27,6 +27,7 @@ import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.RichCerulean
 import com.messon.faculty.app.utils.CsvUploadMode
 import com.messon.faculty.app.presentation.ui.uiState.CsvState
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.parseCsv
 import kotlinx.coroutines.delay
@@ -40,6 +41,7 @@ import org.jetbrains.compose.resources.Font
 fun CsvPreviewScreen(
     filePickerViewModel: FilePickerViewModel,
     csvUploadViewModel: CsvUploadViewModel,
+    messListVM: MessListVM,
     onBackClick: () -> Unit,
     onUploadSuccess: () -> Unit,
     modifier: Modifier = Modifier,
@@ -58,6 +60,7 @@ fun CsvPreviewScreen(
     val tableData = remember(fileContent) {
         fileContent?.let { parseCsv(it) } ?: emptyList()
     }
+    val selectedMess by messListVM.selectedMess.collectAsState()
 
     LaunchedEffect(Unit){
         csvUploadViewModel.resetState()
@@ -209,13 +212,16 @@ fun CsvPreviewScreen(
 
         Button(
             onClick = {
-                selectedFile?.let {
+                selectedFile?.let { file->
                     val selectedIndex = selected.first()
                     val mode = chips[selectedIndex]
-                    csvUploadViewModel.uploadCsv(
-                        file = it,
-                        mode = mode
-                    )
+                    selectedMess?.id?.let{ messId->
+                        csvUploadViewModel.uploadCsv(
+                            file = file,
+                            mode = mode,
+                            messId = messId
+                        )
+                }
                 }
             },
             modifier = Modifier

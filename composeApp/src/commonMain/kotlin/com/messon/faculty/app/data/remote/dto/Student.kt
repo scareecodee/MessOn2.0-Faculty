@@ -72,7 +72,7 @@ data class FetchStudentsResDto(
 
 @Serializable
 data class AddStudentsManuallyResDto(
-    @SerialName("is_active")
+    @SerialName("status")
     val isActive: Boolean,
 
     @SerialName("conflicts")

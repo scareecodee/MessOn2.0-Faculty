@@ -17,7 +17,6 @@ class EditStudentVM(
 ) : ViewModel() {
 
     private val _updatedStudent=MutableStateFlow<Student?>(null)
-    val updatedStudent=_updatedStudent.asStateFlow()
 
     private val _updateState= MutableStateFlow<EditStudentState>(EditStudentState.Idle)
     val updateState=_updateState.asStateFlow()
@@ -29,7 +28,6 @@ class EditStudentVM(
     fun editStudent(
         uuid: String
     ) {
-
         if(_updatedStudent.value==null) return
         viewModelScope.launch {
 
@@ -38,7 +36,6 @@ class EditStudentVM(
             when (val result = studentRepository.editStudent(uuid=uuid,updatedStudent= _updatedStudent.value!!)) {
 
                 is com.messon.faculty.app.utils.Result.Success -> {
-
 
                     _updateState.value = EditStudentState.Success(
                        editStudentRes = result.data

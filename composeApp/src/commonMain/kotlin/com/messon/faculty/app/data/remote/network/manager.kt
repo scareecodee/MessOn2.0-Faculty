@@ -15,6 +15,7 @@ import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 
 private const val BASE_URL = "http://172.18.9.63:8000/"
@@ -26,6 +27,7 @@ class ManagerApi(
 
     suspend fun createManager(
         token:String,
+        messId: String,
         managerCreateReqDto: ManagerCreateReqDto
     ): Result<ManagerCreateResDto, NetworkError>
     {
@@ -33,7 +35,7 @@ class ManagerApi(
 
         val response=try {
             httpClient.post(
-                urlString = "${BASE_URL}admin/create/mess"
+                urlString = "${BASE_URL}mess/${messId}/admins"
             ) {
 
                 contentType(ContentType.Application.Json)
@@ -71,6 +73,7 @@ class ManagerApi(
 
 
     suspend fun fetchAllManagers(
+        messId: String,
         token:String,
     ): Result<List<ManagerCreateResDto>, NetworkError>
     {
@@ -78,7 +81,7 @@ class ManagerApi(
 
         val response=try {
             httpClient.get(
-                urlString = "${BASE_URL}admin/college/messes"
+                urlString = "${BASE_URL}fetch/mess-admins/${messId}"
             ) {
 
                 contentType(ContentType.Application.Json)

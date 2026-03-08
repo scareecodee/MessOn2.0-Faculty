@@ -2,10 +2,13 @@ package com.messon.faculty.app.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.messon.faculty.app.core.Paginator
+import com.messon.faculty.app.core.auth.AuthSecureStorage
 import com.messon.faculty.app.domain.dataModel.FetchStudentsRes
 import com.messon.faculty.app.domain.repository.StudentRepository
+import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import com.messon.faculty.app.presentation.ui.uiState.FetchStudentsState
 import com.messon.faculty.app.utils.NetworkError
+import com.messon.faculty.app.utils.Result
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,9 +21,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class StudentScreenVM(
-    private val studentRepository: StudentRepository
-) : ViewModel() {
+    private val studentRepository: StudentRepository,
+    private val secureStorage: AuthSecureStorage,
 
+    ) : ViewModel() {
+
+    private val _messId = MutableStateFlow<String?>(null)
     private val _search=MutableStateFlow<String?>(null)
     private val _batch=MutableStateFlow<Int?>(null)
 
@@ -40,6 +46,10 @@ class StudentScreenVM(
     fun setSearch(search: String?) {
         _search.value = search
     }
+
+    fun setMessId(id: String) {
+        _messId.value = id
+    }
     private val _state = MutableStateFlow(FetchStudentsState())
     val state = _state.asStateFlow()
 
@@ -55,7 +65,20 @@ class StudentScreenVM(
         },
 
         onRequest = { cursor ->
-            studentRepository.fetchStudents(cursor=cursor, search = _search.value)
+
+            val token = secureStorage.getAccessToken()
+            val messId = _messId.value
+
+            if (token.isNullOrBlank() || messId.isNullOrBlank()) {
+                return@Paginator Result.Error(NetworkError.UNAUTHORIZED)
+            }
+
+            studentRepository.fetchStudents(
+                cursor = cursor,
+                search = _search.value,
+                token = token,
+                messId = messId
+            )
         },
 
         getNextKey = { _, response ->

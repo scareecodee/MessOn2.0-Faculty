@@ -32,21 +32,21 @@ class CsvUpload(
     private val log = Logger.withTag("CSV_UPLOAD")
 
     suspend fun uploadCsv(
-//        token: String,
+        token: String,
         mode: String,
+        messId: String,
         file: PlatformFile
     ): Result<PreviewImportResponseDto, NetworkError> {
 
-//        val cleanToken = token.trim()
+        val cleanToken = token.trim()
 
         log.d(tag="mode", message ={mode} )
 
         return try {
 
             val response = httpClient.submitFormWithBinaryData(
-                url = "${BASE_URL}admin/students/import/preview",
+                url = "${BASE_URL}admin/import/students/preview/${messId}",
                 formData = formData {
-
 
                     append("mode", mode)
                     append(
@@ -62,9 +62,9 @@ class CsvUpload(
                     )
                 }
             )
-//            {
-//                header(HttpHeaders.Authorization, "Bearer $cleanToken")
-//            }
+            {
+                header(HttpHeaders.Authorization, "Bearer $cleanToken")
+            }
 
             log.d (tag = "ktor", message = {"STATUS CODE = ${response.status}"} )
 
@@ -100,17 +100,18 @@ class CsvUpload(
 
 
     suspend fun saveChanges(
-//        token: String,
-        importToken: String
+        token: String,
+        importToken: String,
+        messId: String
     ): Result<ConfirmImportResponseDto, NetworkError>
     {
         log.d(tag = "Ktor", message = {"in save changes block"})
 
        val response= try {
             httpClient.post(
-                urlString = "${BASE_URL}admin/students/import/confirm"
+                urlString = "${BASE_URL}admin/import/students/confirm/${messId}"
             ) {
-//                header(HttpHeaders.Authorization, "Bearer $token")
+                header(HttpHeaders.Authorization, "Bearer $token")
 
                 parameter("import_token", importToken)
 

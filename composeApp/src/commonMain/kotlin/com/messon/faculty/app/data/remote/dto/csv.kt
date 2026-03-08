@@ -7,9 +7,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PreviewImportResponseDto(
-
-    @SerialName("isActive")
-    val isActive: Boolean,
+    @SerialName("status")
+    val status: Boolean,
 
     @SerialName("import_token")
     val importToken: String? = null,
@@ -42,5 +41,5 @@ data class ImportValidationErrorDto(
 
 @Serializable
 data class ConfirmImportResponseDto(
-    val isActive: Boolean
+    val status: Boolean
 )

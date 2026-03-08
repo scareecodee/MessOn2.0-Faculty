@@ -25,7 +25,7 @@ class AddManagerVM(
     private val _uiState = MutableStateFlow<AddManagerState>(AddManagerState.Idle)
     val uiState: StateFlow<AddManagerState> = _uiState.asStateFlow()
 
-    fun addMess(manager: ManagerCreateReq) {
+    fun addManager(manager: ManagerCreateReq,messId: String) {
         _uiState.value = AddManagerState.Loading
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,7 +39,8 @@ class AddManagerVM(
 
             managerRepository.addManager(
                 token = token,
-                managerCreateReq = manager
+                managerCreateReq = manager,
+                messId = messId
             )
                 .onSuccess {
                     _uiState.value = AddManagerState.Success(it)

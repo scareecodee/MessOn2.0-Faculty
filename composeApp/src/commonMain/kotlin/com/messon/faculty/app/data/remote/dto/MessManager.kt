@@ -9,7 +9,7 @@ data class ManagerCreateReqDto(
     @SerialName("name")
     val name: String,
 
-    @SerialName("email_id")
+    @SerialName("email")
     val mailId: String,
 
 
@@ -27,7 +27,7 @@ data class ManagerCreateResDto(
     @SerialName("name")
     val name: String,
 
-    @SerialName("email_id")
+    @SerialName("email")
     val mailId: String,
 
     @SerialName("is_active")

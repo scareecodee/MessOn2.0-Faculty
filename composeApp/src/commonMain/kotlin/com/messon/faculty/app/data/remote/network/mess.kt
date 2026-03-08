@@ -16,6 +16,7 @@ import com.messon.faculty.app.utils.Result
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 
 private const val BASE_URL = "http://172.18.9.63:8000/"
 
@@ -74,7 +75,7 @@ class MessApi(
         token:String,
     ): Result<List<MessCreateResDto>, NetworkError>
     {
-        Log.d(tag = "Ktor", message = {"in login block"})
+        Log.d(tag = "Ktor", message = {"in mess list screen"})
 
         val response=try {
             httpClient.get(
@@ -95,7 +96,7 @@ class MessApi(
 
             return  Result.Error(NetworkError.UNKNOWN)
         }
-        Log.d(tag = "Ktor", message = {response.toString()})
+        Log.d(tag = "Ktor", message = {response.bodyAsText()})
         println("STATUS CODE = ${response.status}")
 
         return when(response.status.value){

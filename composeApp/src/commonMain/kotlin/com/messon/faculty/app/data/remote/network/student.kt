@@ -14,11 +14,13 @@ import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 
 
@@ -30,18 +32,18 @@ class StudentApi(
     private val log = Logger.withTag("CSV_UPLOAD")
 
     suspend fun addStudentsManually(
-//        token: String,
-        students:List<StudentInputDto>
+        token: String,
+        students:List<StudentInputDto>,
+        messId: String
     ): Result<AddStudentsManuallyResDto, NetworkError>
     {
         log.d(tag = "Ktor", message ={students.toString()})
 
         val response= try {
             httpClient.post(
-                urlString = "${BASE_URL}admin/students/import/manually"
+                urlString = "${BASE_URL}messes/${messId}/students/manually"
             ) {
-//                header(HttpHeaders.Authorization, "Bearer $token")
-
+                header(HttpHeaders.Authorization, "Bearer $token")
                 setBody(students)
                 contentType(ContentType.Application.Json)
             }
@@ -119,16 +121,17 @@ class StudentApi(
     suspend fun fetchStudents(
         cursor: String?,
         search: String?,
-//        token: String,
+        token: String,
+        messId: String
     ): Result<FetchStudentsResDto, NetworkError>
     {
         log.d(tag = "Ktor", message ={"cursor is $cursor"})
 
         val response= try {
             httpClient.get(
-                urlString = "${BASE_URL}admin/fetch-students"
+                urlString = "${BASE_URL}admin/fetch-students/${messId}"
             ) {
-//                header(HttpHeaders.Authorization, "Bearer $token")
+                header(HttpHeaders.Authorization, "Bearer $token")
                 contentType(ContentType.Application.Json)
                 parameter(
                     "cursor",cursor

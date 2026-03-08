@@ -28,6 +28,7 @@ import com.messon.faculty.app.presentation.ui.components.StudentInputCard
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.utils.Screen
 import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res
@@ -41,7 +42,8 @@ import org.jetbrains.compose.resources.Font
 fun AddStudentManuallyScreen(
     onBackBtnClick:()->Unit,
     addStudentManuallyVM: AddStudentManuallyVM,
-    navController: NavController
+    navController: NavController,
+    messListVM: MessListVM
 ) {
     DisposableEffect(Unit) {
         onDispose {
@@ -53,6 +55,7 @@ fun AddStudentManuallyScreen(
 
     val students by addStudentManuallyVM.students.collectAsState()
     var showForm by remember { mutableStateOf(false) }
+    val selectedMess by messListVM.selectedMess.collectAsState()
 
     LaunchedEffect(Unit){
         addStudentManuallyVM.clearUiState()
@@ -184,7 +187,11 @@ fun AddStudentManuallyScreen(
             ),
             onClick = {
                 if (students.isNotEmpty()) {
-                    addStudentManuallyVM.addStudentsToDb()
+                    selectedMess?.id?.let {messId->
+                        addStudentManuallyVM.addStudentsToDb(
+                            messId =messId
+                        )
+                    }
                 } else {
                     showToast("Add at least one student")
                 }

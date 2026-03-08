@@ -64,7 +64,7 @@ fun CollegeAdminCard(
             ) {
                 Text(
                     text = admin.name.take(1).uppercase(),
-                    fontSize = 16.sp,
+                    fontSize = 17.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                     color = CustomColors.BlackberryCream
                 )

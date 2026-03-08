@@ -15,12 +15,16 @@ class CsvRepository(
 ) {
 
     suspend fun uploadCsv(
-//        token: String,
+        token: String,
+        messId: String,
         mode: String,
         file: PlatformFile
     ): Result<CsvPreviewRes, NetworkError> {
 
-        return when (val result = csvUpload.uploadCsv(file=file,mode=mode)) {
+        return when (val result = csvUpload.uploadCsv(
+            file = file, mode = mode, messId = messId,
+            token = token,
+        )) {
 
             is Result.Success -> {
 
@@ -37,11 +41,16 @@ class CsvRepository(
     }
 
     suspend fun saveChanges(
-//        token: String,
+        token: String,
+        messId: String,
         importToken: String
     ): Result<ConfirmImportRes, NetworkError> {
 
-        return when (val result = csvUpload.saveChanges(importToken=importToken)) {
+        return when (val result = csvUpload.saveChanges(
+            importToken = importToken,
+            token = token,
+            messId = messId
+        )) {
 
             is Result.Success -> {
 

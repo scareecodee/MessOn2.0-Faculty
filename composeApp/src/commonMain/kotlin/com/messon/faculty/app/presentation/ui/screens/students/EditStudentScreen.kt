@@ -42,7 +42,6 @@ fun EditStudentScreen(
 
     val updateState by editStudentVM.updateState.collectAsState()
 
-    val updatedStudent by editStudentVM.updatedStudent.collectAsState(student)
 
     LaunchedEffect(updateState){
         if(updateState is EditStudentState.Error){
@@ -99,7 +98,7 @@ fun EditStudentScreen(
 
 
             Text(
-                text = "Students List",
+                text = "Update Student",
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                 modifier = Modifier.constrainAs(headingRef) {
@@ -121,8 +120,8 @@ fun EditStudentScreen(
             ) {
                 item{
                     ProfilePicWithBadge(
-                        imageUrl = student!!.profileImg,
-                        isActive = student!!.isActive,
+                        imageUrl = student.profileImg,
+                        isActive = student.isActive,
                     )
                 }
 
@@ -148,7 +147,7 @@ fun EditStudentScreen(
 
                 item {
                     CustomInputField(
-                        label = "Roll Number",
+                        label = "Student Id",
                         value = rollNumber,
                         onValueChange = { rollNumber = it },
                         icon = Icons.Default.Info
@@ -183,7 +182,7 @@ fun EditStudentScreen(
                             CustomInputField(
                                 label = "Branch",
                                 value = branch,
-                                onValueChange = { branch = it },
+                                onValueChange = { branch=it },
                                 icon = Icons.Default.Place
                             )
                         }
@@ -208,12 +207,24 @@ fun EditStudentScreen(
             }
 
             Button(
-                enabled = updateState!= EditStudentState.Loading,
+                enabled = updateState != EditStudentState.Loading,
                 onClick = {
-                    editStudentVM.editStudent(student!!.uuid)
+
+                    val updatedStudent = student.copy(
+                        name = name,
+                        studentId = rollNumber,
+                        email = email,
+                        branch = branch,
+                        batch = batch
+                    )
+
+                    editStudentVM.setUpdateStudent(updatedStudent)
+
+                    editStudentVM.editStudent(student.uuid)
                 },
                 modifier = Modifier
                     .constrainAs(buttonRef) {
+                        top.linkTo(contentRef.bottom, margin = 10.dp)
                         bottom.linkTo(parent.bottom, margin = 24.dp)
                         start.linkTo(parent.start, margin = 20.dp)
                         end.linkTo(parent.end, margin = 20.dp)

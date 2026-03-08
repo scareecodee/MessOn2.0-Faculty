@@ -18,8 +18,9 @@ class StudentRepository(
 ) {
 
     suspend fun addStudentsManually(
-//        token: String,
-        students:List<StudentInput>
+        token: String,
+        students:List<StudentInput>,
+        messId: String
     ): Result<AddStudentsManuallyRes, NetworkError> {
 
         val studentsDto = students.map {student->
@@ -32,7 +33,11 @@ class StudentRepository(
                 isActive = student.isActive,
             )
         }
-        return when (val result = studentApi.addStudentsManually(students = studentsDto)) {
+        return when (val result = studentApi.addStudentsManually(
+            students = studentsDto,
+            token = token,
+            messId = messId
+        )) {
 
             is Result.Success -> {
 
@@ -72,13 +77,18 @@ class StudentRepository(
 
 
     suspend fun fetchStudents(
-//        token: String,
+        token: String,
         search: String?,
         cursor: String?,
+        messId: String
 
     ): Result<FetchStudentsRes, NetworkError> {
 
-        return when (val result = studentApi.fetchStudents(cursor=cursor, search = search)) {
+        return when (val result = studentApi.fetchStudents(
+            cursor = cursor, search = search,
+            token = token,
+            messId = messId
+        )) {
 
             is Result.Success -> {
 

@@ -23,6 +23,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.ManagerCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
+import com.messon.faculty.app.presentation.ui.uiState.FetchManagerState
+import com.messon.faculty.app.presentation.ui.uiState.FetchMessState
+import com.messon.faculty.app.presentation.viewmodel.ManagerListVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
@@ -35,11 +38,27 @@ fun MessManagerListScreen(
     onCardClick:()->Unit,
     onBackClick:()-> Unit,
     onFabClick:()-> Unit,
+    managerListVM: ManagerListVM,
+    messListVM: MessListVM
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
 
+    val uiState by managerListVM.uiState.collectAsState()
+    val selectedMess by messListVM.selectedMess.collectAsState()
+
+    LaunchedEffect(Unit){
+       managerListVM.fetchAllManagers(messId = selectedMess?.id ?:"")
+    }
+
+//    LaunchedEffect(uiState){
+//        when(uiState){
+//
+//        }
+//    }
+
+    val managers= (uiState as? FetchManagerState.Success)?.managers?:emptyList()
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()
         .background(CustomColors.OffWhite)
@@ -131,21 +150,23 @@ fun MessManagerListScreen(
                     .fillMaxSize()
             ) {
 
-//                item{
-//                    Text(
-//                        text =mess!!.name,
-//                        fontSize = 14.sp,
-//                        fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-//                    )
-//                }
-//                    items(mess!!.managers) { manager ->
-//                        ManagerCard(
-//                            manager = manager,
-//                            onCardClick = onCardClick,
-//                            onDeleteConfirm = {
-//                            }
-//                        )
-//                    }
+                selectedMess?.let { selectedMess->
+                    item{
+                        Text(
+                            text =selectedMess.name,
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                        )
+                    }
+                }
+                    items(managers) { manager ->
+                        ManagerCard(
+                            manager = manager,
+                            onCardClick = onCardClick,
+                            onDeleteConfirm = {
+                            }
+                        )
+                    }
             }
         }
 

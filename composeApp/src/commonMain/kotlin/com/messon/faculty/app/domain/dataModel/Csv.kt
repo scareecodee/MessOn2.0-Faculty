@@ -3,7 +3,7 @@ package com.messon.faculty.app.domain.dataModel
 
 data class CsvPreviewRes(
 
-    val isActive: Boolean,
+    val status: Boolean,
 
     val importToken: String?,
 
@@ -25,5 +25,5 @@ data class ImportValidationError(
 
 
 data class ConfirmImportRes(
-    val isActive: Boolean
+    val status: Boolean
 )
