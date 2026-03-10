@@ -4,7 +4,6 @@ package com.messon.faculty.app.data.remote.network
 import co.touchlab.kermit.Logger
 import com.messon.faculty.app.data.remote.dto.ConfirmImportResponseDto
 import com.messon.faculty.app.data.remote.dto.PreviewImportResponseDto
-import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.utils.NetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -16,9 +15,11 @@ import io.ktor.http.HttpHeaders
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
-import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
@@ -39,8 +40,10 @@ class CsvUpload(
     ): Result<PreviewImportResponseDto, NetworkError> {
 
         val cleanToken = token.trim()
+        val fileBytes = file.readBytes()
 
-        log.d(tag="mode", message ={mode} )
+
+        log.d(tag="ktor", message ={"uploading csv"} )
 
         return try {
 
@@ -51,7 +54,7 @@ class CsvUpload(
                     append("mode", mode)
                     append(
                         key = "file",
-                        value = file.bytes,
+                        value = fileBytes,
                         headers = Headers.build {
                             append(
                                 HttpHeaders.ContentDisposition,

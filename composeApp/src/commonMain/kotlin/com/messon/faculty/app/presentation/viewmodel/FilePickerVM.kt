@@ -1,8 +1,9 @@
 package com.messon.faculty.app.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.messon.faculty.app.core.FilePicker
 import com.messon.faculty.app.utils.FilePickerState
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.readString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,9 +17,6 @@ import kotlinx.coroutines.withContext
 
 
 class FilePickerViewModel : ViewModel() {
-
-    private val filePicker = FilePicker()
-
     private val _state = MutableStateFlow<FilePickerState>(FilePickerState.Idle)
     val state: StateFlow<FilePickerState> = _state.asStateFlow()
 
@@ -29,16 +27,15 @@ class FilePickerViewModel : ViewModel() {
         object NavigateToCsvPreview : NavigationEvent()
     }
 
-    fun pickCsvFile() {
+    fun onFilePick(file: PlatformFile?) {
         viewModelScope.launch {
             _state.value = FilePickerState.Loading
 
             try {
-                val file = filePicker.pickCsvFile()
 
                 if (file != null) {
                     val content = withContext(Dispatchers.IO) {
-                        file.bytes.decodeToString()
+                        file.readString()
                     }
 
                     _state.value = FilePickerState.Success(

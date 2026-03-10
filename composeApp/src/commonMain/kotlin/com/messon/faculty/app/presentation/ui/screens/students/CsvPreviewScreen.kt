@@ -30,6 +30,7 @@ import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.parseCsv
+import io.github.vinceglb.filekit.name
 import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -212,16 +213,18 @@ fun CsvPreviewScreen(
 
         Button(
             onClick = {
-                selectedFile?.let { file->
-                    val selectedIndex = selected.first()
+                selectedFile?.let { file ->
+
+                    val selectedIndex = selected.firstOrNull() ?: return@Button
                     val mode = chips[selectedIndex]
-                    selectedMess?.id?.let{ messId->
+
+                    selectedMess?.id?.let { messId ->
                         csvUploadViewModel.uploadCsv(
                             file = file,
                             mode = mode,
                             messId = messId
                         )
-                }
+                    }
                 }
             },
             modifier = Modifier

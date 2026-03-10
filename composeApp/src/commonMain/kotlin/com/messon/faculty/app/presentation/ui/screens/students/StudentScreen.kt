@@ -62,6 +62,10 @@ import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.Screen
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.name
 import kotlinx.coroutines.flow.distinctUntilChanged
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -69,7 +73,6 @@ import messon_faculty.composeapp.generated.resources.publicsansregular
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentScreen(
@@ -124,9 +127,21 @@ fun StudentScreen(
         }
     }
 
-
-
+    var selectedFile by remember { mutableStateOf<PlatformFile?>(null) }
     val lazyListState = rememberLazyListState()
+
+    val filePickerLauncher = rememberFilePickerLauncher(
+        type = FileKitType.File(listOf("csv"))
+    ) { file ->
+        file?.let {
+            selectedFile = it
+            showToast(it.name)
+
+            filePickerViewModel.onFilePick(it)
+        }
+    }
+
+
 
     LaunchedEffect(lazyListState, fetchStudentsState) {
         snapshotFlow { lazyListState.layoutInfo }
@@ -346,7 +361,7 @@ fun StudentScreen(
             BottomSheetContent(
                 modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),
                 onUploadCsvClick = {
-                    filePickerViewModel.pickCsvFile()
+                    filePickerLauncher.launch()
                     isSheetOpen = false
                 },
                 onAddManuallyClick = {

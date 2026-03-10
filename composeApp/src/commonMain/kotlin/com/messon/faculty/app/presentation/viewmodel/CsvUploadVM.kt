@@ -3,11 +3,11 @@ package com.messon.faculty.app.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.messon.faculty.app.core.auth.AuthSecureStorage
-import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.domain.repository.CsvRepository
 import com.messon.faculty.app.presentation.ui.uiState.CsvSaveChangesState
 import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import com.messon.faculty.app.utils.Result
+import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow

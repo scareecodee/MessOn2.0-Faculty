@@ -4,5 +4,10 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	    <key>NSDocumentsFolderUsageDescription</key>
+        <string>This app needs access to import CSV files.</string>
+
+        <key>NSDownloadsFolderUsageDescription</key>
+        <string>This app needs access to import CSV files.</string>
 </dict>
 </plist>

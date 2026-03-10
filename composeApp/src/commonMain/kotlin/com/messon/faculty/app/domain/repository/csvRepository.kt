@@ -1,14 +1,11 @@
 package com.messon.faculty.app.domain.repository
-
-
-import com.messon.faculty.app.data.remote.dto.ConfirmImportResponseDto
 import com.messon.faculty.app.data.remote.network.CsvUpload
 import com.messon.faculty.app.domain.dataModel.ConfirmImportRes
 import com.messon.faculty.app.domain.dataModel.CsvPreviewRes
-import com.messon.faculty.app.domain.dataModel.PlatformFile
 import com.messon.faculty.app.presentation.mapper.toDomain
 import com.messon.faculty.app.utils.NetworkError
 import com.messon.faculty.app.utils.Result
+import io.github.vinceglb.filekit.PlatformFile
 
 class CsvRepository(
     private val csvUpload: CsvUpload

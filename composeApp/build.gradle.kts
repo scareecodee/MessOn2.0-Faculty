@@ -93,6 +93,8 @@ kotlin {
             implementation("org.jetbrains.compose.material3:material3:1.9.0")
             implementation(libs.jetbrains.navigation3.ui)
 
+            implementation(libs.filekit.dialogs.compose)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

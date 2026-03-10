@@ -1,6 +1,5 @@
 package com.messon.faculty.app.utils
-
-import com.messon.faculty.app.domain.dataModel.PlatformFile
+import io.github.vinceglb.filekit.PlatformFile
 
 sealed class FilePickerState {
 

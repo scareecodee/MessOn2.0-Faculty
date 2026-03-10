@@ -54,7 +54,7 @@ fun AppNav(
 
             is AuthState.Success -> {
                 hasNavigated = true
-                navController.navigate(Screen.HomeScreen.route) {
+                navController.navigate(Screen.StudentScreen.route) {
                     popUpTo(0) { inclusive = true }
                     launchSingleTop = true
                 }
