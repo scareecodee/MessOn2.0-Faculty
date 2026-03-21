@@ -3,7 +3,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +47,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.BrandingCard
 import com.messon.faculty.app.presentation.ui.components.GridCard
 import com.messon.faculty.app.presentation.ui.components.PrimaryHeroCard
+import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
 import com.messon.faculty.app.theme.CustomColors.BlackberryCream
 import com.messon.faculty.app.theme.CustomColors.Cream
 import com.messon.faculty.app.theme.CustomColors.HoneyBronze
@@ -70,7 +70,8 @@ fun HomeScreen(
     onClosureCardClick:()->Unit,
     onNoticeCardClick:()->Unit,
     onFeedbackCardClick:()->Unit,
-    onBillCardClick:()-> Unit
+    onBillCardClick:()-> Unit,
+    homeScreenVM: HomeScreenVM
     ) {
     ConstraintLayout(
         modifier = Modifier
@@ -143,7 +144,10 @@ fun HomeScreen(
                     cardColor = Mint,
                     primaryColor = Teal,
                     modifier = Modifier.weight(1f),
-                    onClick = onMessCardClick
+                    onClick = {
+                        homeScreenVM.updateIsMessClosure(false)
+                        onMessCardClick()
+                    }
                 )
 
                 GridCard(
@@ -153,7 +157,11 @@ fun HomeScreen(
                     cardColor = LightLavender,
                     primaryColor = BlackberryCream,
                     modifier = Modifier.weight(1f),
-                    onClick = onClosureCardClick
+                    onClick = {
+                        homeScreenVM.updateIsMessClosure(true)
+                        onClosureCardClick()
+                    }
+
                 )
             }
 

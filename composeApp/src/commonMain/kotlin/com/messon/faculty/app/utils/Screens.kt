@@ -4,7 +4,6 @@ package com.messon.faculty.app.utils
 
 sealed class Screen(val route: String) {
 
-
     object HomeScreen: Screen("home_screen")
     object LoginScreen: Screen("login_screen")
 
@@ -13,11 +12,11 @@ sealed class Screen(val route: String) {
     object StudentScreen: Screen(route ="student_screen")
     object AddStudentManuallyScreen: Screen(route ="add_student_manually_screen")
 
-    object StudentDetailScreen: Screen(route ="student_detail_screen")  // ---> register in AppNav
+    object StudentDetailScreen: Screen(route ="student_detail_screen")
 
     object CsvPreviewResScreen: Screen(route ="csv_preview_res_screen")
 
-    object DataValidityScreen: Screen(route = "data_validity_screen") // ---> register in AppNav
+    object DataValidityScreen: Screen(route = "data_validity_screen")
 
     object EditStudentScreen: Screen(route = "edit_student_screen")
 
@@ -37,7 +36,10 @@ sealed class Screen(val route: String) {
     object CollegeListScreen: Screen(route = "college_list_screen")
 
     object AddCollegeAdminScreen: Screen(route = "add_college_admin_screen")
+    object MessClosureScreen: Screen(route = "mess_closure_screen")
+    object MessSettingScreen: Screen(route = "mess_setting_screen")
 
+    object HolidaysListScreen: Screen(route = "holidays_list_screen")
 
 }
 

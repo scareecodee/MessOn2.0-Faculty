@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.navigation.compose.rememberNavController
 import com.messon.faculty.app.core.auth.GoogleAuth
 import com.messon.faculty.app.presentation.ui.navigation.AppNav
+import com.messon.faculty.app.presentation.ui.screens.mess.MessClosureScreen
 
 @Composable
 fun App(
@@ -15,6 +16,9 @@ googleAuth: GoogleAuth
             navController = navController,
             googleAuth = googleAuth,
         )
-
+//        MessClosureScreen(
+//            onCardClick = {},
+//            onBackBtnClick = {}
+//        )
 }
 }

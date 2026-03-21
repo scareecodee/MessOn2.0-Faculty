@@ -39,8 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavController
 import com.messon.faculty.app.domain.dataModel.Manager
 import com.messon.faculty.app.domain.dataModel.Mess
+import com.messon.faculty.app.domain.dataModel.MessCreateRes
 import com.messon.faculty.app.presentation.ui.components.MessCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.uiState.FetchCollegesState
@@ -50,13 +52,16 @@ import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
 import com.messon.faculty.app.theme.CustomColors.OffWhite
 import com.messon.faculty.app.theme.CustomColors.RichCerulean
+import com.messon.faculty.app.utils.Screen
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
+import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
 @Composable
 fun MessListScreen(
-    onCardClick:()-> Unit,
+    isMessClosurePart: Boolean=false,
+    navController: NavController,
     onBackBtnClick:()-> Unit,
     onFabClick:()-> Unit,
     messListVM: MessListVM
@@ -65,11 +70,25 @@ fun MessListScreen(
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
     val uiState by messListVM.uiState.collectAsState()
+    var messes by remember { mutableStateOf(emptyList<MessCreateRes>()) }
 
     LaunchedEffect(Unit){
         messListVM.fetchAllMess()
     }
-    val messes = (uiState as? FetchMessState.Success)?.messes ?: emptyList()
+
+    LaunchedEffect(uiState){
+        when(uiState){
+            is FetchMessState.Error -> {
+                showToast((uiState as FetchMessState.Error).message)
+                messListVM.clearError()
+            }
+            is FetchMessState.Success -> {
+                messes=(uiState as FetchMessState.Success).messes
+            }
+
+            else -> {}
+        }
+    }
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize().background(OffWhite)
@@ -158,7 +177,13 @@ fun MessListScreen(
                         mess = mess,
                         onCardClick = {
                             messListVM.selectMess(mess = mess)
-                            onCardClick()
+                            if(isMessClosurePart){
+                                navController.navigate(Screen.HolidaysListScreen.route)
+                            }else{
+                                navController.navigate(Screen.DashboardScreen.route) {
+                                    launchSingleTop = true
+                                }
+                            }
                         }
                     )
                 }
@@ -166,26 +191,27 @@ fun MessListScreen(
         }
 
 
-        FloatingActionButton(
-            shape = CircleShape,
-            onClick = onFabClick,
-            containerColor = RichCerulean,
-            contentColor = Color.White,
-            elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = 8.dp,
-                pressedElevation = 12.dp
-            ),
-            modifier = Modifier.constrainAs(fabRef) {
-                end.linkTo(parent.end, margin = 20.dp)
-                bottom.linkTo(parent.bottom, margin = 20.dp)
+        if(!isMessClosurePart){
+            FloatingActionButton(
+                shape = CircleShape,
+                onClick = onFabClick,
+                containerColor = RichCerulean,
+                contentColor = Color.White,
+                elevation = FloatingActionButtonDefaults.elevation(
+                    defaultElevation = 8.dp,
+                    pressedElevation = 12.dp
+                ),
+                modifier = Modifier.constrainAs(fabRef) {
+                    end.linkTo(parent.end, margin = 20.dp)
+                    bottom.linkTo(parent.bottom, margin = 20.dp)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "send notification",
+                    modifier = Modifier.size(30.dp)
+                )
             }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "send notification",
-                modifier = Modifier.size(30.dp)
-            )
         }
-
     }
 }

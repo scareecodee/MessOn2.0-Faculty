@@ -47,8 +47,6 @@ import multiplatform.network.cmptoast.ToastPadding
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.parameter.parametersOf
-import org.koin.mp.KoinPlatform.getKoin
 
 
 @Composable

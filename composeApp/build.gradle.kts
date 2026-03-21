@@ -94,6 +94,8 @@ kotlin {
             implementation(libs.jetbrains.navigation3.ui)
 
             implementation(libs.filekit.dialogs.compose)
+            implementation("network.chaintech:kmp-date-time-picker:1.1.1")
+
 
         }
         commonTest.dependencies {

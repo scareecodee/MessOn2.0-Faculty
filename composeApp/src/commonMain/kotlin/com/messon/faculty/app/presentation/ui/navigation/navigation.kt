@@ -1,5 +1,4 @@
 package com.messon.faculty.app.presentation.ui.navigation
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,7 +38,9 @@ fun AppNav(
     val studentDetailVM: StudentDetailScreenVM = koinViewModel()
     val editStudentVM: EditStudentVM=koinViewModel()
     val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel()
+    val homeScreenVM: HomeScreenVM=koinViewModel()
 
+    val isMessClosurePart by homeScreenVM.isMessClosurePart.collectAsState()
 
 
     val authState by authViewModel.uiState.collectAsStateWithLifecycle()
@@ -54,7 +55,7 @@ fun AppNav(
 
             is AuthState.Success -> {
                 hasNavigated = true
-                navController.navigate(Screen.StudentScreen.route) {
+                navController.navigate(Screen.HomeScreen.route) {
                     popUpTo(0) { inclusive = true }
                     launchSingleTop = true
                 }
@@ -117,7 +118,8 @@ fun AppNav(
         composable(
             route = Screen.LoginScreen.route,
             enterTransition = enterLeft,
-            exitTransition = exitRight
+            exitTransition = exitRight,
+
         ) {
 
             SignInRoute(
@@ -167,11 +169,8 @@ fun AppNav(
                         launchSingleTop = true
                     }
                 },
-                onCardClick = {
-                    navController.navigate(Screen.DashboardScreen.route) {
-                        launchSingleTop = true
-                    }
-                }
+                isMessClosurePart =isMessClosurePart,
+                navController = navController,
             )
         }
 
@@ -350,11 +349,14 @@ fun AppNav(
                 onMessCardClick = {
                     navController.navigate(Screen.MessListScreen.route)
                 },
-                onAdminCardClick ={
+                onAdminCardClick = {
                     navController.navigate(Screen.CollegeAdminScreen.route)
                 },
-                onClosureCardClick ={},
-                onFeedbackCardClick = {}
+                onClosureCardClick = {
+                    navController.navigate(Screen.MessListScreen.route)
+                },
+                onFeedbackCardClick = {},
+                homeScreenVM = homeScreenVM
             )
         }
 
@@ -386,6 +388,40 @@ fun AppNav(
                    navController.popBackStack()
                },
                addStudentManuallyVM =addStudentManuallyVM
+           )
+        }
+
+        composable (
+            route=Screen.MessClosureScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            MessClosureScreen(
+                onCardClick ={navController.navigate(Screen.MessSettingScreen.route)},
+                onBackBtnClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable (
+            route=Screen.MessSettingScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            MessSettingScreen(
+                onBackClick = {navController.popBackStack()}
+            )
+        }
+
+        composable (
+            route=Screen.HolidaysListScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+           MessHolidaysScreen(
+               onBackBtnClick = {navController.popBackStack()},
+               onAddIconClick = {}
            )
         }
     }

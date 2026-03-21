@@ -21,6 +21,7 @@ import com.messon.faculty.app.presentation.viewmodel.CreateMessVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
+import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.ManagerListVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
@@ -130,6 +131,10 @@ val sharedModule = module {
             managerRepository = get(),
             secureStorage = get()
         )
+    }
+
+    viewModel {
+        HomeScreenVM()
     }
 
 }

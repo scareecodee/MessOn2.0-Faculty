@@ -27,3 +27,11 @@ data class MessCreateRes(
     val isActive: Boolean,
     val location: String
 )
+
+
+data class MessUnit(
+    val id: Int,
+    val name: String,
+    val status: String,
+    val location: String
+)
