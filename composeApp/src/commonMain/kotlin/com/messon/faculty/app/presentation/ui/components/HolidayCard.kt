@@ -27,12 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.presentation.ui.screens.mess.Holiday
+import com.messon.faculty.app.domain.dataModel.Holiday
+import com.messon.faculty.app.theme.CustomColors
+import com.messon.faculty.app.utils.formatDate
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsansregular
@@ -57,15 +58,15 @@ fun HolidayCard(holiday: Holiday) {
             ) {
                 Box(
                     modifier = Modifier
-                        .border(1.dp, holiday.color, RoundedCornerShape(50))
-                        .background(holiday.color.copy(alpha = 0.1f), RoundedCornerShape(50))
+                        .border(1.dp, CustomColors.RichCerulean, RoundedCornerShape(50))
+                        .background(CustomColors.RichCerulean.copy(alpha = 0.1f), RoundedCornerShape(50))
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = holiday.type.uppercase(),
+                        text ="Holiday",
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                        color = holiday.color,
+                        color = Color.Black,
                         letterSpacing = 1.sp
                     )
                 }
@@ -90,7 +91,7 @@ fun HolidayCard(holiday: Holiday) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = holiday.title,
+                text = holiday.reason,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                 color = Color.Black
@@ -103,9 +104,9 @@ fun HolidayCard(holiday: Holiday) {
 
                 DateBox(
                     label = "Start",
-                    date = holiday.start,
-                    color = holiday.color,
-                    bgColor = holiday.bgColor,
+                    date = formatDate(holiday.startDate),
+                    color = CustomColors.HoneyBronze,
+                    bgColor = CustomColors.HoneyBronze.copy(0.1f),
                     modifier = Modifier.constrainAs(startBox) {
                         start.linkTo(parent.start)
                         end.linkTo(icon.start, margin = 8.dp)
@@ -127,16 +128,16 @@ fun HolidayCard(holiday: Holiday) {
                     Icon(
                         Icons.Default.EventBusy,
                         contentDescription = null,
-                        tint = holiday.color,
+                        tint = CustomColors.RichCerulean,
                         modifier = Modifier.size(16.dp)
                     )
                 }
 
                 DateBox(
                     label = "End",
-                    date = holiday.end,
-                    color = holiday.color,
-                    bgColor = holiday.bgColor,
+                    date = formatDate(holiday.endDate),
+                    color = CustomColors.HoneyBronze,
+                    bgColor = CustomColors.HoneyBronze.copy(0.1f),
                     modifier = Modifier.constrainAs(endBox) {
                         start.linkTo(icon.end, margin = 8.dp)
                         end.linkTo(parent.end)

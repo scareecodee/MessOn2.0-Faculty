@@ -13,7 +13,7 @@ data class MessCreateReqDto(
     val location: String,
 
     @SerialName("is_active")
-    val isActive: Boolean,
+    val isActive: Boolean
 
 )
 
@@ -30,6 +30,35 @@ data class MessCreateResDto(
     val location: String,
 
     @SerialName("is_active")
-    val isActive: Boolean,
+    val isActive: Boolean
 
-    )
+)
+
+
+@Serializable
+data class HolidayDto(
+    @SerialName("start_date")
+    val startDate: String,
+
+    @SerialName("end_date")
+    val endDate: String,
+
+    @SerialName("reason")
+    val reason: String
+
+)
+
+@Serializable
+data class HolidayResDto(
+    @SerialName("closure_id")
+    val holidayId: String,
+
+    @SerialName("start_date")
+    val startDate: String,
+
+    @SerialName("end_date")
+    val endDate: String,
+
+    @SerialName("reason")
+    val reason: String
+)

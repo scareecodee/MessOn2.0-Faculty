@@ -1,6 +1,7 @@
 package com.messon.faculty.app.domain.dataModel
 
 
+
 data class Student(
     val name:String,
     val studentId: String,
@@ -29,14 +30,16 @@ data class FetchStudentsRes(
 
 
 data class AddStudentsManuallyRes(
-    val isActive:Boolean,
+    val status:Boolean,
     val conflicts:List<Conflict>
 )
 
 data class EditStudentRes(
-    val isActive:Boolean,
-    val conflict: Conflict
+    val status: Boolean,
+    val updatedStudent: Student?,
+    val conflicts: Conflict?
 )
+
 
 data class Conflict(
     val email: String,

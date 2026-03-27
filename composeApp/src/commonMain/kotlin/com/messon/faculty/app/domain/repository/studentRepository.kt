@@ -55,11 +55,11 @@ class StudentRepository(
 
 
     suspend fun toggleStatus(
-//        token: String,
+        token: String,
         uuid: String
     ): Result<ToggleStatusRes, NetworkError> {
 
-        return when (val result = studentApi.toggleStudentStatus(uuid=uuid)) {
+        return when (val result = studentApi.toggleStudentStatus(token=token,uuid=uuid)) {
 
             is Result.Success -> {
 
@@ -105,7 +105,7 @@ class StudentRepository(
     }
 
     suspend fun editStudent(
-//        token: String,
+        token: String,
         uuid: String,
         updatedStudent:Student
 
@@ -114,7 +114,10 @@ class StudentRepository(
 
         val updatedStudentDto=updatedStudent.toDto()
 
-        return when (val result = studentApi.editStudent(updatedStudent=updatedStudentDto,uuid=uuid)) {
+        return when (val result = studentApi.editStudent(
+            updatedStudent = updatedStudentDto, uuid = uuid,
+            token = token
+        )) {
 
             is Result.Success -> {
 

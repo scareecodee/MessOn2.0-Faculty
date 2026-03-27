@@ -40,6 +40,8 @@ sealed class Screen(val route: String) {
     object MessSettingScreen: Screen(route = "mess_setting_screen")
 
     object HolidaysListScreen: Screen(route = "holidays_list_screen")
+    object AddHolidayScreen: Screen(route = "add_holiday_screen")
+
 
 }
 

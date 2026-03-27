@@ -10,6 +10,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -17,35 +23,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.messon.faculty.app.domain.dataModel.Holiday
+import com.messon.faculty.app.domain.dataModel.HolidayRes
 import com.messon.faculty.app.presentation.ui.components.HolidayCard
+import com.messon.faculty.app.presentation.ui.uiState.FetchHolidaysState
+import com.messon.faculty.app.presentation.viewmodel.MessClosureVM
+import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
+import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
-data class Holiday(
-    val id: Int,
-    val title: String,
-    val start: String,
-    val end: String,
-    val type: String,
-    val color: Color,
-    val bgColor: Color
-)
+
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MessHolidaysScreen(
     onBackBtnClick:()-> Unit,
-    onAddIconClick:()-> Unit
+    onAddIconClick:()-> Unit,
+    messClosureVM: MessClosureVM,
+    messListVM: MessListVM
 ) {
-    val holidays = listOf(
-        Holiday(1, "Diwali Festivities", "31 Oct", "04 Nov", "Festival", CustomColors.HoneyBronze, CustomColors.Cream),
-        Holiday(2, "Winter Semester Break", "24 Dec", "05 Jan", "Vacation", CustomColors.RichCerulean, CustomColors.LightBlue),
-        Holiday(3, "Holi Celebration", "14 Mar", "16 Mar", "Holiday", CustomColors.BlackberryCream, CustomColors.LightLavender)
-    )
+    val selectedMess by messListVM.selectedMess.collectAsState()
+    val fetchState by messClosureVM.fetchHolidayState.collectAsState()
+    var holidays by remember { mutableStateOf(emptyList<HolidayRes>()) }
+    LaunchedEffect(Unit){
+        messClosureVM.fetchHoliday(selectedMess?.id ?:"")
+    }
 
+    LaunchedEffect(fetchState){
+        when(fetchState){
+            is FetchHolidaysState.Success -> {
+                holidays=(fetchState as FetchHolidaysState.Success).holidays
+            }
+            is FetchHolidaysState.Error -> {
+                showToast("Error loading holidays")
+            }
+
+            else -> {}
+        }
+    }
     ConstraintLayout(
        modifier = Modifier
            .fillMaxSize()
@@ -120,7 +139,13 @@ fun MessHolidaysScreen(
            contentPadding = PaddingValues( bottom = 120.dp)
        ) {
            items(holidays) { holiday ->
-               HolidayCard(holiday)
+               HolidayCard(
+                   holiday = Holiday(
+                       startDate = holiday.startDate,
+                       endDate =holiday.endDate,
+                       reason = holiday.reason
+                   )
+               )
            }
        }
    }

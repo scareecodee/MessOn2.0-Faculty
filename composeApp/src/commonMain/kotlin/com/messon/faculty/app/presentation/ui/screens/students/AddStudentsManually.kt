@@ -66,7 +66,7 @@ fun AddStudentManuallyScreen(
         when (uiState) {
 
             is AddStudentsManuallyState.Success -> {
-                if((uiState as AddStudentsManuallyState.Success).addStudentsManuallyRes.isActive){
+                if((uiState as AddStudentsManuallyState.Success).addStudentsManuallyRes.status){
                     showToast(
                         message ="Students added successfully"
                     )
@@ -79,7 +79,7 @@ fun AddStudentManuallyScreen(
 
             is AddStudentsManuallyState.Error -> {
                 showToast(
-                    message =(uiState as    AddStudentsManuallyState.Error).message
+                    message =(uiState as AddStudentsManuallyState.Error).message
                 )
 
                 addStudentManuallyVM.clearUiState()

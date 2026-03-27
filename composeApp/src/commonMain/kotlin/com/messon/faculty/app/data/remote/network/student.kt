@@ -76,7 +76,7 @@ class StudentApi(
 
 
     suspend fun toggleStudentStatus(
-//        token: String,
+        token: String,
        uuid: String
     ): Result<ToggleStatusResDto, NetworkError>
     {
@@ -84,9 +84,9 @@ class StudentApi(
 
         val response= try {
             httpClient.patch(
-                urlString = "${BASE_URL}admin/students/${uuid}/toggle-activation"
+                urlString = "${BASE_URL}admin/${uuid}/toggle-activation"
             ) {
-//                header(HttpHeaders.Authorization, "Bearer $token")
+                header(HttpHeaders.Authorization, "Bearer $token")
                 contentType(ContentType.Application.Json)
             }
         } catch (e: UnresolvedAddressException){
@@ -171,18 +171,19 @@ class StudentApi(
 
 
     suspend fun editStudent(
-//        token: String,
+        token: String,
         uuid: String,
         updatedStudent: StudentDto
     ): Result<EditStudentResDto, NetworkError>
     {
-        log.d(tag = "Ktor", message ={"fetching students"})
+        log.d(tag = "Ktor", message ={"updating students"})
+        log.d(tag = "Ktor", message ={updatedStudent.toString()})
 
         val response= try {
-            httpClient.get(
+            httpClient.patch(
                 urlString = "${BASE_URL}admin/students/update/${uuid}"
             ) {
-//                header(HttpHeaders.Authorization, "Bearer $token")
+                header(HttpHeaders.Authorization, "Bearer $token")
                 contentType(ContentType.Application.Json)
                 setBody(
                     updatedStudent

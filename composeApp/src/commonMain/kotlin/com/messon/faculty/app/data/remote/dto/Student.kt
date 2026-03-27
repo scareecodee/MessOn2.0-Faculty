@@ -30,10 +30,7 @@ data class StudentDto(
 
     @SerialName("picture")
     val profileImg: String?
-
 )
-
-
 
 @Serializable
 data class StudentInputDto(
@@ -73,7 +70,7 @@ data class FetchStudentsResDto(
 @Serializable
 data class AddStudentsManuallyResDto(
     @SerialName("status")
-    val isActive: Boolean,
+    val status: Boolean,
 
     @SerialName("conflicts")
     val conflicts:List<ConflictDto>
@@ -100,11 +97,14 @@ data class ToggleStatusResDto(
 
 @Serializable
 data class EditStudentResDto(
-    @SerialName("is_Active")
-    val isActive: Boolean,
+    @SerialName("status")
+    val status: Boolean,
+
+    @SerialName("student_details")
+    val updatedStudent: StudentDto?,
 
     @SerialName("conflicts")
-    val conflict: ConflictDto
+    val conflicts: ConflictDto?
 
 )
 

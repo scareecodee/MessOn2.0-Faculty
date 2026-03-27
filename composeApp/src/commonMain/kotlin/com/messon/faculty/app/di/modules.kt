@@ -23,6 +23,7 @@ import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.ManagerListVM
+import com.messon.faculty.app.presentation.viewmodel.MessClosureVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
@@ -41,14 +42,11 @@ val sharedModule = module {
     single { ManagerApi(get()) }
 
 
-
     single{ StudentRepository(get()) }
     single{ CollegeRepository(get()) }
     single{ MessRepository(get()) }
     single { CsvRepository(get()) }
     single{ ManagerRepository(get()) }
-
-
 
 
     single { Auth(get()) }
@@ -76,7 +74,8 @@ val sharedModule = module {
 
     viewModel {
         StudentDetailScreenVM(
-            studentRepository =get()
+            studentRepository = get(),
+            secureStorage = get()
         )
     }
 
@@ -88,7 +87,7 @@ val sharedModule = module {
     }
 
     viewModel {
-        EditStudentVM(get())
+        EditStudentVM(get(),get())
     }
 
     viewModel {
@@ -135,6 +134,10 @@ val sharedModule = module {
 
     viewModel {
         HomeScreenVM()
+    }
+
+    viewModel {
+        MessClosureVM(get(),get())
     }
 
 }

@@ -120,7 +120,7 @@ fun StudentInputCard(
                             roll.isNotBlank() &&
                             email.isNotBlank() &&
                             branch.isNotBlank() &&
-                            batch.isNotBlank() && batch.toInt()>0 && batch.toInt()<5,
+                            batch.isNotBlank() ,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = CustomColors.RichCerulean
                     ),

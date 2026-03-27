@@ -17,12 +17,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavController
 import com.messon.faculty.app.presentation.ui.components.CustomInputField
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
+import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
 import com.messon.faculty.app.presentation.ui.uiState.EditStudentState
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.theme.CustomColors
+import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -33,6 +36,7 @@ import org.jetbrains.compose.resources.Font
 fun EditStudentScreen(
     onBackClick: () -> Unit = {},
     studentDetailScreenVM: StudentDetailScreenVM,
+    onConflict:()-> Unit,
     editStudentVM: EditStudentVM
 ) {
 
@@ -48,6 +52,18 @@ fun EditStudentScreen(
             showToast(
                 message =(updateState as EditStudentState.Error).message
             )
+            editStudentVM.clearUpdateState()
+        }
+        if(updateState is EditStudentState.Success){
+            if((updateState as EditStudentState.Success).editStudentRes.status){
+                showToast(
+                    message ="Students updated successfully"
+                )
+                editStudentVM.clearUpdateState()
+            }else{
+                delay(300)
+                onConflict()
+            }
         }
     }
 

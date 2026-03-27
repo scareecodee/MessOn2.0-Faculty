@@ -7,6 +7,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -39,6 +40,7 @@ fun AppNav(
     val editStudentVM: EditStudentVM=koinViewModel()
     val addStudentManuallyVM: AddStudentManuallyVM=koinViewModel()
     val homeScreenVM: HomeScreenVM=koinViewModel()
+    val messClosureVM: MessClosureVM=koinViewModel()
 
     val isMessClosurePart by homeScreenVM.isMessClosurePart.collectAsState()
 
@@ -308,7 +310,8 @@ fun AppNav(
                     navController.popBackStack()
                 },
                 studentDetailScreenVM = studentDetailVM,
-                editStudentVM =editStudentVM
+                editStudentVM = editStudentVM,
+                onConflict = {navController.navigate(Screen.DataValidityScreen.route)}
             )
         }
 
@@ -387,21 +390,8 @@ fun AppNav(
                onBackBtnClick = {
                    navController.popBackStack()
                },
-               addStudentManuallyVM =addStudentManuallyVM
+               addStudentManuallyVM = addStudentManuallyVM,
            )
-        }
-
-        composable (
-            route=Screen.MessClosureScreen.route,
-            enterTransition = enterLeft,
-            exitTransition = exitRight
-        ){
-            MessClosureScreen(
-                onCardClick ={navController.navigate(Screen.MessSettingScreen.route)},
-                onBackBtnClick = {
-                    navController.popBackStack()
-                }
-            )
         }
 
         composable (
@@ -420,8 +410,24 @@ fun AppNav(
             exitTransition = exitRight
         ){
            MessHolidaysScreen(
+               onBackBtnClick = { navController.popBackStack() },
+               onAddIconClick = {
+                   navController.navigate(Screen.AddHolidayScreen.route)
+               },
+               messClosureVM = messClosureVM,
+               messListVM = messListVM
+           )
+        }
+
+        composable (
+            route=Screen.AddHolidayScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+           CreateHolidayScreen(
                onBackBtnClick = {navController.popBackStack()},
-               onAddIconClick = {}
+               messClosureVM=messClosureVM,
+               messListVM = messListVM
            )
         }
     }

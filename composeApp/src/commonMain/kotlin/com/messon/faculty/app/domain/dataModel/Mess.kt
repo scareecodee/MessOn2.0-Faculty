@@ -29,9 +29,16 @@ data class MessCreateRes(
 )
 
 
-data class MessUnit(
-    val id: Int,
-    val name: String,
-    val status: String,
-    val location: String
+data class Holiday(
+    val startDate: String,
+    val endDate: String,
+    val reason: String
+
+)
+
+data class HolidayRes(
+    val holidayId: String,
+    val startDate: String,
+    val endDate: String,
+    val reason: String
 )

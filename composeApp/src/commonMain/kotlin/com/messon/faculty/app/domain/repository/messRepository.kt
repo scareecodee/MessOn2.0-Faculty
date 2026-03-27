@@ -1,7 +1,10 @@
 package com.messon.faculty.app.domain.repository
 import com.messon.faculty.app.data.remote.network.MessApi
+import com.messon.faculty.app.domain.dataModel.Holiday
+import com.messon.faculty.app.domain.dataModel.HolidayRes
 import com.messon.faculty.app.domain.dataModel.MessCreateReq
 import com.messon.faculty.app.domain.dataModel.MessCreateRes
+import com.messon.faculty.app.presentation.mapper.toDTo
 import com.messon.faculty.app.presentation.mapper.toDomain
 import com.messon.faculty.app.presentation.mapper.toDto
 import com.messon.faculty.app.utils.NetworkError
@@ -51,4 +54,51 @@ class MessRepository(
         }
     }
 
+    suspend fun createHoliday(
+        token: String,
+        holiday: Holiday,
+        messId: String
+    ): Result<HolidayRes, NetworkError> {
+
+        return when (val result = messApi.createHoliday(
+            token = token,
+            holiday = holiday.toDTo(),
+            messId = messId
+        )) {
+
+            is Result.Success -> {
+
+                val dto = result.data
+
+
+                Result.Success(
+                    data = dto.toDomain()
+                )
+            }
+            is Result.Error -> Result.Error(result.error)
+        }
+    }
+
+    suspend fun fetchHolidays(
+        token: String,
+        messId: String
+    ): Result<List<HolidayRes>, NetworkError> {
+
+        return when (val result = messApi.fetchHolidays(
+            token = token,
+            messId = messId
+        )) {
+
+            is Result.Success -> {
+
+                val dto = result.data
+
+
+                Result.Success(
+                    data = dto.map { it.toDomain() }
+                )
+            }
+            is Result.Error -> Result.Error(result.error)
+        }
+    }
 }

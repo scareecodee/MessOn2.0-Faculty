@@ -50,7 +50,7 @@ fun MessSettingScreen(
             .background(CustomColors.OffWhite)
     ) {
 
-        val (headerBg, topBar, titleSection, mainCard, infoBox, footer, listRef) = createRefs()
+        val (headerBg, topBar, titleSection, listRef) = createRefs()
 
         Box(
             modifier = Modifier

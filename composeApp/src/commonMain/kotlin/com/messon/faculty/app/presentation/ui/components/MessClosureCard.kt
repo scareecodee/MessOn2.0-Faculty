@@ -30,22 +30,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.domain.dataModel.MessUnit
+import com.messon.faculty.app.domain.dataModel.MessCreateRes
 import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun MessClosureCard(mess: MessUnit,onCardClick:()-> Unit) {
-    val isOpen = mess.status == "Open"
+fun MessClosureCard(mess: MessCreateRes,onCardClick:()-> Unit) {
+    val isOpen = mess.isActive
 
     Card(
         onClick = { onCardClick()},
