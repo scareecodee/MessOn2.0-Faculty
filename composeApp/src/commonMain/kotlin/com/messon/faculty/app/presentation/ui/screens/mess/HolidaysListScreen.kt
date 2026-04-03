@@ -70,7 +70,7 @@ fun MessHolidaysScreen(
            .fillMaxSize()
            .background(CustomColors.OffWhite)
    ) {
-        val ( list,addIcon,statusBarBox,backBtnRef,headingRef,fabRef,searchBarRef) = createRefs()
+        val ( list,addIcon,statusBarBox,backBtnRef,headingRef) = createRefs()
 
         Box(
             Modifier

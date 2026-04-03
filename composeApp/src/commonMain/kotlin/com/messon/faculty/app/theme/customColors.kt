@@ -13,4 +13,6 @@ object CustomColors{
     val LightLavender = Color(0xFFF7F3FA)
     val Teal= Color(0xFF2A9D8F)
     val Mint=  Color(0xFFE0F7F5)
+    val SuccessGreen = Color(0xFF10B981)
+
 }
