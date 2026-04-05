@@ -11,4 +11,6 @@ class HomeScreenVM : ViewModel(){
     fun updateIsMessClosure(isMessClosurePart: Boolean){
         _isMessClosurePart.value=isMessClosurePart
     }
+
+
 }

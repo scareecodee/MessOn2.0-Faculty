@@ -1,6 +1,10 @@
 package com.messon.faculty.app.utils
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Instant
 
 fun LocalDateTime.toHumanReadable(): String {
     val months = listOf(
@@ -30,4 +34,40 @@ fun formatDate(input: String): String {
     val year = date.year
 
     return "$day-$month-$year"
+}
+
+
+fun LocalDate.toReadableFormat(): String {
+    val monthName = when (this.monthNumber) {
+        1 -> "January"
+        2 -> "February"
+        3 -> "March"
+        4 -> "April"
+        5 -> "May"
+        6 -> "June"
+        7 -> "July"
+        8 -> "August"
+        9 -> "September"
+        10 -> "October"
+        11 -> "November"
+        12 -> "December"
+        else -> ""
+    }
+
+    val dayFormatted = this.dayOfMonth.toString().padStart(2, '0')
+
+    return "$dayFormatted $monthName, ${this.year}"
+}
+
+fun Long.toFormattedDate(): String {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDate = instant
+        .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+        .date
+
+    val month = localDate.month.name
+        .lowercase()
+        .replaceFirstChar { it.uppercase() }
+
+    return "${localDate.dayOfMonth} $month ${localDate.year}"
 }

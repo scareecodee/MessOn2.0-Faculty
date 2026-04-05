@@ -14,5 +14,8 @@ object CustomColors{
     val Teal= Color(0xFF2A9D8F)
     val Mint=  Color(0xFFE0F7F5)
     val SuccessGreen = Color(0xFF10B981)
+    val GlassBlue = Color(0xFF2274A5).copy(alpha = 0.08f)
+    val GlassStroke = Color(0xFF2274A5).copy(alpha = 0.15f)
+    val BackgroundGray = Color(0xFFF9FAFB)
 
 }

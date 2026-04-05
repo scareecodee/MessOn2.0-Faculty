@@ -347,7 +347,9 @@ fun AppNav(
             exitTransition = exitRight
         ){
             HomeScreen(
-                onBillCardClick = {},
+                onBillCardClick = {
+                    navController.navigate(Screen.BillingMessListScreen.route)
+                },
                 onNoticeCardClick = {},
                 onMessCardClick = {
                     navController.navigate(Screen.MessListScreen.route)
@@ -430,5 +432,30 @@ fun AppNav(
                messListVM = messListVM
            )
         }
+
+        composable (
+            route=Screen.BillingMessListScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+           BillingMessListScreen(
+               navController = navController,
+               onBackBtnClick ={navController.popBackStack()},
+               messListVM =messListVM,
+               onPriceClick ={navController.navigate(Screen.MealPriceScreen.route)},
+           )
+        }
+
+        composable (
+            route=Screen.MealPriceScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            MealPriceScreen(
+                onBackBtnClick = {navController.popBackStack()}
+            )
+        }
+        
+        
     }
 }

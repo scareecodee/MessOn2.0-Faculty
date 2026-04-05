@@ -42,6 +42,11 @@ sealed class Screen(val route: String) {
     object HolidaysListScreen: Screen(route = "holidays_list_screen")
     object AddHolidayScreen: Screen(route = "add_holiday_screen")
 
+    object BillingMessListScreen: Screen("billing_mess_list_screen")
+
+    object MealPriceScreen: Screen("meal_price_screen")
+
+
 
 }
 

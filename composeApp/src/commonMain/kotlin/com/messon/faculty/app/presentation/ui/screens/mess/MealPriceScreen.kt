@@ -10,9 +10,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,18 +32,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.messon.faculty.app.presentation.ui.components.TimeRow
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
+import com.messon.faculty.app.utils.toReadableFormat
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerView
+import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
+import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import org.jetbrains.compose.resources.Font
 
 @Composable
 fun MealPriceScreen(
     onBackBtnClick: () -> Unit
 ) {
+    var startingDate by remember { mutableStateOf("") }
+    var showDateTimePicker by remember{ mutableStateOf(false) }
     var dailyPrice by remember { mutableStateOf("250") }
     var isSaved by remember { mutableStateOf(false) }
 
@@ -221,7 +230,18 @@ fun MealPriceScreen(
                                 label = "btnScale"
                             )
 
+                            TimeRow(
+                                label = "Starting",
+                                time = startingDate,
+                                icon = Icons.Default.CalendarToday,
+                                iconColor = CustomColors.RichCerulean,
+                                onClick =
+                                    {
+                                        showDateTimePicker = true
+                                    }
+                            )
 
+                            Spacer(modifier = Modifier.height(25.dp))
 
                             Button(
                                 onClick = { isSaved = true },
@@ -306,4 +326,38 @@ fun MealPriceScreen(
             }
         }
     }
+    WheelDatePickerView(
+        modifier = Modifier.safeContentPadding(),
+        title ="Set starting date",
+        titleStyle = TextStyle(
+            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+            fontSize = 16.sp
+        ),
+        doneLabelStyle =TextStyle(
+            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+            fontSize = 16.sp
+        ),
+        showDatePicker =showDateTimePicker,
+        height = 220.dp,
+        yearsRange = IntRange(2026,2122),
+        shape = RoundedCornerShape(30.dp),
+        defaultDateTextStyle = TextStyle(
+            fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
+            fontSize = 12.sp
+        ),
+        selectedDateTextStyle = TextStyle(
+            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+            fontSize = 14.sp
+        ),
+        selectorProperties = WheelPickerDefaults.selectorProperties(
+            enabled=true,
+            borderColor = CustomColors.RichCerulean
+        ),
+        onDoneClick = {
+            showDateTimePicker=false
+            startingDate=it.toReadableFormat()
+        },
+        onDismiss = {showDateTimePicker=false},
+        dateTimePickerView= DateTimePickerView.BOTTOM_SHEET_VIEW,
+    )
 }
