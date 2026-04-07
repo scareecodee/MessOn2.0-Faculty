@@ -37,7 +37,7 @@ fun StudentBillCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(vertical = 8.dp, horizontal = 12.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -56,7 +56,6 @@ fun StudentBillCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Profile Avatar Circle
                 Box(
                     modifier = Modifier
                         .size(60.dp)
@@ -76,7 +75,7 @@ fun StudentBillCard(
 
                 Text(
                     text = student.name,
-                    color = Color(0xFF0F172A), // Slate 900
+                    color = Color(0xFF0F172A),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -85,7 +84,6 @@ fun StudentBillCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Batch Tag
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
@@ -125,7 +123,6 @@ fun StudentBillCard(
                     }
                 )
 
-                // Branch Block
                 InfoBlock(
                     icon = Icons.Default.Info,
                     label = "BRANCH",
@@ -138,7 +135,6 @@ fun StudentBillCard(
                     }
                 )
 
-                // Billing Cycle Block
                 InfoBlock(
                     icon = Icons.Default.DateRange,
                     label = "BILLING CYCLE",
@@ -151,7 +147,6 @@ fun StudentBillCard(
                     }
                 )
 
-                // Bottom Divider
                 Box(
                     modifier = Modifier
                         .height(1.dp)
@@ -164,7 +159,6 @@ fun StudentBillCard(
                         }
                 )
 
-                // Bill Amount
                 Column(
                     modifier = Modifier.constrainAs(billRef) {
                         top.linkTo(dividerRef.bottom, margin = 12.dp)
@@ -187,7 +181,6 @@ fun StudentBillCard(
                     )
                 }
 
-                // Billing Periods
                 Text(
                     text = "${student.totalBillingPeriods} Periods",
                     fontSize = 10.sp,
@@ -202,9 +195,7 @@ fun StudentBillCard(
     }
 }
 
-/**
- * Reusable Row for Roll No, Branch, and Cycle info
- */
+
 @Composable
 fun InfoBlock(
     icon: ImageVector,

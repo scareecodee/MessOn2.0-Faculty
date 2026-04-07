@@ -1,6 +1,4 @@
 package com.messon.faculty.app.presentation.ui.screens.mess
-
-import com.messon.faculty.app.presentation.ui.components.BillingCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,12 +41,16 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.messon.faculty.app.domain.dataModel.MessCreateRes
 import com.messon.faculty.app.presentation.ui.components.BillingBottomSheet
+import com.messon.faculty.app.presentation.ui.components.MessSleekCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.uiState.FetchMessState
+import com.messon.faculty.app.presentation.viewmodel.MessBillVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
 import com.messon.faculty.app.theme.CustomColors.OffWhite
+import com.messon.faculty.app.utils.PredefinedOptions
+import com.messon.faculty.app.utils.Screen
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import multiplatform.network.cmptoast.showToast
@@ -61,11 +63,16 @@ fun BillingMessListScreen(
     onBackBtnClick:()-> Unit,
     messListVM: MessListVM,
     onPriceClick:()-> Unit,
+    messBillVM: MessBillVM
 ) {
-    var selectedOption by remember { mutableStateOf("") }
+
     val sheetState = rememberModalBottomSheetState()
-    var fromDate by remember { mutableStateOf("") }
-    var toDate by remember { mutableStateOf("") }
+    val fromDate by messBillVM.fromDate.collectAsState()
+    val toDate by messBillVM.endDate.collectAsState()
+    val predefinedOption by messBillVM.predefinedOption.collectAsState()
+    val isValidSelection =
+        (predefinedOption != null) ||
+                (!fromDate.isNullOrEmpty() && !toDate.isNullOrEmpty())
     var showBtmSheet by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
@@ -175,11 +182,12 @@ fun BillingMessListScreen(
                 contentPadding = PaddingValues(bottom = 8.dp)
             ) {
                 items(messes) { mess ->
-                    BillingCard(
+                    MessSleekCard(
                         messName = mess.name,
                         location = mess.location,
                         onPriceClick =onPriceClick,
                         onBillingClick = {
+                            messBillVM.selectMess(mess)
                             showBtmSheet=!showBtmSheet
                         },
                         modifier = Modifier
@@ -193,26 +201,41 @@ fun BillingMessListScreen(
             bottomSheetState = sheetState,
 
             predefinedOptions = listOf(
-                "Last 10 Days", "Last 1 Month", "Last 3 Months"
+                PredefinedOptions.LAST_7_DAYS.value,
+                PredefinedOptions.LAST_30_DAYS.value,
+                PredefinedOptions.LAST_60_DAYS.value,
             ),
-            selectedOption =selectedOption,
+            selectedOption = predefinedOption?.value,
             onOptionSelected = {
-                selectedOption=it
+                val selectedOption = when (it) {
+                    PredefinedOptions.LAST_7_DAYS.value -> PredefinedOptions.LAST_7_DAYS
+                    PredefinedOptions.LAST_30_DAYS.value -> PredefinedOptions.LAST_30_DAYS
+                    PredefinedOptions.LAST_60_DAYS.value -> PredefinedOptions.LAST_60_DAYS
+                    else -> return@BillingBottomSheet
+                }
+
+                messBillVM.selectPredefinedOption(selectedOption)
             },
 
             fromDate = fromDate,
             toDate = toDate,
             onFromDateChange = {
-                fromDate=it
+                messBillVM.setFromDate(it)
             },
             onToDateChange = {
-                toDate=it
+                messBillVM.setEndDate(it)
             },
 
             onDismiss = {
-                fromDate=""
-                toDate=""
-                showBtmSheet=false
+                messBillVM.setFromDate(null)
+                messBillVM.setEndDate(null)
+                showBtmSheet = false
+            },
+            isSubmitEnabled = isValidSelection,
+            onSubmit = {
+                messBillVM.fetchMessBill()
+                navController.navigate(Screen.MessBillScreen.route)
+                showBtmSheet = false
             }
         )
     }

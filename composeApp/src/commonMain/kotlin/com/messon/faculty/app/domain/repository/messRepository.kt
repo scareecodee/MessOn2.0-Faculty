@@ -1,9 +1,11 @@
 package com.messon.faculty.app.domain.repository
 import com.messon.faculty.app.data.remote.network.MessApi
+import com.messon.faculty.app.domain.dataModel.BillReq
 import com.messon.faculty.app.domain.dataModel.Holiday
 import com.messon.faculty.app.domain.dataModel.HolidayRes
 import com.messon.faculty.app.domain.dataModel.MessCreateReq
 import com.messon.faculty.app.domain.dataModel.MessCreateRes
+import com.messon.faculty.app.domain.dataModel.StudentBillingData
 import com.messon.faculty.app.presentation.mapper.toDTo
 import com.messon.faculty.app.presentation.mapper.toDomain
 import com.messon.faculty.app.presentation.mapper.toDto
@@ -101,4 +103,32 @@ class MessRepository(
             is Result.Error -> Result.Error(result.error)
         }
     }
+
+    suspend fun fetchMessBill(
+        token: String,
+        messId: String,
+        billingReq: BillReq
+    ): Result<List<StudentBillingData>, NetworkError> {
+
+        return when (val result = messApi.fetchMessBill(
+            token = token,
+            messId = messId,
+            billReqDto =billingReq.toDto()
+        )) {
+
+            is Result.Success -> {
+
+                val dto = result.data
+
+
+                Result.Success(
+                    data = dto.map { it.toDomain() }
+                )
+            }
+            is Result.Error -> Result.Error(result.error)
+        }
+    }
 }
+
+
+

@@ -57,8 +57,9 @@ fun BillingBottomSheet(
     toDate: String?,
     onFromDateChange: (String) -> Unit,
     onToDateChange: (String) -> Unit,
-
-    onDismiss: () -> Unit
+    isSubmitEnabled: Boolean,
+    onDismiss: () -> Unit,
+    onSubmit:()-> Unit
 ) {
     var showFromPicker by remember { mutableStateOf(false) }
     var showToPicker by remember { mutableStateOf(false) }
@@ -136,6 +137,16 @@ fun BillingBottomSheet(
             }
 
             Spacer(Modifier.height(20.dp))
+
+            Button(
+                onClick = onSubmit,
+                enabled = isSubmitEnabled,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("Proceed")
+            }
         }
     }
 

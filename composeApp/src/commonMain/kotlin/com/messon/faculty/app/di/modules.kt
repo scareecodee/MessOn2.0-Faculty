@@ -23,6 +23,7 @@ import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.ManagerListVM
+import com.messon.faculty.app.presentation.viewmodel.MessBillVM
 import com.messon.faculty.app.presentation.viewmodel.MessClosureVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
@@ -138,6 +139,10 @@ val sharedModule = module {
 
     viewModel {
         MessClosureVM(get(),get())
+    }
+
+    viewModel {
+        MessBillVM(get(),get())
     }
 
 }
