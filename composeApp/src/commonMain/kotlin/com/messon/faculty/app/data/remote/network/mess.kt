@@ -19,24 +19,26 @@ import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.headers
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
+import io.ktor.http.headersOf
 
 private const val BASE_URL = "http://172.18.9.63:8000/"
 
 class MessApi(
     private val httpClient: HttpClient
-){
+) {
     val Log = Logger.withTag("CMP_LOG")
 
     suspend fun createMess(
-        token:String,
+        token: String,
         messCreateReqDto: MessCreateReqDto
-    ): Result<MessCreateResDto, NetworkError>
-    {
-        Log.d(tag = "Ktor", message = {"in login block"})
+    ): Result<MessCreateResDto, NetworkError> {
+        Log.d(tag = "Ktor", message = { "in login block" })
 
-        val response=try {
+        val response = try {
             httpClient.post(
                 urlString = "${BASE_URL}admin/create/mess"
             ) {
@@ -45,43 +47,41 @@ class MessApi(
                 header("Authorization", "Bearer $token")
                 setBody(messCreateReqDto)
             }
-        } catch (e: UnresolvedAddressException){
-            return  Result.Error(NetworkError.NO_INTERNET)
-        }
-        catch (e: SerializationException){
-            return  Result.Error(NetworkError.SERIALIZATION)
-        }
-        catch (e: Exception){
-            Log.d(tag = "Ktor", message = {e.message.toString()})
+        } catch (e: UnresolvedAddressException) {
+            return Result.Error(NetworkError.NO_INTERNET)
+        } catch (e: SerializationException) {
+            return Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: Exception) {
+            Log.d(tag = "Ktor", message = { e.message.toString() })
 
-            return  Result.Error(NetworkError.UNKNOWN)
+            return Result.Error(NetworkError.UNKNOWN)
         }
-        Log.d(tag = "Ktor", message = {response.toString()})
+        Log.d(tag = "Ktor", message = { response.toString() })
         println("STATUS CODE = ${response.status}")
 
-        return when(response.status.value){
-            in 200..299->{
-                val mess=response.body<MessCreateResDto>()
+        return when (response.status.value) {
+            in 200..299 -> {
+                val mess = response.body<MessCreateResDto>()
                 Result.Success(mess)
             }
-            401->Result.Error(NetworkError.UNAUTHORIZED)
-            403->Result.Error(NetworkError.FORBIDDEN)
+
+            401 -> Result.Error(NetworkError.UNAUTHORIZED)
+            403 -> Result.Error(NetworkError.FORBIDDEN)
             409 -> Result.Error(NetworkError.CONFLICT)
-            408 ->  Result.Error(NetworkError.REQUEST_TIMEOUT)
-            413 ->  Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
-            in 500..599->  Result.Error(NetworkError.SERVER_ERROR)
-            else ->  Result.Error(NetworkError.UNKNOWN)
+            408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+            else -> Result.Error(NetworkError.UNKNOWN)
         }
     }
 
 
     suspend fun fetchAllMess(
-        token:String,
-    ): Result<List<MessCreateResDto>, NetworkError>
-    {
-        Log.d(tag = "Ktor", message = {"in mess list screen"})
+        token: String,
+    ): Result<List<MessCreateResDto>, NetworkError> {
+        Log.d(tag = "Ktor", message = { "in mess list screen" })
 
-        val response=try {
+        val response = try {
             httpClient.get(
                 urlString = "${BASE_URL}admin/college/messes"
             ) {
@@ -89,44 +89,42 @@ class MessApi(
                 contentType(ContentType.Application.Json)
                 header("Authorization", "Bearer $token")
             }
-        } catch (e: UnresolvedAddressException){
-            return  Result.Error(NetworkError.NO_INTERNET)
-        }
-        catch (e: SerializationException){
-            return  Result.Error(NetworkError.SERIALIZATION)
-        }
-        catch (e: Exception){
-            Log.d(tag = "Ktor", message = {e.message.toString()})
+        } catch (e: UnresolvedAddressException) {
+            return Result.Error(NetworkError.NO_INTERNET)
+        } catch (e: SerializationException) {
+            return Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: Exception) {
+            Log.d(tag = "Ktor", message = { e.message.toString() })
 
-            return  Result.Error(NetworkError.UNKNOWN)
+            return Result.Error(NetworkError.UNKNOWN)
         }
-        Log.d(tag = "Ktor", message = {response.bodyAsText()})
+        Log.d(tag = "Ktor", message = { response.bodyAsText() })
         println("STATUS CODE = ${response.status}")
 
-        return when(response.status.value){
-            in 200..299->{
-                val mess=response.body<List<MessCreateResDto>>()
+        return when (response.status.value) {
+            in 200..299 -> {
+                val mess = response.body<List<MessCreateResDto>>()
                 Result.Success(mess)
             }
-            401->Result.Error(NetworkError.UNAUTHORIZED)
-            403->Result.Error(NetworkError.FORBIDDEN)
+
+            401 -> Result.Error(NetworkError.UNAUTHORIZED)
+            403 -> Result.Error(NetworkError.FORBIDDEN)
             409 -> Result.Error(NetworkError.CONFLICT)
-            408 ->  Result.Error(NetworkError.REQUEST_TIMEOUT)
-            413 ->  Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
-            in 500..599->  Result.Error(NetworkError.SERVER_ERROR)
-            else ->  Result.Error(NetworkError.UNKNOWN)
+            408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+            else -> Result.Error(NetworkError.UNKNOWN)
         }
     }
 
     suspend fun createHoliday(
-        token:String,
+        token: String,
         holiday: HolidayDto,
         messId: String
-    ): Result<HolidayResDto, NetworkError>
-    {
-        Log.d(tag = "Ktor", message = {"creating holiday"})
+    ): Result<HolidayResDto, NetworkError> {
+        Log.d(tag = "Ktor", message = { "creating holiday" })
 
-        val response=try {
+        val response = try {
             httpClient.post(
                 urlString = "${BASE_URL}create/mess-closures/${messId}"
             ) {
@@ -135,44 +133,42 @@ class MessApi(
                 header("Authorization", "Bearer $token")
                 setBody(holiday)
             }
-        } catch (e: UnresolvedAddressException){
-            return  Result.Error(NetworkError.NO_INTERNET)
-        }
-        catch (e: SerializationException){
-            return  Result.Error(NetworkError.SERIALIZATION)
-        }
-        catch (e: Exception){
-            Log.d(tag = "Ktor", message = {e.message.toString()})
+        } catch (e: UnresolvedAddressException) {
+            return Result.Error(NetworkError.NO_INTERNET)
+        } catch (e: SerializationException) {
+            return Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: Exception) {
+            Log.d(tag = "Ktor", message = { e.message.toString() })
 
-            return  Result.Error(NetworkError.UNKNOWN)
+            return Result.Error(NetworkError.UNKNOWN)
         }
-        Log.d(tag = "Ktor", message = {response.bodyAsText()})
+        Log.d(tag = "Ktor", message = { response.bodyAsText() })
         println("STATUS CODE = ${response.status}")
 
-        return when(response.status.value){
-            in 200..299->{
-                val mess=response.body<HolidayResDto>()
+        return when (response.status.value) {
+            in 200..299 -> {
+                val mess = response.body<HolidayResDto>()
                 Result.Success(mess)
             }
-            401->Result.Error(NetworkError.UNAUTHORIZED)
-            403->Result.Error(NetworkError.FORBIDDEN)
+
+            401 -> Result.Error(NetworkError.UNAUTHORIZED)
+            403 -> Result.Error(NetworkError.FORBIDDEN)
             409 -> Result.Error(NetworkError.CONFLICT)
-            408 ->  Result.Error(NetworkError.REQUEST_TIMEOUT)
-            413 ->  Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
-            in 500..599->  Result.Error(NetworkError.SERVER_ERROR)
-            else ->  Result.Error(NetworkError.UNKNOWN)
+            408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+            else -> Result.Error(NetworkError.UNKNOWN)
         }
     }
 
 
     suspend fun fetchHolidays(
-        token:String,
+        token: String,
         messId: String
-    ): Result<List<HolidayResDto>, NetworkError>
-    {
-        Log.d(tag = "Ktor", message = {"creating holiday"})
+    ): Result<List<HolidayResDto>, NetworkError> {
+        Log.d(tag = "Ktor", message = { "creating holiday" })
 
-        val response=try {
+        val response = try {
             httpClient.get(
                 urlString = "${BASE_URL}fetch/mess-closures/${messId}"
             ) {
@@ -180,44 +176,42 @@ class MessApi(
                 contentType(ContentType.Application.Json)
                 header("Authorization", "Bearer $token")
             }
-        } catch (e: UnresolvedAddressException){
-            return  Result.Error(NetworkError.NO_INTERNET)
-        }
-        catch (e: SerializationException){
-            return  Result.Error(NetworkError.SERIALIZATION)
-        }
-        catch (e: Exception){
-            Log.d(tag = "Ktor", message = {e.message.toString()})
+        } catch (e: UnresolvedAddressException) {
+            return Result.Error(NetworkError.NO_INTERNET)
+        } catch (e: SerializationException) {
+            return Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: Exception) {
+            Log.d(tag = "Ktor", message = { e.message.toString() })
 
-            return  Result.Error(NetworkError.UNKNOWN)
+            return Result.Error(NetworkError.UNKNOWN)
         }
-        Log.d(tag = "Ktor", message = {response.bodyAsText()})
+        Log.d(tag = "Ktor", message = { response.bodyAsText() })
         println("STATUS CODE = ${response.status}")
 
-        return when(response.status.value){
-            in 200..299->{
-                val mess=response.body<List<HolidayResDto>>()
-                Result.Success(mess)
+        return when (response.status.value) {
+            in 200..299 -> {
+                val holiday = response.body<List<HolidayResDto>>()
+                Result.Success(holiday)
             }
-            401->Result.Error(NetworkError.UNAUTHORIZED)
-            403->Result.Error(NetworkError.FORBIDDEN)
+
+            401 -> Result.Error(NetworkError.UNAUTHORIZED)
+            403 -> Result.Error(NetworkError.FORBIDDEN)
             409 -> Result.Error(NetworkError.CONFLICT)
-            408 ->  Result.Error(NetworkError.REQUEST_TIMEOUT)
-            413 ->  Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
-            in 500..599->  Result.Error(NetworkError.SERVER_ERROR)
-            else ->  Result.Error(NetworkError.UNKNOWN)
+            408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+            else -> Result.Error(NetworkError.UNKNOWN)
         }
     }
 
     suspend fun fetchMessBill(
-        token:String,
+        token: String,
         messId: String,
         billReqDto: BillReqDto
-    ): Result<List<StudentBillDto>, NetworkError>
-    {
-        Log.d(tag = "Ktor", message = {"fetching mess bill "})
+    ): Result<List<StudentBillDto>, NetworkError> {
+        Log.d(tag = "Ktor", message = { "fetching mess bill " })
 
-        val response=try {
+        val response = try {
             httpClient.post(
                 urlString = "${BASE_URL}mess/${messId}/bill"
             ) {
@@ -225,32 +219,87 @@ class MessApi(
                 header("Authorization", "Bearer $token")
                 setBody(billReqDto)
             }
-        } catch (e: UnresolvedAddressException){
-            return  Result.Error(NetworkError.NO_INTERNET)
-        }
-        catch (e: SerializationException){
-            return  Result.Error(NetworkError.SERIALIZATION)
-        }
-        catch (e: Exception){
-            Log.d(tag = "Ktor", message = {e.message.toString()})
+        } catch (e: UnresolvedAddressException) {
+            return Result.Error(NetworkError.NO_INTERNET)
+        } catch (e: SerializationException) {
+            return Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: Exception) {
+            Log.d(tag = "Ktor", message = { e.message.toString() })
 
-            return  Result.Error(NetworkError.UNKNOWN)
+            return Result.Error(NetworkError.UNKNOWN)
         }
-        Log.d(tag = "Ktor", message = {response.bodyAsText()})
+        Log.d(tag = "Ktor", message = { response.bodyAsText() })
         println("STATUS CODE = ${response.status}")
 
-        return when(response.status.value){
-            in 200..299->{
-                val mess=response.body<List<StudentBillDto>>()
-                Result.Success(mess)
+        return when (response.status.value) {
+            in 200..299 -> {
+                val bill = response.body<List<StudentBillDto>>()
+                Result.Success(bill)
             }
-            401->Result.Error(NetworkError.UNAUTHORIZED)
-            403->Result.Error(NetworkError.FORBIDDEN)
+
+            401 -> Result.Error(NetworkError.UNAUTHORIZED)
+            403 -> Result.Error(NetworkError.FORBIDDEN)
             409 -> Result.Error(NetworkError.CONFLICT)
-            408 ->  Result.Error(NetworkError.REQUEST_TIMEOUT)
-            413 ->  Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
-            in 500..599->  Result.Error(NetworkError.SERVER_ERROR)
-            else ->  Result.Error(NetworkError.UNKNOWN)
+            408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+            else -> Result.Error(NetworkError.UNKNOWN)
+        }
+    }
+
+    suspend fun downloadMessBillCsv(
+        token: String,
+        messId: String,
+        billReqDto: BillReqDto
+    ): Result<ByteArray, NetworkError> {
+
+        return try {
+            val response = httpClient.post(
+                urlString = "${BASE_URL}mess/$messId/bill"
+            ) {
+                headers {
+                    append(HttpHeaders.Accept, "text/csv")
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+                contentType(ContentType.Application.Json)
+                setBody(billReqDto)
+            }
+
+            println("STATUS CODE = ${response.status}")
+
+            when (response.status.value) {
+
+                in 200..299 -> {
+                    val bytes = response.body<ByteArray>()
+                    Result.Success(bytes)
+                }
+
+                401 -> Result.Error(NetworkError.UNAUTHORIZED)
+                403 -> Result.Error(NetworkError.FORBIDDEN)
+                408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+                409 -> Result.Error(NetworkError.CONFLICT)
+                413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+
+                in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+
+                else -> Result.Error(NetworkError.UNKNOWN)
+            }
+
+        } catch (e: UnresolvedAddressException) {
+            Result.Error(NetworkError.NO_INTERNET)
+
+        } catch (e: io.ktor.client.plugins.HttpRequestTimeoutException) {
+            Result.Error(NetworkError.REQUEST_TIMEOUT)
+
+        } catch (e: kotlinx.io.IOException) {
+            Result.Error(NetworkError.NO_INTERNET)
+
+        } catch (e: SerializationException) {
+            Result.Error(NetworkError.SERIALIZATION)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.Error(NetworkError.UNKNOWN)
         }
     }
 }

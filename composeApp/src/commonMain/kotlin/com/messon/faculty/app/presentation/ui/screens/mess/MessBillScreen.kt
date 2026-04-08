@@ -41,6 +41,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.components.StudentBillCard
+import com.messon.faculty.app.presentation.ui.uiState.CsvDownloadState
 import com.messon.faculty.app.presentation.ui.uiState.FetchMessBillState
 import com.messon.faculty.app.presentation.viewmodel.MessBillVM
 import com.messon.faculty.app.theme.CustomColors
@@ -60,6 +61,8 @@ fun MessBillScreen(
     var query by remember { mutableStateOf("") }
 
     val uiState by messBillVM.fetchMessBillState.collectAsState()
+    val downloadState by messBillVM.downloadingState.collectAsState()
+    val isDownloading = downloadState is CsvDownloadState.Loading
 
     val students = remember(uiState) {
         when (uiState) {
@@ -82,6 +85,21 @@ fun MessBillScreen(
     LaunchedEffect(uiState) {
         if (uiState is FetchMessBillState.Error) {
             showToast((uiState as FetchMessBillState.Error).message)
+        }
+    }
+
+    LaunchedEffect(downloadState) {
+        when (downloadState) {
+            is CsvDownloadState.Success -> {
+                val path = (downloadState as CsvDownloadState.Success).path
+                showToast("Saved to: $path")
+            }
+
+            is CsvDownloadState.Error -> {
+                showToast((downloadState as CsvDownloadState.Error).message)
+            }
+
+            else -> Unit
         }
     }
 
@@ -146,7 +164,7 @@ fun MessBillScreen(
                         if (students.isEmpty()) {
                             showToast("No data to download")
                         } else {
-
+                            messBillVM.downloadMessBillCsv()
                         }
                     },
                     shape = RoundedCornerShape(30.dp),
@@ -202,7 +220,6 @@ fun MessBillScreen(
                     }
 
                 } else {
-
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -229,7 +246,7 @@ fun MessBillScreen(
                 }
             }
 
-            if (isLoading) {
+            if (isLoading||isDownloading) {
                 Box(
                     Modifier
                         .fillMaxSize()

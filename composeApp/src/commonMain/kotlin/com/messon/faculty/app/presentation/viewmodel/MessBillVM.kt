@@ -2,21 +2,31 @@ package com.messon.faculty.app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import com.messon.faculty.app.core.auth.AuthSecureStorage
 import com.messon.faculty.app.domain.dataModel.BillReq
 import com.messon.faculty.app.domain.dataModel.MessCreateRes
 import com.messon.faculty.app.domain.repository.MessRepository
+import com.messon.faculty.app.presentation.ui.uiState.CsvDownloadState
 import com.messon.faculty.app.presentation.ui.uiState.FetchMessBillState
 import com.messon.faculty.app.utils.BillingRangeType
 import com.messon.faculty.app.utils.PredefinedOptions
 import com.messon.faculty.app.utils.onError
 import com.messon.faculty.app.utils.onSuccess
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.absolutePath
+import io.github.vinceglb.filekit.dialogs.openFileSaver
+import io.github.vinceglb.filekit.sink
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.io.buffered
+import kotlin.onFailure
+import kotlin.time.Clock
 
 class MessBillVM(
     private val messRepository: MessRepository,
@@ -74,56 +84,19 @@ class MessBillVM(
         viewModelScope.launch(Dispatchers.IO) {
 
             val token = secureStorage.getAccessToken()
-            val messId = _selectedMess.value?.id ?: return@launch
-
+            val messId = _selectedMess.value?.id
+            if (messId == null) {
+                _fetchMessBillState.value = FetchMessBillState.Error("Please select mess")
+                return@launch
+            }
             if (token.isNullOrBlank()) {
                 _fetchMessBillState.value =
                     FetchMessBillState.Error("Session expired. Please login again.")
                 return@launch
             }
-
-            val type = _rangeType.value
-
-            val billReq = when (type) {
-
-                BillingRangeType.LAST_N_DAYS -> {
-                    val option = _predefinedOption.value ?: run {
-                        _fetchMessBillState.value =
-                            FetchMessBillState.Error("Please select predefined option")
-                        return@launch
-                    }
-
-                    BillReq(
-                        rangeType = BillingRangeType.LAST_N_DAYS.value,
-                        numOfDays = option.numDays,
-                        startDate = null,
-                        endDate = null
-                    )
-                }
-
-                BillingRangeType.CUSTOM -> {
-                    val from = _fromDate.value
-                    val to = _endDate.value
-
-                    if (from.isNullOrEmpty() || to.isNullOrEmpty()) {
-                        _fetchMessBillState.value =
-                            FetchMessBillState.Error("Please select both dates")
-                        return@launch
-                    }
-
-                    BillReq(
-                        rangeType = BillingRangeType.CUSTOM.value,
-                        numOfDays = null,
-                        startDate = from,
-                        endDate = to
-                    )
-                }
-
-                else -> {
-                    _fetchMessBillState.value =
-                        FetchMessBillState.Error("Please select billing range")
-                    return@launch
-                }
+            val billReq = buildBillRequest() ?: run {
+                _fetchMessBillState.value = FetchMessBillState.Error("Invalid input")
+                return@launch
             }
 
             messRepository.fetchMessBill(
@@ -145,6 +118,115 @@ class MessBillVM(
         _rangeType.value = BillingRangeType.LAST_N_DAYS
         _fromDate.value = null
         _endDate.value = null
+    }
+
+    private val _downloadingState = MutableStateFlow<CsvDownloadState>(CsvDownloadState.Idle)
+    val downloadingState = _downloadingState.asStateFlow()
+
+
+    fun downloadMessBillCsv() {
+        if (_downloadingState.value is CsvDownloadState.Loading) return
+        _downloadingState.value = CsvDownloadState.Loading
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val token = secureStorage.getAccessToken()
+            val messId = _selectedMess.value?.id
+            if (messId == null) {
+                _downloadingState.value = CsvDownloadState.Error("Please select mess")
+                return@launch
+            }
+
+            if (token.isNullOrBlank()) {
+                _downloadingState.value =
+                    CsvDownloadState.Error("Session expired. Please login again.")
+                return@launch
+            }
+
+            val billReq = buildBillRequest() ?: run {
+                _downloadingState.value = CsvDownloadState.Error("Invalid input")
+                return@launch
+            }
+
+           val result= messRepository.downloadMessBillCsv(
+                token = token,
+                messId = messId,
+                billingReq = billReq,
+            )
+            result
+                .onSuccess { bytes ->
+                    val Log= Logger.withTag("cmp")
+                    Log.d(tag = "cmp_debug", message = {bytes.decodeToString()})
+                    val saveResult = saveCsvFile(bytes)
+
+                    saveResult
+                        .onSuccess { path ->
+                            _downloadingState.value = CsvDownloadState.Success(path)
+                        }
+                        .onFailure{
+                            _downloadingState.value =CsvDownloadState.Error(it.message ?: "File save failed")
+
+                        }
+                }
+                .onError {
+                    _downloadingState.value = CsvDownloadState.Error(it.toString())
+                }
+        }
+    }
+
+
+    suspend fun saveCsvFile(bytes: ByteArray): Result<String> {
+        return try {
+
+            val file = withContext(Dispatchers.Main) {
+                FileKit.openFileSaver(
+                    suggestedName = "${selectedMess.value?.name?:"MessBill"}_${Clock.System.now().toEpochMilliseconds()}",
+                    extension = "csv"
+                )
+            } ?: return Result.failure(Exception("User cancelled"))
+
+            withContext(Dispatchers.IO) {
+                file.sink().buffered().use { sink ->
+                    sink.write(bytes)
+                }
+            }
+
+            Result.success(file.absolutePath())
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    private fun buildBillRequest(): BillReq? {
+        val type = _rangeType.value
+
+        return when (type) {
+            BillingRangeType.LAST_N_DAYS -> {
+                val option = _predefinedOption.value ?: return null
+                BillReq(
+                    rangeType = BillingRangeType.LAST_N_DAYS.value,
+                    numOfDays = option.numDays,
+                    startDate = null,
+                    endDate = null
+                )
+            }
+
+            BillingRangeType.CUSTOM -> {
+                val from = _fromDate.value
+                val to = _endDate.value
+                if (from.isNullOrEmpty() || to.isNullOrEmpty()) return null
+
+                BillReq(
+                    rangeType = BillingRangeType.CUSTOM.value,
+                    numOfDays = null,
+                    startDate = from,
+                    endDate = to
+                )
+            }
+
+            else -> null
+        }
     }
 
 }

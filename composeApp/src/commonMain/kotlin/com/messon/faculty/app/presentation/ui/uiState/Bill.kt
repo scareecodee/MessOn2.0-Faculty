@@ -8,3 +8,11 @@ sealed class FetchMessBillState{
     data class Success(val bill:List<StudentBillingData>) :FetchMessBillState()
     data class Error(val message: String) :FetchMessBillState()
 }
+
+
+sealed class CsvDownloadState {
+    object Idle : CsvDownloadState()
+    object Loading : CsvDownloadState()
+    data class Success(val path: String) : CsvDownloadState()
+    data class Error(val message: String) : CsvDownloadState()
+}

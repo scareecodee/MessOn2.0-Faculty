@@ -128,6 +128,31 @@ class MessRepository(
             is Result.Error -> Result.Error(result.error)
         }
     }
+
+    suspend fun downloadMessBillCsv(
+        token: String,
+        messId: String,
+        billingReq: BillReq
+    ): Result<ByteArray, NetworkError> {
+
+        return when (val result = messApi.downloadMessBillCsv(
+            token = token,
+            messId = messId,
+            billReqDto =billingReq.toDto()
+        )) {
+
+            is Result.Success -> {
+
+                val data = result.data
+
+
+                Result.Success(
+                    data =data
+                )
+            }
+            is Result.Error -> Result.Error(result.error)
+        }
+    }
 }
 
 
