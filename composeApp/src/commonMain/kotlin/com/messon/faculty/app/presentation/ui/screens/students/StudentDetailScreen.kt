@@ -26,12 +26,18 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import com.messon.faculty.app.presentation.ui.components.BillingBottomSheet
 import com.messon.faculty.app.presentation.ui.components.BoxedIcon
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
 import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.presentation.ui.uiState.ToggleStatusState
+import com.messon.faculty.app.presentation.viewmodel.StudentBillVM
+import com.messon.faculty.app.utils.PredefinedOptions
+import com.messon.faculty.app.utils.Screen
+import com.messon.faculty.app.utils.toIsoDate
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
@@ -39,13 +45,23 @@ import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentDetailScreen(
-    onViewBillClick: () -> Unit,
     onBackClick: () -> Unit,
     onEditClick:()-> Unit,
-    studentDetailScreenVM: StudentDetailScreenVM
+    studentDetailScreenVM: StudentDetailScreenVM,
+    studentBillVM: StudentBillVM,
+    navController: NavController
 ) {
+    val sheetState = rememberModalBottomSheetState()
+    var showBtmSheet by remember { mutableStateOf(false) }
+    val fromDate by studentBillVM.fromDate.collectAsState()
+    val toDate by studentBillVM.endDate.collectAsState()
+    val predefinedOption by studentBillVM.predefinedOption.collectAsState()
+    val isValidSelection =
+        (predefinedOption != null) ||
+                (!fromDate.isNullOrEmpty() && !toDate.isNullOrEmpty())
     val scrollState = rememberScrollState()
     val student by studentDetailScreenVM
         .selectedStudent
@@ -265,7 +281,9 @@ fun StudentDetailScreen(
         }
 
         Button(
-            onClick = onViewBillClick,
+            onClick ={
+                showBtmSheet=!showBtmSheet
+            },
             modifier = Modifier
                 .padding(24.dp)
                 .height(55.dp)
@@ -293,6 +311,50 @@ fun StudentDetailScreen(
             Icon(Icons.Default.ChevronRight, contentDescription = null, tint = CustomColors.RichCerulean.copy(alpha = 0.4f))
         }
 
+    }
+
+    if(showBtmSheet){
+        BillingBottomSheet(
+            bottomSheetState = sheetState,
+
+            predefinedOptions = listOf(
+                PredefinedOptions.LAST_7_DAYS.value,
+                PredefinedOptions.LAST_30_DAYS.value,
+                PredefinedOptions.LAST_60_DAYS.value,
+            ),
+            selectedOption = predefinedOption?.value,
+            onOptionSelected = {
+                val selectedOption = when (it) {
+                    PredefinedOptions.LAST_7_DAYS.value -> PredefinedOptions.LAST_7_DAYS
+                    PredefinedOptions.LAST_30_DAYS.value -> PredefinedOptions.LAST_30_DAYS
+                    PredefinedOptions.LAST_60_DAYS.value -> PredefinedOptions.LAST_60_DAYS
+                    else -> return@BillingBottomSheet
+                }
+
+                    studentBillVM.selectPredefinedOption(selectedOption)
+            },
+
+            fromDate = fromDate,
+            toDate = toDate,
+            onFromDateChange = {
+                studentBillVM.setFromDate(it.toIsoDate())
+            },
+            onToDateChange = {
+                studentBillVM.setEndDate(it.toIsoDate())
+            },
+
+            onDismiss = {
+                studentBillVM.setFromDate(null)
+                studentBillVM.setEndDate(null)
+                showBtmSheet = false
+            },
+            isSubmitEnabled = isValidSelection,
+            onSubmit = {
+                studentBillVM.fetchMealConsumption(student?.uuid ?:"")
+                navController.navigate(Screen.StudentBillScreen.route)
+                showBtmSheet = false
+            }
+        )
     }
 }
 

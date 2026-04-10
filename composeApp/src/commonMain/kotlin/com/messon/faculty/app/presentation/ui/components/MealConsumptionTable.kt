@@ -1,0 +1,197 @@
+package com.messon.faculty.app.presentation.ui.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import com.messon.faculty.app.domain.dataModel.MealDetail
+import com.messon.faculty.app.domain.dataModel.StudentMealDay
+import com.messon.faculty.app.theme.CustomColors
+import com.messon.faculty.app.utils.MealType
+import com.messon.faculty.app.utils.toIsoDate
+
+@Composable
+fun StudentMealTable(
+    meals: List<StudentMealDay>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(CustomColors.OffWhite)
+    ) {
+        TableHeaderRow()
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        LazyColumn(
+            contentPadding = PaddingValues(bottom = 10.dp),
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(meals) { mealDay ->
+                MealRow(mealDay)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TableHeaderRow() {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(CustomColors.RichCerulean, RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        val (dateRef, bfastRef, lunchRef, dinnerRef) = createRefs()
+
+        Text(
+            text = "DATE",
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier.constrainAs(dateRef) {
+                start.linkTo(parent.start)
+                width = Dimension.percent(0.25f)
+            }
+        )
+        Text(
+            text = "BREAKFAST",
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier.constrainAs(bfastRef) {
+                start.linkTo(dateRef.end)
+                width = Dimension.percent(0.25f)
+            }
+        )
+        Text(
+            text = "LUNCH",
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier.constrainAs(lunchRef) {
+                start.linkTo(bfastRef.end)
+                width = Dimension.percent(0.25f)
+            }
+        )
+        Text(
+            text = "DINNER",
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier.constrainAs(dinnerRef) {
+                start.linkTo(lunchRef.end)
+                end.linkTo(parent.end)
+                width = Dimension.percent(0.25f)
+            }
+        )
+    }
+}
+
+@Composable
+private fun MealRow(mealDay: StudentMealDay) {
+    Card(
+        shape = RoundedCornerShape(0.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 16.dp)
+        ) {
+            val (dateRef, bfastRef, lunchRef, dinnerRef) = createRefs()
+
+            Column(
+                modifier = Modifier.constrainAs(dateRef) {
+                    start.linkTo(parent.start)
+                    width = Dimension.percent(0.25f)
+                }
+            ) {
+                Text(
+                    text = mealDay.date,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.5.sp,
+                    color = Color.Black
+                )
+            }
+
+            Box(modifier = Modifier.constrainAs(bfastRef) {
+                start.linkTo(dateRef.end)
+                width = Dimension.percent(0.25f)
+            }) {
+                MealStatusIndicator(mealDay.breakfast)
+            }
+
+            Box(modifier = Modifier.constrainAs(lunchRef) {
+                start.linkTo(bfastRef.end)
+                width = Dimension.percent(0.25f)
+            }) {
+                MealStatusIndicator(mealDay.lunch)
+            }
+
+            Box(modifier = Modifier.constrainAs(dinnerRef) {
+                start.linkTo(lunchRef.end)
+                end.linkTo(parent.end)
+                width = Dimension.percent(0.25f)
+            }) {
+                MealStatusIndicator(mealDay.dinner)
+            }
+        }
+    }
+    Divider(color = CustomColors.LightBlue, thickness = 1.dp)
+}
+
+@Composable
+private fun MealStatusIndicator(detail: MealDetail) {
+    if (!detail.selected) {
+        Text(
+            text = "—",
+            color = Color.LightGray,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(start = 4.dp)
+        )
+    } else {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            Icon(
+                imageVector = if (detail.consumed) Icons.Default.CheckCircle else Icons.Default.Close,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = if (detail.consumed) CustomColors.RichCerulean else CustomColors.HoneyBronze
+            )
+            val mealType = MealType.from(detail.meaType)
+
+            Text(
+                text = when (mealType) {
+                    MealType.VEG -> "Veg"
+                    MealType.NON_VEG -> "Non-Veg"
+                    MealType.NONE -> ""
+                },
+                color = CustomColors.BlackberryCream,
+                fontSize = 12.sp,
+                maxLines = 1
+            )
+        }
+    }
+}
+

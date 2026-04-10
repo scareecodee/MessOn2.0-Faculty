@@ -42,6 +42,7 @@ fun AppNav(
     val homeScreenVM: HomeScreenVM=koinViewModel()
     val messClosureVM: MessClosureVM=koinViewModel()
     val messBillVM: MessBillVM=koinViewModel()
+    val studentBillVM: StudentBillVM=koinViewModel()
 
     val isMessClosurePart by homeScreenVM.isMessClosurePart.collectAsState()
 
@@ -372,12 +373,13 @@ fun AppNav(
             exitTransition = exitRight
         ){
             StudentDetailScreen(
-                onViewBillClick = {},
-                onBackClick ={navController.popBackStack()} ,
-                onEditClick ={
-                  navController.navigate( Screen.EditStudentScreen.route)
+                onBackClick = { navController.popBackStack() },
+                onEditClick = {
+                    navController.navigate(Screen.EditStudentScreen.route)
                 },
-                studentDetailScreenVM =studentDetailVM
+                studentDetailScreenVM = studentDetailVM,
+                studentBillVM = studentBillVM,
+                navController = navController
             )
         }
 
@@ -466,6 +468,17 @@ fun AppNav(
             MessBillScreen(
                 onBackBtnClick ={navController.popBackStack()},
                 messBillVM =messBillVM
+            )
+        }
+
+        composable (
+            route=Screen.StudentBillScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            StudentBillScreen(
+                onBackClick = {navController.popBackStack()},
+                studentBillVM=studentBillVM
             )
         }
         

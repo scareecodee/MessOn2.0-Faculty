@@ -18,3 +18,8 @@ data class BillReq(
     val startDate: String?,
     val endDate: String?,
 )
+
+data class StudentDetailedBillHistory(
+    val history:List<StudentMealDay>,
+    val bill:List<StudentBillingData>
+)

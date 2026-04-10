@@ -51,6 +51,7 @@ import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
 import com.messon.faculty.app.theme.CustomColors.OffWhite
 import com.messon.faculty.app.utils.PredefinedOptions
 import com.messon.faculty.app.utils.Screen
+import com.messon.faculty.app.utils.toIsoDate
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import multiplatform.network.cmptoast.showToast
@@ -220,10 +221,10 @@ fun BillingMessListScreen(
             fromDate = fromDate,
             toDate = toDate,
             onFromDateChange = {
-                messBillVM.setFromDate(it)
+                messBillVM.setFromDate(it.toIsoDate())
             },
             onToDateChange = {
-                messBillVM.setEndDate(it)
+                messBillVM.setEndDate(it.toIsoDate())
             },
 
             onDismiss = {

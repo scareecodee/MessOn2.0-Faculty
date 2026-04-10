@@ -71,3 +71,22 @@ fun Long.toFormattedDate(): String {
 
     return "${localDate.dayOfMonth} $month ${localDate.year}"
 }
+
+
+fun String.toIsoDate(): String {
+    val months = mapOf(
+        "January" to 1, "February" to 2, "March" to 3,
+        "April" to 4, "May" to 5, "June" to 6,
+        "July" to 7, "August" to 8, "September" to 9,
+        "October" to 10, "November" to 11, "December" to 12
+    )
+
+    val parts = this.trim().split(" ")
+    require(parts.size == 3) { "Invalid date format" }
+
+    val day = parts[0].toInt()
+    val month = months[parts[1]] ?: error("Invalid month")
+    val year = parts[2].toInt()
+
+    return LocalDate(year, month, day).toString()
+}

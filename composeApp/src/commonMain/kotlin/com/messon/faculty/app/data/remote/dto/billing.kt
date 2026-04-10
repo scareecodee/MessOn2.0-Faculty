@@ -1,5 +1,6 @@
 package com.messon.faculty.app.data.remote.dto
 
+import com.messon.faculty.app.domain.dataModel.StudentMealDay
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -51,4 +52,14 @@ data class BillReqDto(
 
     @SerialName("end_date")
     val endDate: String?,
+)
+
+
+@Serializable
+data class StudentDetailedBillHistoryDto(
+    @SerialName("consumption_history")
+    val history:List<StudentMealDayDto>,
+
+    @SerialName("bill")
+    val bill:List<StudentBillDto>
 )

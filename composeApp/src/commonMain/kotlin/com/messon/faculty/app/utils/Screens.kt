@@ -47,6 +47,8 @@ sealed class Screen(val route: String) {
     object MealPriceScreen: Screen("meal_price_screen")
 
     object MessBillScreen:Screen("mess_bill_screen")
+    object StudentBillScreen:Screen("student_bill_screen")
+
 
 
 }

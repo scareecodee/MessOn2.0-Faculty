@@ -26,6 +26,7 @@ import com.messon.faculty.app.presentation.viewmodel.ManagerListVM
 import com.messon.faculty.app.presentation.viewmodel.MessBillVM
 import com.messon.faculty.app.presentation.viewmodel.MessClosureVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
+import com.messon.faculty.app.presentation.viewmodel.StudentBillVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
 import kotlinx.coroutines.Dispatchers
@@ -143,6 +144,10 @@ val sharedModule = module {
 
     viewModel {
         MessBillVM(get(),get())
+    }
+
+    viewModel {
+        StudentBillVM(get(),get())
     }
 
 }
