@@ -36,7 +36,7 @@ class GoogleAuthAndroid(
             val request = GetCredentialRequest.Builder()
                 .addCredentialOption(option)
                 .build()
-            val result = withTimeout(15000L) { // 15 seconds
+            val result = withTimeout(15000L) {
                 credentialManager.getCredential(context, request)
             }
 

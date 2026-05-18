@@ -100,17 +100,14 @@ fun StudentBillCard(
                 }
             }
 
-            // --- RIGHT DATA SECTION (Constraint Layout) ---
             ConstraintLayout(
                 modifier = Modifier
                     .weight(0.65f)
                     .fillMaxHeight()
                     .padding(16.dp)
             ) {
-                // Create References
                 val (rollNoRef, branchRef, cycleRef, dividerRef, billRef, periodsRef) = createRefs()
 
-                // Roll No Block
                 InfoBlock(
                     icon = Icons.Default.Person,
                     label = "ROLL NO",

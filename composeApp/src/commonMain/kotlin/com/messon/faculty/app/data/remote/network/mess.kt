@@ -25,7 +25,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headersOf
 
-private const val BASE_URL = "http://172.18.9.63:8000/"
+private const val BASE_URL ="https://messon2-0-backend-testingv1.onrender.com/"
 
 class MessApi(
     private val httpClient: HttpClient

@@ -43,10 +43,6 @@ fun AppNav(
     val messClosureVM: MessClosureVM=koinViewModel()
     val messBillVM: MessBillVM=koinViewModel()
     val studentBillVM: StudentBillVM=koinViewModel()
-
-    val isMessClosurePart by homeScreenVM.isMessClosurePart.collectAsState()
-
-
     val authState by authViewModel.uiState.collectAsStateWithLifecycle()
 
     var hasNavigated by rememberSaveable{ mutableStateOf(false) }
@@ -95,8 +91,7 @@ fun AppNav(
         startDestination = Screen.CollegeListScreen.route,
         modifier = Modifier.fillMaxSize()
     ) {
-
-
+        
         composable(
             route = Screen.StudentScreen.route,
             enterTransition = enterLeft,
@@ -173,8 +168,8 @@ fun AppNav(
                         launchSingleTop = true
                     }
                 },
-                isMessClosurePart =isMessClosurePart,
                 navController = navController,
+                homeScreenVM = homeScreenVM,
             )
         }
 
@@ -352,14 +347,19 @@ fun AppNav(
                 onBillCardClick = {
                     navController.navigate(Screen.BillingMessListScreen.route)
                 },
-                onNoticeCardClick = {},
+                onNoticeCardClick = {
+                    homeScreenVM.updateScreenRoute(Screen.SendNotificationScreen.route)
+                    navController.navigate(Screen.MessListScreen.route)
+                },
                 onMessCardClick = {
+                    homeScreenVM.updateScreenRoute(screenRoute = Screen.DashboardScreen.route)
                     navController.navigate(Screen.MessListScreen.route)
                 },
                 onAdminCardClick = {
                     navController.navigate(Screen.CollegeAdminScreen.route)
                 },
                 onClosureCardClick = {
+                    homeScreenVM.updateScreenRoute(Screen.HolidaysListScreen.route)
                     navController.navigate(Screen.MessListScreen.route)
                 },
                 onFeedbackCardClick = {},
@@ -481,6 +481,17 @@ fun AppNav(
                 studentBillVM=studentBillVM
             )
         }
+
+        composable (
+            route=Screen.SendNotificationScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+           BroadcastNotificationScreen(
+               onViewHistoryClick = {}
+           )
+        }
+
         
     }
 }

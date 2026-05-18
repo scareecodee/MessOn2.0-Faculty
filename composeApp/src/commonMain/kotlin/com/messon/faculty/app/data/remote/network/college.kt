@@ -13,7 +13,7 @@ import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
 import io.ktor.client.request.get
 
-private const val BASE_URL = "http://172.18.9.63:8000/"
+private const val BASE_URL = "https://messon2-0-backend-testingv1.onrender.com/"
 
 class CollegeApi(
     private val httpClient: HttpClient

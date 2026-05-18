@@ -47,6 +47,7 @@ import com.messon.faculty.app.presentation.ui.components.MessCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.uiState.FetchCollegesState
 import com.messon.faculty.app.presentation.ui.uiState.FetchMessState
+import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
@@ -60,13 +61,13 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun MessListScreen(
-    isMessClosurePart: Boolean=false,
     navController: NavController,
     onBackBtnClick:()-> Unit,
     onFabClick:()-> Unit,
-    messListVM: MessListVM
+    messListVM: MessListVM,
+    homeScreenVM: HomeScreenVM
 ) {
-
+    val screenRoute by homeScreenVM.screenRoute.collectAsState()
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
     val uiState by messListVM.uiState.collectAsState()
@@ -177,13 +178,7 @@ fun MessListScreen(
                         mess = mess,
                         onCardClick = {
                             messListVM.selectMess(mess = mess)
-                            if(isMessClosurePart){
-                                navController.navigate(Screen.HolidaysListScreen.route)
-                            }else{
-                                navController.navigate(Screen.DashboardScreen.route) {
-                                    launchSingleTop = true
-                                }
-                            }
+                            screenRoute?.let { navController.navigate(it) }
                         }
                     )
                 }
@@ -191,7 +186,7 @@ fun MessListScreen(
         }
 
 
-        if(!isMessClosurePart){
+        if(screenRoute.equals(Screen.DashboardScreen.route)){
             FloatingActionButton(
                 shape = CircleShape,
                 onClick = onFabClick,

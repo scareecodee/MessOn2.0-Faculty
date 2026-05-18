@@ -7,7 +7,7 @@ sealed class Screen(val route: String) {
     object HomeScreen: Screen("home_screen")
     object LoginScreen: Screen("login_screen")
 
-    object NotificationScreen: Screen(route ="notification_screen")
+    object SendNotificationScreen: Screen(route ="send_notification_screen")
     object CsvPreviewScreen: Screen(route="csv_preview_screen")
     object StudentScreen: Screen(route ="student_screen")
     object AddStudentManuallyScreen: Screen(route ="add_student_manually_screen")
@@ -36,7 +36,6 @@ sealed class Screen(val route: String) {
     object CollegeListScreen: Screen(route = "college_list_screen")
 
     object AddCollegeAdminScreen: Screen(route = "add_college_admin_screen")
-    object MessClosureScreen: Screen(route = "mess_closure_screen")
     object MessSettingScreen: Screen(route = "mess_setting_screen")
 
     object HolidaysListScreen: Screen(route = "holidays_list_screen")

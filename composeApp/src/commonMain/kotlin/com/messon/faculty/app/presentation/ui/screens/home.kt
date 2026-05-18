@@ -57,6 +57,7 @@ import com.messon.faculty.app.theme.CustomColors.Mint
 import com.messon.faculty.app.theme.CustomColors.OffWhite
 import com.messon.faculty.app.theme.CustomColors.RichCerulean
 import com.messon.faculty.app.theme.CustomColors.Teal
+import com.messon.faculty.app.utils.Screen
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansregular
@@ -145,7 +146,6 @@ fun HomeScreen(
                     primaryColor = Teal,
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        homeScreenVM.updateIsMessClosure(false)
                         onMessCardClick()
                     }
                 )
@@ -158,7 +158,6 @@ fun HomeScreen(
                     primaryColor = BlackberryCream,
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        homeScreenVM.updateIsMessClosure(true)
                         onClosureCardClick()
                     }
 
