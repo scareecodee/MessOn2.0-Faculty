@@ -24,7 +24,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 
-private const val BASE_URL ="https://messon2-0-backend-testingv1.onrender.com/"
+private const val BASE_URL ="https://demo.messon.online/"
+
 
 class CsvUpload(
     private val httpClient: HttpClient

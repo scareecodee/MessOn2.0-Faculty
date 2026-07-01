@@ -8,7 +8,7 @@ import com.messon.faculty.app.domain.dataModel.ManagerCreateRes
 
 fun ManagerCreateResDto.toDomain(): ManagerCreateRes{
     return ManagerCreateRes(
-        id = id,
+//        id = id,
         name = name,
         isActive =isActive,
         mailId = mailId

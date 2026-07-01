@@ -18,7 +18,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 
-private const val BASE_URL ="https://messon2-0-backend-testingv1.onrender.com/"
+private const val BASE_URL ="https://demo.messon.online/"
 
 class ManagerApi(
     private val httpClient: HttpClient

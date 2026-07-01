@@ -1,12 +1,14 @@
 package com.messon.faculty.app.di
 
 
+import com.messon.faculty.app.data.remote.network.AdminApi
 import com.messon.faculty.app.data.remote.network.Auth
 import com.messon.faculty.app.data.remote.network.CollegeApi
 import com.messon.faculty.app.data.remote.network.CsvUpload
 import com.messon.faculty.app.data.remote.network.ManagerApi
 import com.messon.faculty.app.data.remote.network.MessApi
 import com.messon.faculty.app.data.remote.network.StudentApi
+import com.messon.faculty.app.domain.repository.AdminRepository
 import com.messon.faculty.app.domain.repository.AuthRepository
 import com.messon.faculty.app.domain.repository.CollegeRepository
 import com.messon.faculty.app.domain.repository.CsvRepository
@@ -42,13 +44,14 @@ val sharedModule = module {
     single { MessApi(get()) }
     single { CollegeApi(get()) }
     single { ManagerApi(get()) }
-
+    single{ AdminApi(get()) }
 
     single{ StudentRepository(get()) }
     single{ CollegeRepository(get()) }
     single{ MessRepository(get()) }
     single { CsvRepository(get()) }
     single{ ManagerRepository(get()) }
+    single{ AdminRepository(get()) }
 
 
     single { Auth(get()) }
@@ -84,7 +87,8 @@ val sharedModule = module {
     viewModel {
         StudentScreenVM(
             get(),
-            secureStorage = get()
+            secureStorage = get(),
+            adminRepository = get()
         )
     }
 

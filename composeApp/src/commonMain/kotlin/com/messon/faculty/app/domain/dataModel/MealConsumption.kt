@@ -1,7 +1,7 @@
 package com.messon.faculty.app.domain.dataModel
 
 data class MealDetail(
-    val meaType: String,
+    val meaType: String?,
     val consumed: Boolean,
     val selected: Boolean
 )

@@ -1,7 +1,8 @@
 package com.messon.faculty.app.presentation.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -27,7 +30,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil3.compose.AsyncImage
 import com.messon.faculty.app.theme.CustomColors
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,6 +47,9 @@ fun StudentCard(
     studentId: String,
     isActive: Boolean,
     imageUrl: String? = null,
+    isSelected: Boolean,
+    selectionMode: Boolean,
+    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     onMoreClick: () -> Unit = {}
@@ -53,10 +58,28 @@ fun StudentCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+            .then(
+                if (isSelected) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = CustomColors.RichCerulean,
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                } else {
+                    Modifier
+                }
+            )
+            .combinedClickable(
+                onClick = { onClick() },
+                onLongClick = { onLongClick() }
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isSelected) 4.dp else 2.dp
+        )
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -69,7 +92,12 @@ fun StudentCard(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(CustomColors.LightBlue)
+                    .background(
+                        if (isSelected)
+                            CustomColors.RichCerulean
+                        else
+                            CustomColors.LightBlue
+                    )
                     .constrainAs(profileImage) {
                         start.linkTo(parent.start)
                         top.linkTo(parent.top)
@@ -77,38 +105,30 @@ fun StudentCard(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                if (imageUrl.isNullOrEmpty()) {
+                if (isSelected) {
                     Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = "No Profile Image",
-                        tint = CustomColors.RichCerulean,
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color.White,
                         modifier = Modifier.size(28.dp)
                     )
                 } else {
-                    AsyncImage(
-                        model = imageUrl,
-                        contentDescription = "Profile picture of $name",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-
-            IconButton(
-                onClick = onMoreClick,
-                modifier = Modifier
-                    .size(24.dp)
-                    .constrainAs(optionsIcon) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                    if (imageUrl.isNullOrEmpty()) {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null,
+                            tint = CustomColors.RichCerulean,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    } else {
+                        AsyncImage(
+                            model = imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
                     }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Options",
-                    tint = CustomColors.LightGrayBlue
-                )
+                }
             }
 
             val statusBgColor = if (isActive) CustomColors.Cream else Color.LightGray.copy(alpha = 0.2f)
@@ -121,7 +141,10 @@ fun StudentCard(
                     .background(statusBgColor)
                     .padding(horizontal = 12.dp, vertical = 6.dp)
                     .constrainAs(statusBadge) {
-                        end.linkTo(optionsIcon.start, margin = 12.dp)
+                        end.linkTo(
+                            if (selectionMode) parent.end else optionsIcon.start,
+                            margin = if (selectionMode) 0.dp else 12.dp
+                        )
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                     },
@@ -129,18 +152,37 @@ fun StudentCard(
             ) {
                 Text(
                     text = statusText,
-                    fontFamily = FontFamily(Font((Res.font.publicsansregular))),
+                    fontFamily = FontFamily(Font(Res.font.publicsansregular)),
                     fontSize = 10.sp,
                     letterSpacing = 0.5.sp,
                     color = statusTextColor
                 )
             }
 
+            if (!selectionMode) {
+                IconButton(
+                    onClick = onMoreClick,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .constrainAs(optionsIcon) {
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Options",
+                        tint = CustomColors.LightGrayBlue
+                    )
+                }
+            }
+
             createVerticalChain(nameText, idText, chainStyle = ChainStyle.Packed)
 
             Text(
                 text = name,
-                fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
+                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                 fontSize = 12.sp,
                 color = CustomColors.BlackberryCream,
                 maxLines = 1,
@@ -155,7 +197,7 @@ fun StudentCard(
             Text(
                 text = "ID: $studentId",
                 fontSize = 10.sp,
-                fontFamily = FontFamily(Font((Res.font.publicsansmedium))),
+                fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                 color = CustomColors.LightGrayBlue,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

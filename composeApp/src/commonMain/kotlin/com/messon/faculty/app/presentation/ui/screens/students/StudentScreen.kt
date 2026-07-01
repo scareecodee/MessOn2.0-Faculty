@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,6 +22,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -73,6 +77,7 @@ import messon_faculty.composeapp.generated.resources.publicsansregular
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentScreen(
@@ -81,10 +86,9 @@ fun StudentScreen(
     filePickerViewModel: FilePickerViewModel,
     navController: NavController,
     studentDetailScreenVM: StudentDetailScreenVM,
-    onStudentClick:()-> Unit,
+    onStudentClick: () -> Unit,
     studentScreenVM: StudentScreenVM,
     messListVM: MessListVM
-
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val fetchStudentsState by studentScreenVM.state.collectAsState()
@@ -93,9 +97,10 @@ fun StudentScreen(
     var isLoading by remember { mutableStateOf(false) }
     var isSheetOpen by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
+    val selectedStudents by studentScreenVM.selectedStudents.collectAsState()
+    val selectionMode = selectedStudents.isNotEmpty()
 
     val selectedMess by messListVM.selectedMess.collectAsState()
-
 
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
@@ -136,12 +141,9 @@ fun StudentScreen(
         file?.let {
             selectedFile = it
             showToast(it.name)
-
             filePickerViewModel.onFilePick(it)
         }
     }
-
-
 
     LaunchedEffect(lazyListState, fetchStudentsState) {
         snapshotFlow { lazyListState.layoutInfo }
@@ -153,7 +155,7 @@ fun StudentScreen(
                 if (lastVisibleIndex >= totalItems - 3 &&
                     totalItems > 0 &&
                     !fetchStudentsState.isLoadingMore &&
-                    !fetchStudentsState.endReached&&
+                    !fetchStudentsState.endReached &&
                     fetchStudentsState.error == null
                 ) {
                     studentScreenVM.loadNextItems()
@@ -166,15 +168,15 @@ fun StudentScreen(
         color = Color.White
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-
-            ConstraintLayout(modifier = Modifier.fillMaxSize()
-                .background(CustomColors.OffWhite)
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(CustomColors.OffWhite)
             ) {
                 val (
                     statusBarBox, headingRef, listRef,
-                    backBtnRef, searchBarRef,
-                    addStudentBtnRef,
-                    filterChipsRow
+                    backBtnRef, searchBarRef, selectionButtonsRef,
+                    addStudentBtnRef
                 ) = createRefs()
 
                 Box(
@@ -187,7 +189,6 @@ fun StudentScreen(
                         }
                 )
 
-
                 IconButton(
                     onClick = {
                         filePickerViewModel.clear()
@@ -198,10 +199,12 @@ fun StudentScreen(
                         top.linkTo(statusBarBox.bottom, 10.dp)
                     }
                 ) {
-                    Icon(Icons.Default.ChevronLeft, contentDescription = "back", modifier = Modifier.size(28.dp)
+                    Icon(
+                        Icons.Default.ChevronLeft,
+                        contentDescription = "back",
+                        modifier = Modifier.size(28.dp)
                     )
                 }
-
 
                 Text(
                     text = "Students List",
@@ -212,7 +215,6 @@ fun StudentScreen(
                         centerVerticallyTo(backBtnRef)
                     }
                 )
-
 
                 Button(
                     shape = RoundedCornerShape(30.dp),
@@ -227,26 +229,25 @@ fun StudentScreen(
                     }
                         .height(40.dp)
                 ) {
-
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add Student",
                         tint = CustomColors.RichCerulean,
                         modifier = Modifier.size(20.dp)
                     )
-
                     Text(
                         text = "Add Students ",
                         fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                         fontSize = 10.sp,
                         color = CustomColors.RichCerulean,
-                    )                }
+                    )
+                }
 
                 SearchBar(
                     query = query,
                     onQueryChange = { query = it
-                        studentScreenVM.setSearch(search =query)
-                                    },
+                        studentScreenVM.setSearch(search = query)
+                    },
                     modifier = Modifier.constrainAs(searchBarRef) {
                         top.linkTo(backBtnRef.bottom, 20.dp)
                         start.linkTo(parent.start, 10.dp)
@@ -254,6 +255,80 @@ fun StudentScreen(
                         width = Dimension.fillToConstraints
                     }
                 )
+
+                if (selectionMode) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .constrainAs(selectionButtonsRef) {
+                                top.linkTo(searchBarRef.bottom, 12.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                width = Dimension.fillToConstraints
+                            },
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Cancel Button
+                        Button(
+                            onClick = {
+                                studentScreenVM.clearSelection()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White,
+                                contentColor = CustomColors.RichCerulean
+                            ),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = CustomColors.LightGrayBlue
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(44.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Cancel Selection",
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Cancel (${selectedStudents.size})",
+                                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+                                fontSize = 13.sp,
+                                color = CustomColors.RichCerulean
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                studentScreenVM.deleteSelectedStudents()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = CustomColors.RichCerulean,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(44.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete Selected",
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Delete (${selectedStudents.size})",
+                                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+                                fontSize = 13.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
 
                 PullToRefreshBox(
                     state = pullToRefreshState,
@@ -272,7 +347,10 @@ fun StudentScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .constrainAs(listRef) {
-                            top.linkTo(searchBarRef.bottom, 16.dp)
+                            top.linkTo(
+                                if (selectionMode) selectionButtonsRef.bottom else searchBarRef.bottom,
+                                16.dp
+                            )
                             bottom.linkTo(parent.bottom, margin = 5.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
@@ -280,8 +358,8 @@ fun StudentScreen(
                             height = Dimension.fillToConstraints
                         },
                     contentAlignment = Alignment.TopCenter
-                ){
-                    Spacer(modifier= Modifier.height(6.dp))
+                ) {
+                    Spacer(modifier = Modifier.height(6.dp))
 
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -289,8 +367,9 @@ fun StudentScreen(
                         state = lazyListState,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(fetchStudentsState.students,
-                            key = {it.studentId}
+                        items(
+                            fetchStudentsState.students,
+                            key = { it.studentId }
                         ) { student ->
                             StudentCard(
                                 modifier = Modifier.fillMaxWidth(),
@@ -300,9 +379,18 @@ fun StudentScreen(
                                 isActive = student.isActive,
                                 onMoreClick = {},
                                 onClick = {
-                                    studentDetailScreenVM.selectStudent(student)
-                                    onStudentClick()
-                                }
+                                    if (selectionMode) {
+                                        studentScreenVM.toggleSelection(student.uuid)
+                                    } else {
+                                        studentDetailScreenVM.selectStudent(student)
+                                        onStudentClick()
+                                    }
+                                },
+                                isSelected = student.uuid in selectedStudents,
+                                selectionMode = selectionMode,
+                                onLongClick = {
+                                    studentScreenVM.toggleSelection(student.uuid)
+                                },
                             )
                         }
                         if (fetchStudentsState.isLoadingMore || fetchStudentsState.error != null) {
@@ -325,7 +413,7 @@ fun StudentScreen(
                                                 text = "Unable to load more",
                                                 fontSize = 14.sp,
                                                 fontFamily = FontFamily(Font(Res.font.publicsansregular)),
-                                                color =Color.Black,
+                                                color = Color.Black,
                                             )
                                         }
                                     }
@@ -335,7 +423,6 @@ fun StudentScreen(
                     }
                 }
             }
-
 
             if (isLoading) {
                 Box(

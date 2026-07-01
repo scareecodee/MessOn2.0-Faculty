@@ -2,6 +2,7 @@ package com.messon.faculty.app.data.remote.network
 import co.touchlab.kermit.Logger
 import com.messon.faculty.app.data.remote.dto.AdminCreateReqDto
 import com.messon.faculty.app.data.remote.dto.AdminCreateResDto
+import com.messon.faculty.app.data.remote.dto.DeleteUsersDto
 import com.messon.faculty.app.utils.NetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -11,11 +12,12 @@ import io.ktor.http.contentType
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import com.messon.faculty.app.utils.Result
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.setBody
 
-private const val BASE_URL = "https://messon2-0-backend-testingv1.onrender.com/"
+private const val BASE_URL ="https://demo.messon.online/"
 
 class AdminApi(
     private val httpClient: HttpClient
@@ -99,6 +101,53 @@ class AdminApi(
         return when(response.status.value){
             in 200..299->{
                 val mess=response.body<List<AdminCreateResDto>>()
+                Result.Success(mess)
+            }
+            401->Result.Error(NetworkError.UNAUTHORIZED)
+            403->Result.Error(NetworkError.FORBIDDEN)
+            409 -> Result.Error(NetworkError.CONFLICT)
+            408 ->  Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 ->  Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599->  Result.Error(NetworkError.SERVER_ERROR)
+            else ->  Result.Error(NetworkError.UNKNOWN)
+        }
+    }
+
+    suspend fun deleteUsers(
+        token: String,
+       deleteUsersDto: DeleteUsersDto
+    ): Result<String, NetworkError>
+    {
+        Log.d(tag = "Ktor", message = {deleteUsersDto.toString()})
+
+        val response=try {
+            httpClient.delete(
+                urlString = "${BASE_URL}delete/users"
+            ) {
+
+                contentType(ContentType.Application.Json)
+                header("Authorization", "Bearer $token")
+                setBody(
+                    deleteUsersDto
+                )
+            }
+        } catch (e: UnresolvedAddressException){
+            return  Result.Error(NetworkError.NO_INTERNET)
+        }
+        catch (e: SerializationException){
+            return  Result.Error(NetworkError.SERIALIZATION)
+        }
+        catch (e: Exception){
+            Log.d(tag = "Ktor", message = {e.message.toString()})
+
+            return  Result.Error(NetworkError.UNKNOWN)
+        }
+        Log.d(tag = "Ktor", message = {response.toString()})
+        println("STATUS CODE = ${response.status}")
+
+        return when(response.status.value){
+            in 200..299->{
+                val mess=response.body<String>()
                 Result.Success(mess)
             }
             401->Result.Error(NetworkError.UNAUTHORIZED)

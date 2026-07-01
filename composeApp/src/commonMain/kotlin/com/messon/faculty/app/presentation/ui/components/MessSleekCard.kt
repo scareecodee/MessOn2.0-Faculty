@@ -60,7 +60,7 @@ fun MessSleekCard(
                         width = Dimension.fillToConstraints
                     }
                     .clip(RoundedCornerShape(32.dp))
-                    .background(CustomColors.BackgroundGray)
+                    .background(CustomColors.LightGrayBlue)
                     .padding(24.dp)
             ) {
                 Column {
@@ -144,8 +144,7 @@ private fun GlassButton(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(CustomColors.GlassBlue)
-            .border(1.dp, CustomColors.GlassStroke, RoundedCornerShape(16.dp))
+            .border(1.dp, CustomColors.RichCerulean, RoundedCornerShape(16.dp))
             .clickable { onClick() }
             .padding(16.dp)
     ) {

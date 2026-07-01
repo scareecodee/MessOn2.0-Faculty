@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class MealDetailDto(
 
     @SerialName("meal_type")
-    val mealType: String,
+    val mealType: String?,
 
     @SerialName("consumed")
     val hasConsumed: Boolean,

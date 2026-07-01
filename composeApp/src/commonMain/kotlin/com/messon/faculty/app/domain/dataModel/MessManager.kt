@@ -11,7 +11,7 @@ data class ManagerCreateReq(
 
 data class ManagerCreateRes(
 
-    val id: String,
+//    val id: String,
     val name: String,
     val mailId: String,
     val isActive: Boolean

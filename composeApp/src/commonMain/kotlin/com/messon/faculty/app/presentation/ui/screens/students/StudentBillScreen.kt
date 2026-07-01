@@ -107,8 +107,8 @@ fun StudentBillScreen(
                     student = bill.first(),
                     modifier = Modifier.constrainAs(billCard){
                         top.linkTo(headingRef.bottom, margin = 15.dp)
-                        end.linkTo(parent.end, margin = 7.dp)
-                        start.linkTo(parent.start, margin = 7.dp)
+                        end.linkTo(parent.end, margin = 4.dp)
+                        start.linkTo(parent.start, margin = 4.dp)
                         width = Dimension.fillToConstraints
                     }
                 )

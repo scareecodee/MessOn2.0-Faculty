@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +24,11 @@ import com.messon.faculty.app.domain.dataModel.StudentMealDay
 import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.MealType
 import com.messon.faculty.app.utils.toIsoDate
+import messon_faculty.composeapp.generated.resources.Res
+import messon_faculty.composeapp.generated.resources.publicsansbold
+import messon_faculty.composeapp.generated.resources.publicsansmedium
+import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import org.jetbrains.compose.resources.Font
 
 @Composable
 fun StudentMealTable(
@@ -63,8 +69,8 @@ private fun TableHeaderRow() {
         Text(
             text = "DATE",
             color = Color.White,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Black,
+            fontSize = 10.sp,
+            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(dateRef) {
                 start.linkTo(parent.start)
                 width = Dimension.percent(0.25f)
@@ -73,8 +79,8 @@ private fun TableHeaderRow() {
         Text(
             text = "BREAKFAST",
             color = Color.White,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Black,
+            fontSize = 10.sp,
+            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(bfastRef) {
                 start.linkTo(dateRef.end)
                 width = Dimension.percent(0.25f)
@@ -83,8 +89,8 @@ private fun TableHeaderRow() {
         Text(
             text = "LUNCH",
             color = Color.White,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Black,
+            fontSize = 10.sp,
+            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(lunchRef) {
                 start.linkTo(bfastRef.end)
                 width = Dimension.percent(0.25f)
@@ -93,8 +99,8 @@ private fun TableHeaderRow() {
         Text(
             text = "DINNER",
             color = Color.White,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Black,
+            fontSize = 10.sp,
+            fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(dinnerRef) {
                 start.linkTo(lunchRef.end)
                 end.linkTo(parent.end)
@@ -126,8 +132,8 @@ private fun MealRow(mealDay: StudentMealDay) {
             ) {
                 Text(
                     text = mealDay.date,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.5.sp,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                     color = Color.Black
                 )
             }
@@ -189,6 +195,7 @@ private fun MealStatusIndicator(detail: MealDetail) {
                 },
                 color = CustomColors.BlackberryCream,
                 fontSize = 12.sp,
+                fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                 maxLines = 1
             )
         }

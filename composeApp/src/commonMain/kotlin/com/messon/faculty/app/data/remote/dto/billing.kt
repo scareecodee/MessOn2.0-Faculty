@@ -1,6 +1,5 @@
 package com.messon.faculty.app.data.remote.dto
 
-import com.messon.faculty.app.domain.dataModel.StudentMealDay
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -6,3 +6,8 @@ data class User(
     val profileImg: String,
     val id:String
 )
+
+data class DeleteUsers(
+    val role: String,
+    val userIds:List<String>
+)

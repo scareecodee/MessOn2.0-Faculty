@@ -21,8 +21,8 @@ data class ManagerCreateReqDto(
 
 @Serializable
 data class ManagerCreateResDto(
-    @SerialName("id")
-    val id: String,
+//    @SerialName("id")
+//    val id: String,
 
     @SerialName("name")
     val name: String,

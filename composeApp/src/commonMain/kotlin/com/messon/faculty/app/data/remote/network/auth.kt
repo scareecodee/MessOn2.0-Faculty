@@ -17,7 +17,7 @@ import com.messon.faculty.app.utils.Result
 import com.messon.faculty.app.utils.UserRole
 import io.ktor.client.request.parameter
 
-private const val BASE_URL = "https://messon2-0-backend-testingv1.onrender.com/"
+private const val BASE_URL ="https://demo.messon.online/"
 
 class Auth(
     private val httpClient: HttpClient

@@ -2,8 +2,8 @@ package com.messon.faculty.app.theme
 import androidx.compose.ui.graphics.Color
 
 object CustomColors{
-    val RichCerulean = Color(0xFF2274A5)
-    val HoneyBronze = Color(0xFFC99700)
+    val RichCerulean = Color(0xFF2274A5) // primary
+    val HoneyBronze = Color(0xFFC99700) //secondary
     val BlackberryCream = Color(0xFF3B1E2D)
     val LightGrayBlue=Color(0xFFB8C1C8)
 
@@ -14,8 +14,5 @@ object CustomColors{
     val Teal= Color(0xFF2A9D8F)
     val Mint=  Color(0xFFE0F7F5)
     val SuccessGreen = Color(0xFF10B981)
-    val GlassBlue = Color(0xFF2274A5).copy(alpha = 0.08f)
-    val GlassStroke = Color(0xFF2274A5).copy(alpha = 0.15f)
-    val BackgroundGray = Color(0xFFF9FAFB)
 
 }

@@ -1,6 +1,8 @@
 package com.messon.faculty.app.presentation.mapper
 
+import com.messon.faculty.app.data.remote.dto.DeleteUsersDto
 import com.messon.faculty.app.data.remote.dto.UserDto
+import com.messon.faculty.app.domain.dataModel.DeleteUsers
 import com.messon.faculty.app.domain.dataModel.User
 
 fun UserDto.toDomain(): User{
@@ -18,5 +20,13 @@ fun User.toDto(id:String): UserDto{
         email = mailId,
         picture = profileImg,
         id = id
+    )
+}
+
+
+fun DeleteUsers.toDto(): DeleteUsersDto{
+    return DeleteUsersDto(
+        role = role,
+        userIds = userIds
     )
 }

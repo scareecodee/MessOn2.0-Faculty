@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,6 +29,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.StudentBillingData
 import com.messon.faculty.app.theme.CustomColors
+import messon_faculty.composeapp.generated.resources.Res
+import messon_faculty.composeapp.generated.resources.publicsansbold
+import messon_faculty.composeapp.generated.resources.publicsansmedium
+import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import org.jetbrains.compose.resources.Font
 
 @Composable
 fun StudentBillCard(
@@ -66,8 +72,8 @@ fun StudentBillCard(
                     Text(
                         text = student.name.take(1),
                         color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                     )
                 }
 
@@ -75,11 +81,12 @@ fun StudentBillCard(
 
                 Text(
                     text = student.name,
-                    color = Color(0xFF0F172A),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    fontSize = 12.sp,
+                    maxLines =2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                     textAlign = TextAlign.Center,
-                    lineHeight = 20.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -95,7 +102,7 @@ fun StudentBillCard(
                         text = "BATCH ${student.batch}",
                         color = CustomColors.RichCerulean,
                         fontSize = 10.sp,
-                        fontWeight = FontWeight.Black
+                        fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                     )
                 }
             }
@@ -165,15 +172,14 @@ fun StudentBillCard(
                 ) {
                     Text(
                         text = "TOTAL BILL AMOUNT",
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                         color = Color.Gray,
-                        letterSpacing = 0.5.sp
                     )
                     Text(
                         text = "₹${student.totalBill}",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Black,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                         color = CustomColors.HoneyBronze
                     )
                 }
@@ -181,6 +187,7 @@ fun StudentBillCard(
                 Text(
                     text = "${student.totalBillingPeriods} Periods",
                     fontSize = 10.sp,
+                    fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                     color = Color.LightGray,
                     modifier = Modifier.constrainAs(periodsRef) {
                         bottom.linkTo(billRef.bottom, margin = 4.dp)
@@ -204,22 +211,22 @@ fun InfoBlock(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(14.dp).padding(top = 2.dp),
+            modifier = Modifier.size(20.dp).padding(top = 2.dp),
             tint = Color.LightGray
         )
         Spacer(modifier = Modifier.width(6.dp))
         Column {
             Text(
                 text = label,
-                fontSize = 9.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 10.sp,
+                fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                 color = Color.Gray,
                 letterSpacing = 0.5.sp
             )
             Text(
                 text = value,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontSize = 10.sp,
+                fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                 color = Color(0xFF334155),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
