@@ -9,6 +9,6 @@ data class DeleteUsersDto(
     @SerialName("role")
     val role: String,
 
-    @SerialName("user_id")
+    @SerialName("users_id")
     val userIds: List<String>
 )

@@ -58,23 +58,13 @@ fun StudentCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
-            .then(
-                if (isSelected) {
-                    Modifier.border(
-                        width = 1.dp,
-                        color = CustomColors.RichCerulean,
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                } else {
-                    Modifier
-                }
-            )
+            .clip(RoundedCornerShape(20.dp))
             .combinedClickable(
                 onClick = { onClick() },
                 onLongClick = { onLongClick() }
             ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = if(!isSelected) Color.White else CustomColors.LightBlue
         ),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(

@@ -269,7 +269,6 @@ fun StudentScreen(
                             },
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Cancel Button
                         Button(
                             onClick = {
                                 studentScreenVM.clearSelection()
