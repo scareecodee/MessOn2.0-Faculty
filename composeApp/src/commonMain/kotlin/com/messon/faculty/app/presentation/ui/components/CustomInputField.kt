@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansregular
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -39,7 +38,7 @@ fun CustomInputField(
             text = label,
             fontSize = 14.sp,
             fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-            color = CustomColors.BlackberryCream,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
         )
         OutlinedTextField(
@@ -51,14 +50,14 @@ fun CustomInputField(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = CustomColors.LightGrayBlue
+                    tint = MaterialTheme.colorScheme.primary
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = CustomColors.RichCerulean,
-                unfocusedBorderColor = CustomColors.LightGrayBlue.copy(alpha = 0.5f),
-                focusedTextColor = CustomColors.BlackberryCream,
-                unfocusedTextColor = CustomColors.BlackberryCream
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
             ),
             textStyle = TextStyle(
                 fontSize = 12.sp,

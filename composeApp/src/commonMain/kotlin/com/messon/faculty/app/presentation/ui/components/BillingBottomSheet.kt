@@ -1,4 +1,5 @@
 package com.messon.faculty.app.presentation.ui.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
@@ -43,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.toFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +69,7 @@ fun BillingBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = bottomSheetState,
         shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp),
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
 
         Column(
@@ -77,7 +78,11 @@ fun BillingBottomSheet(
                 .fillMaxWidth()
                 .padding(horizontal =16.dp, vertical = 12.dp)
         ) {
-            Text("Select Predefined Period", fontWeight = FontWeight.Medium)
+            Text(
+                text = "Select Predefined Period",
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
             Spacer(Modifier.height(12.dp))
 
@@ -91,7 +96,7 @@ fun BillingBottomSheet(
                         leadingIcon = {
                             if(selectedOption==option){
                                 Icon(
-                                   imageVector =  Icons.Default.Check ,
+                                    imageVector =  Icons.Default.Check ,
                                     contentDescription = "selected",
                                     modifier = Modifier.size(20.dp),
                                 )
@@ -102,11 +107,11 @@ fun BillingBottomSheet(
                         onClick = { onOptionSelected(option) },
                         label = { Text(option) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedLeadingIconColor = Color.White,
-                            containerColor = Color.LightGray.copy(0.15f),
-                            labelColor =Color.Black,
-                            selectedLabelColor = Color.White,
-                            selectedContainerColor = CustomColors.RichCerulean.copy(0.8f),
+                            selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            labelColor = MaterialTheme.colorScheme.onSurface,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                         )
                     )
                 }
@@ -114,7 +119,11 @@ fun BillingBottomSheet(
 
             Spacer(Modifier.height(20.dp))
 
-            Text("Select Custom Date", fontWeight = FontWeight.Medium)
+            Text(
+                text = "Select Custom Date",
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
             Spacer(Modifier.height(12.dp))
 
@@ -229,7 +238,11 @@ fun DateField(
 ) {
     Column(modifier = modifier) {
 
-        Text(title, fontSize = 12.sp)
+        Text(
+            text = title,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurface
+        )
 
         Spacer(Modifier.height(4.dp))
 
@@ -241,7 +254,11 @@ fun DateField(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("Select") },
                 trailingIcon = {
-                    Icon(Icons.Default.CalendarToday, null)
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 },
                 shape = RoundedCornerShape(12.dp)
             )

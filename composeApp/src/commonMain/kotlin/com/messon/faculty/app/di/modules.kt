@@ -4,6 +4,7 @@ package com.messon.faculty.app.di
 import com.messon.faculty.app.data.remote.network.AdminApi
 import com.messon.faculty.app.data.remote.network.Auth
 import com.messon.faculty.app.data.remote.network.CollegeApi
+import com.messon.faculty.app.data.remote.network.ComplaintApi
 import com.messon.faculty.app.data.remote.network.CsvUpload
 import com.messon.faculty.app.data.remote.network.ManagerApi
 import com.messon.faculty.app.data.remote.network.MessApi
@@ -22,6 +23,7 @@ import com.messon.faculty.app.presentation.viewmodel.CollegeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.CreateMessVM
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
+import com.messon.faculty.app.presentation.viewmodel.FetchComplaintsVM
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.ManagerListVM
@@ -45,10 +47,14 @@ val sharedModule = module {
     single { CollegeApi(get()) }
     single { ManagerApi(get()) }
     single{ AdminApi(get()) }
+    single{ ComplaintApi(get()) }
 
     single{ StudentRepository(get()) }
     single{ CollegeRepository(get()) }
-    single{ MessRepository(get()) }
+    single{ MessRepository(
+        get(),
+        complaintApi = get()
+    ) }
     single { CsvRepository(get()) }
     single{ ManagerRepository(get()) }
     single{ AdminRepository(get()) }
@@ -152,6 +158,11 @@ val sharedModule = module {
 
     viewModel {
         StudentBillVM(get(),get())
+    }
+
+
+    viewModel {
+        FetchComplaintsVM(get(),get())
     }
 
 }

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.EventBusy
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.Holiday
-import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.formatDate
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
@@ -47,7 +47,7 @@ fun HolidayCard(holiday: Holiday) {
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 12.dp),
         shape = RoundedCornerShape(32.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
@@ -58,15 +58,15 @@ fun HolidayCard(holiday: Holiday) {
             ) {
                 Box(
                     modifier = Modifier
-                        .border(1.dp, CustomColors.RichCerulean, RoundedCornerShape(50))
-                        .background(CustomColors.RichCerulean.copy(alpha = 0.1f), RoundedCornerShape(50))
+                        .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(50))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), RoundedCornerShape(50))
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text ="Holiday",
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         letterSpacing = 1.sp
                     )
                 }
@@ -76,14 +76,14 @@ fun HolidayCard(holiday: Holiday) {
                         Icons.Default.Coffee,
                         contentDescription = null,
                         modifier = Modifier.size(14.dp),
-                        tint = Color.Gray
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "Mess Closed",
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -94,7 +94,7 @@ fun HolidayCard(holiday: Holiday) {
                 text = holiday.reason,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -105,8 +105,8 @@ fun HolidayCard(holiday: Holiday) {
                 DateBox(
                     label = "Start",
                     date = formatDate(holiday.startDate),
-                    color = CustomColors.HoneyBronze,
-                    bgColor = CustomColors.HoneyBronze.copy(0.1f),
+                    color = MaterialTheme.colorScheme.secondary,
+                    bgColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                     modifier = Modifier.constrainAs(startBox) {
                         start.linkTo(parent.start)
                         end.linkTo(icon.start, margin = 8.dp)
@@ -118,8 +118,8 @@ fun HolidayCard(holiday: Holiday) {
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color.White)
-                        .border(1.dp, Color(0xFFF3F4F6), CircleShape)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                         .constrainAs(icon) {
                             centerTo(parent)
                         },
@@ -128,7 +128,7 @@ fun HolidayCard(holiday: Holiday) {
                     Icon(
                         Icons.Default.EventBusy,
                         contentDescription = null,
-                        tint = CustomColors.RichCerulean,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -136,8 +136,8 @@ fun HolidayCard(holiday: Holiday) {
                 DateBox(
                     label = "End",
                     date = formatDate(holiday.endDate),
-                    color = CustomColors.HoneyBronze,
-                    bgColor = CustomColors.HoneyBronze.copy(0.1f),
+                    color = MaterialTheme.colorScheme.secondary,
+                    bgColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                     modifier = Modifier.constrainAs(endBox) {
                         start.linkTo(icon.end, margin = 8.dp)
                         end.linkTo(parent.end)
@@ -163,7 +163,7 @@ fun DateBox(label: String, date: String, color: Color, bgColor: Color, modifier:
             text = label,
             fontSize = 12.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansregular)),
-            color = Color.Gray.copy(alpha = 0.6f)
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
         )
         Text(
             text = date,
@@ -173,4 +173,3 @@ fun DateBox(label: String, date: String, color: Color, bgColor: Color, modifier:
         )
     }
 }
-

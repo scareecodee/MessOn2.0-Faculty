@@ -1,4 +1,5 @@
 package com.messon.faculty.app.presentation.ui.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,12 +31,12 @@ fun MyCard(
             .fillMaxWidth()
             .height(140.dp)
             .clip(RoundedCornerShape(24.dp))
-            .clickable{
+            .clickable {
                 onCardClick()
-            }
-        ,
+            },
         shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Box(
             modifier = Modifier
@@ -53,4 +55,3 @@ fun MyCard(
         }
     }
 }
-

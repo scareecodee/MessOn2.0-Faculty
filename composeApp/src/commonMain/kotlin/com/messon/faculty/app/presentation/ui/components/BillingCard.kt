@@ -12,15 +12,14 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.StudentBillingData
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
@@ -45,7 +43,7 @@ fun StudentBillCard(
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 12.dp),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -57,7 +55,7 @@ fun StudentBillCard(
                 modifier = Modifier
                     .weight(0.35f)
                     .fillMaxHeight()
-                    .background(CustomColors.LightBlue)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -66,12 +64,12 @@ fun StudentBillCard(
                     modifier = Modifier
                         .size(60.dp)
                         .clip(CircleShape)
-                        .background(CustomColors.RichCerulean),
+                        .background(MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = student.name.take(1),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                     )
@@ -81,7 +79,7 @@ fun StudentBillCard(
 
                 Text(
                     text = student.name,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     maxLines =2,
                     overflow = TextOverflow.Ellipsis,
@@ -94,13 +92,13 @@ fun StudentBillCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
-                        .background(Color.White.copy(alpha = 0.8f))
-                        .border(0.5.dp, CustomColors.RichCerulean.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
+                        .border(0.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = "BATCH ${student.batch}",
-                        color = CustomColors.RichCerulean,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 10.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                     )
@@ -154,7 +152,7 @@ fun StudentBillCard(
                 Box(
                     modifier = Modifier
                         .height(1.dp)
-                        .background(Color(0xFFF1F5F9))
+                        .background(MaterialTheme.colorScheme.outlineVariant)
                         .constrainAs(dividerRef) {
                             top.linkTo(cycleRef.bottom, margin = 16.dp)
                             start.linkTo(parent.start)
@@ -174,13 +172,13 @@ fun StudentBillCard(
                         text = "TOTAL BILL AMOUNT",
                         fontSize = 10.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
                         text = "₹${student.totalBill}",
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-                        color = CustomColors.HoneyBronze
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
 
@@ -188,7 +186,7 @@ fun StudentBillCard(
                     text = "${student.totalBillingPeriods} Periods",
                     fontSize = 10.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                    color = Color.LightGray,
+                    color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier.constrainAs(periodsRef) {
                         bottom.linkTo(billRef.bottom, margin = 4.dp)
                         end.linkTo(parent.end)
@@ -212,7 +210,7 @@ fun InfoBlock(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(20.dp).padding(top = 2.dp),
-            tint = Color.LightGray
+            tint = MaterialTheme.colorScheme.outline
         )
         Spacer(modifier = Modifier.width(6.dp))
         Column {
@@ -220,14 +218,14 @@ fun InfoBlock(
                 text = label,
                 fontSize = 10.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 letterSpacing = 0.5.sp
             )
             Text(
                 text = value,
                 fontSize = 10.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                color = Color(0xFF334155),
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

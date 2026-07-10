@@ -23,25 +23,24 @@ import com.messon.faculty.app.presentation.ui.components.CollegeCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.uiState.FetchCollegesState
 import com.messon.faculty.app.presentation.viewmodel.CollegeScreenVM
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollegeListScreen(
-    onCardClick:()->Unit,
-    onBackClick:()-> Unit,
+    onCardClick: () -> Unit,
+    onBackClick: () -> Unit,
     collegeScreenVM: CollegeScreenVM
 ) {
-    var searchQuery by remember { mutableStateOf("") }
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
     val uiState by collegeScreenVM.uiState.collectAsState()
-    val isRefreshing=uiState is FetchCollegesState.Loading
+    val isRefreshing = uiState is FetchCollegesState.Loading
 
-
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         collegeScreenVM.fetchColleges()
     }
 
@@ -50,47 +49,44 @@ fun CollegeListScreen(
         it.collegeName.contains(query, ignoreCase = true)
     }
 
-    LaunchedEffect(uiState){
-        when(uiState){
+    LaunchedEffect(uiState) {
+        when (uiState) {
             is FetchCollegesState.Error -> {
-                showToast(
-                    message = "Unable to load"
-                )
+                showToast(message = "Unable to load")
             }
-
             else -> {}
         }
     }
 
-    ConstraintLayout(modifier = Modifier.fillMaxSize()
-        .background(CustomColors.OffWhite)
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        val (
-            statusBarBox, headingRef, listRef,
-            backBtnRef, searchBarRef,
-        ) = createRefs()
+        val (statusBarBox, headingRef, listRef, backBtnRef, searchBarRef) = createRefs()
 
         Box(
             Modifier
                 .fillMaxWidth()
                 .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                .background(CustomColors.LightGrayBlue)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .constrainAs(statusBarBox) {
                     top.linkTo(parent.top)
                 }
         )
 
-
         IconButton(
-            onClick = {
-                onBackClick()
-            },
+            onClick = { onBackClick() },
             modifier = Modifier.constrainAs(backBtnRef) {
                 start.linkTo(parent.start, 15.dp)
                 top.linkTo(statusBarBox.bottom, 10.dp)
             }
         ) {
-            Icon(Icons.Default.ChevronLeft, contentDescription = "back", modifier = Modifier.size(28.dp)
+            Icon(
+                Icons.Default.ChevronLeft,
+                contentDescription = "back",
+                modifier = Modifier.size(28.dp),
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -98,6 +94,7 @@ fun CollegeListScreen(
             text = "Available Colleges",
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.constrainAs(headingRef) {
                 start.linkTo(backBtnRef.end, 5.dp)
                 centerVerticallyTo(backBtnRef)
@@ -107,9 +104,7 @@ fun CollegeListScreen(
         SearchBar(
             placeholderText = "Search your college here",
             query = query,
-            onQueryChange = {
-                query = it
-            },
+            onQueryChange = { query = it },
             modifier = Modifier.constrainAs(searchBarRef) {
                 top.linkTo(backBtnRef.bottom, 10.dp)
                 start.linkTo(parent.start, 8.dp)
@@ -118,21 +113,18 @@ fun CollegeListScreen(
             }
         )
 
-
         PullToRefreshBox(
             state = pullToRefreshState,
             indicator = {
                 PullToRefreshDefaults.Indicator(
-                    containerColor = CustomColors.RichCerulean,
-                    color = Color.White,
-                    isRefreshing =isRefreshing,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    isRefreshing = isRefreshing,
                     state = pullToRefreshState
                 )
             },
-            isRefreshing =isRefreshing,
-            onRefresh = {
-                collegeScreenVM.fetchColleges()
-            },
+            isRefreshing = isRefreshing,
+            onRefresh = { collegeScreenVM.fetchColleges() },
             modifier = Modifier
                 .fillMaxSize()
                 .constrainAs(listRef) {
@@ -144,15 +136,13 @@ fun CollegeListScreen(
                     height = Dimension.fillToConstraints
                 },
             contentAlignment = Alignment.TopCenter
-        ){
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 when (uiState) {
-
                     is FetchCollegesState.Success -> {
                         items(filteredColleges, key = { it.collegeId }) { college ->
                             CollegeCard(
@@ -164,23 +154,18 @@ fun CollegeListScreen(
                             )
                         }
                     }
-
                     is FetchCollegesState.Error -> {
                         item {
                             Spacer(Modifier.height(200.dp))
-                            Text("Unable to load. Pull to refresh")
+                            Text(
+                                "Unable to load. Pull to refresh",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
-
                     else -> {}
                 }
             }
         }
-
     }
 }
-
-
-
-
-

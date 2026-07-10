@@ -16,11 +16,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,18 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.domain.dataModel.Manager
-import com.messon.faculty.app.theme.CustomColors
+import com.messon.faculty.app.domain.dataModel.ManagerCreateRes
+import com.messon.faculty.app.utils.DialogVariant
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
-
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.*
-import com.messon.faculty.app.domain.dataModel.ManagerCreateRes
-import com.messon.faculty.app.utils.DialogVariant
-
 
 @Composable
 fun ManagerCard(
@@ -72,7 +72,7 @@ fun ManagerCard(
                 }
             ),
         shape = RoundedCornerShape(24.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 1.dp
     ) {
 
@@ -86,7 +86,7 @@ fun ManagerCard(
             Box(
                 modifier = Modifier
                     .size(52.dp)
-                    .background(CustomColors.LightLavender, RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
                     .constrainAs(avatar) {
                         start.linkTo(parent.start)
                         top.linkTo(parent.top)
@@ -98,7 +98,7 @@ fun ManagerCard(
                     text = manager.name.take(1),
                     fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                     fontSize = 17.sp,
-                    color = CustomColors.BlackberryCream
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
@@ -121,15 +121,15 @@ fun ManagerCard(
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                    color = CustomColors.BlackberryCream
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
                     Icon(
-                        Icons.Default.Email,
+                        imageVector = Icons.Default.Email,
                         contentDescription = null,
-                        tint = CustomColors.LightGrayBlue
+                        tint = MaterialTheme.colorScheme.outline
                     )
 
                     Spacer(modifier = Modifier.width(6.dp))
@@ -139,7 +139,7 @@ fun ManagerCard(
                         fontSize = 11.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                     )
                 }
@@ -170,7 +170,7 @@ fun ManagerCard(
                             }
                         }
                     ),
-                tint = if (showDeleteIcon) Color.Red else CustomColors.RichCerulean
+                tint = if (showDeleteIcon) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
             )
         }
     }

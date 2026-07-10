@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,8 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.TimeRow
-import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
 import com.messon.faculty.app.utils.toReadableFormat
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -50,7 +47,7 @@ fun MealPriceScreen(
     onBackBtnClick: () -> Unit
 ) {
     var startingDate by remember { mutableStateOf("") }
-    var showDateTimePicker by remember{ mutableStateOf(false) }
+    var showDateTimePicker by remember { mutableStateOf(false) }
     var dailyPrice by remember { mutableStateOf("250") }
     var isSaved by remember { mutableStateOf(false) }
 
@@ -61,29 +58,19 @@ fun MealPriceScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(CustomColors.OffWhite),
-        contentAlignment = Alignment.Center
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
-
-        ConstraintLayout(
-            modifier = Modifier.fillMaxSize()
-        ) {
-
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (statusBarBox, backBtnRef, headingRef, listRef) = createRefs()
 
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(
-                        WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp
-                    )
-                    .background(LightGrayBlue)
-                    .constrainAs(statusBarBox) {
-                        top.linkTo(parent.top)
-                    }
+                    .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .constrainAs(statusBarBox) { top.linkTo(parent.top) }
             )
 
             IconButton(
@@ -96,7 +83,8 @@ fun MealPriceScreen(
                 Icon(
                     Icons.Default.ChevronLeft,
                     contentDescription = "back",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -104,6 +92,7 @@ fun MealPriceScreen(
                 text = "Set Price",
                 fontSize = 22.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.constrainAs(headingRef) {
                     start.linkTo(backBtnRef.end, 5.dp)
                     centerVerticallyTo(backBtnRef)
@@ -121,45 +110,32 @@ fun MealPriceScreen(
                 },
                 contentPadding = PaddingValues(bottom = 32.dp)
             ) {
-
                 item {
                     Surface(
                         modifier = Modifier
                             .padding(horizontal = 12.dp, vertical = 16.dp)
                             .fillMaxWidth()
-                            .shadow(
-                                elevation = 20.dp,
-                                shape = RoundedCornerShape(56.dp),
-                                spotColor = Color.Black.copy(alpha = 0.1f)
-                            ),
+                            .shadow(20.dp, RoundedCornerShape(56.dp), spotColor = Color.Black.copy(alpha = 0.1f)),
                         shape = RoundedCornerShape(56.dp),
-                        color = Color.White,
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
-                            CustomColors.LightBlue
-                        )
+                        color = MaterialTheme.colorScheme.surface,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     ) {
-
                         Column(
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 48.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-
                             Surface(
-                                color = CustomColors.LightBlue,
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 shape = RoundedCornerShape(100),
                                 modifier = Modifier.padding(bottom = 24.dp)
                             ) {
                                 Text(
                                     text = "Each Meal Price",
-                                    modifier = Modifier.padding(
-                                        horizontal = 20.dp,
-                                        vertical = 8.dp
-                                    ),
+                                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                                     style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                                        color = CustomColors.RichCerulean,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 )
                             }
@@ -170,40 +146,26 @@ fun MealPriceScreen(
                             ) {
                                 Text(
                                     text = "₹",
-                                    style = TextStyle(
-                                        fontSize = 48.sp,
-                                        fontWeight = FontWeight.Light,
-                                        color = CustomColors.LightGrayBlue
-                                    )
+                                    style = TextStyle(fontSize = 48.sp, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.outline)
                                 )
-
                                 Spacer(modifier = Modifier.width(12.dp))
-
                                 BasicTextField(
                                     value = dailyPrice,
-                                    onValueChange = {
-                                        dailyPrice = it
-                                        isSaved = false
-                                    },
+                                    onValueChange = { dailyPrice = it; isSaved = false },
                                     textStyle = TextStyle(
                                         fontSize = 65.sp,
                                         fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-                                        color = CustomColors.BlackberryCream,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         textAlign = TextAlign.Center
                                     ),
-                                    cursorBrush = SolidColor(CustomColors.RichCerulean),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     singleLine = true,
                                     decorationBox = { innerTextField ->
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                             innerTextField()
                                             Spacer(modifier = Modifier.height(4.dp))
-                                            Box(
-                                                modifier = Modifier
-                                                    .width(160.dp)
-                                                    .height(2.dp)
-                                                    .background(CustomColors.LightBlue)
-                                            )
+                                            Box(modifier = Modifier.width(160.dp).height(2.dp).background(MaterialTheme.colorScheme.outlineVariant))
                                         }
                                     }
                                 )
@@ -211,34 +173,23 @@ fun MealPriceScreen(
 
                             Text(
                                 text = "Flat rate for all-day meal access",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                                    color = CustomColors.LightGrayBlue,
-                                ),
+                                style = TextStyle(fontSize = 14.sp, fontFamily = FontFamily(Font(Res.font.publicsansmedium)), color = MaterialTheme.colorScheme.onSurfaceVariant),
                                 modifier = Modifier.padding(top = 16.dp, bottom = 40.dp)
                             )
 
                             val buttonColor by animateColorAsState(
-                                targetValue = if (isSaved) CustomColors.SuccessGreen else CustomColors.BlackberryCream,
+                                targetValue = if (isSaved) Color(0xFF4CAF50) else MaterialTheme.colorScheme.primary,
                                 animationSpec = tween(500),
                                 label = "btnColor"
                             )
-
-                            val buttonScale by animateFloatAsState(
-                                targetValue = if (isSaved) 1.02f else 1f,
-                                label = "btnScale"
-                            )
+                            val buttonScale by animateFloatAsState(targetValue = if (isSaved) 1.02f else 1f, label = "btnScale")
 
                             TimeRow(
                                 label = "Starting",
                                 time = startingDate,
                                 icon = Icons.Default.CalendarToday,
-                                iconColor = CustomColors.RichCerulean,
-                                onClick =
-                                    {
-                                        showDateTimePicker = true
-                                    }
+                                iconColor = MaterialTheme.colorScheme.primary,
+                                onClick = { showDateTimePicker = true }
                             )
 
                             Spacer(modifier = Modifier.height(25.dp))
@@ -247,25 +198,15 @@ fun MealPriceScreen(
                                 onClick = { isSaved = true },
                                 colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
                                 shape = RoundedCornerShape(100),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(55.dp)
-                                    .scale(buttonScale),
+                                modifier = Modifier.fillMaxWidth().height(55.dp).scale(buttonScale),
                                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                                    Icon(
-                                        imageVector =Icons.Default.CheckCircle ,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
+                                    Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(24.dp))
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Text(
                                         text = if (isSaved) "Price Updated Successfully" else "Confirm Global Price",
-                                        style = TextStyle(
-                                            fontSize = 15.sp,
-                                            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                                        )
+                                        style = TextStyle(fontSize = 15.sp, fontFamily = FontFamily(Font(Res.font.publicsanssemibold)))
                                     )
                                 }
                             }
@@ -275,50 +216,16 @@ fun MealPriceScreen(
 
                 item {
                     Surface(
-                        modifier = Modifier
-                            .padding(horizontal = 14.dp, vertical = 16.dp)
-                            .fillMaxWidth(),
-                        color = CustomColors.LightBlue.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(24.dp),
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
-                            CustomColors.RichCerulean.copy(alpha = 0.1f)
-                        )
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 16.dp).fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(24.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.padding(24.dp),
-                            verticalAlignment = Alignment.Top
-                        ) {
-
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = null,
-                                tint = CustomColors.RichCerulean,
-                                modifier = Modifier.size(20.dp)
-                            )
-
+                        Row(modifier = Modifier.padding(24.dp), verticalAlignment = Alignment.Top) {
+                            Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                             Spacer(modifier = Modifier.width(16.dp))
-
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(5.dp)
-                            ) {
-                                Text(
-                                    text = "System Notice",
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = CustomColors.RichCerulean
-                                    )
-                                )
-
-                                Text(
-                                    text = "Changes applied here are global for selected mess. This price will be used for billing.",
-                                    style = TextStyle(
-                                        fontSize = 12.sp,
-                                        color = CustomColors.RichCerulean.copy(alpha = 0.7f),
-                                        fontWeight = FontWeight.Medium,
-                                    )
-                                )
+                            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                                Text("System Notice", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary))
+                                Text("Changes applied here are global for selected mess. This price will be used for billing.", style = TextStyle(fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)))
                             }
                         }
                     }
@@ -326,38 +233,21 @@ fun MealPriceScreen(
             }
         }
     }
+
     WheelDatePickerView(
         modifier = Modifier.safeContentPadding(),
-        title ="Set starting date",
-        titleStyle = TextStyle(
-            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-            fontSize = 16.sp
-        ),
-        doneLabelStyle =TextStyle(
-            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-            fontSize = 16.sp
-        ),
-        showDatePicker =showDateTimePicker,
+        title = "Set starting date",
+        titleStyle = TextStyle(fontFamily = FontFamily(Font(Res.font.publicsanssemibold)), fontSize = 16.sp),
+        doneLabelStyle = TextStyle(fontFamily = FontFamily(Font(Res.font.publicsanssemibold)), fontSize = 16.sp),
+        showDatePicker = showDateTimePicker,
         height = 220.dp,
-        yearsRange = IntRange(2026,2122),
+        yearsRange = IntRange(2026, 2122),
         shape = RoundedCornerShape(30.dp),
-        defaultDateTextStyle = TextStyle(
-            fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-            fontSize = 12.sp
-        ),
-        selectedDateTextStyle = TextStyle(
-            fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-            fontSize = 14.sp
-        ),
-        selectorProperties = WheelPickerDefaults.selectorProperties(
-            enabled=true,
-            borderColor = CustomColors.RichCerulean
-        ),
-        onDoneClick = {
-            showDateTimePicker=false
-            startingDate=it.toReadableFormat()
-        },
-        onDismiss = {showDateTimePicker=false},
-        dateTimePickerView= DateTimePickerView.BOTTOM_SHEET_VIEW,
+        defaultDateTextStyle = TextStyle(fontFamily = FontFamily(Font(Res.font.publicsansmedium)), fontSize = 12.sp),
+        selectedDateTextStyle = TextStyle(fontFamily = FontFamily(Font(Res.font.publicsanssemibold)), fontSize = 14.sp),
+        selectorProperties = WheelPickerDefaults.selectorProperties(enabled = true, borderColor = MaterialTheme.colorScheme.primary),
+        onDoneClick = { showDateTimePicker = false; startingDate = it.toReadableFormat() },
+        onDismiss = { showDateTimePicker = false },
+        dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
     )
 }

@@ -13,8 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
@@ -23,8 +23,8 @@ import com.messon.faculty.app.presentation.ui.components.FilterChipsRow
 import com.messon.faculty.app.presentation.ui.components.TableCell
 import com.messon.faculty.app.presentation.viewmodel.CsvUploadViewModel
 import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
-import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.theme.CustomColors.RichCerulean
+import com.messon.faculty.app.theme.MessonColors
+import com.messon.faculty.app.theme.MessonPalette
 import com.messon.faculty.app.utils.CsvUploadMode
 import com.messon.faculty.app.presentation.ui.uiState.CsvState
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
@@ -45,6 +45,7 @@ fun CsvPreviewScreen(
     messListVM: MessListVM,
     onBackClick: () -> Unit,
     onUploadSuccess: () -> Unit,
+    messonColors: MessonColors,
     modifier: Modifier = Modifier,
 ) {
 
@@ -53,6 +54,9 @@ fun CsvPreviewScreen(
 
     val filePickerState by filePickerViewModel.state
         .collectAsState(FilePickerState.Idle)
+
+    val materialColors = MaterialTheme.colorScheme
+    val isDarkTheme = materialColors.background == MessonPalette.DarkOffWhite
 
     val chips = listOf(CsvUploadMode.INSERT.value, CsvUploadMode.UPDATE.value)
     var selected by remember { mutableStateOf(setOf(0)) }
@@ -63,35 +67,35 @@ fun CsvPreviewScreen(
     }
     val selectedMess by messListVM.selectedMess.collectAsState()
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         csvUploadViewModel.resetState()
-
     }
 
     LaunchedEffect(uploadState) {
-
         when (uploadState) {
-
             is CsvState.Success -> {
                 delay(300)
                 onUploadSuccess()
             }
-
             is CsvState.Error -> {
                 showToast(
-                    message =(uploadState as CsvState.Error).message
+                    message = (uploadState as CsvState.Error).message
                 )
-
                 csvUploadViewModel.resetState()
             }
-
             else -> Unit
         }
     }
 
     if (tableData.isEmpty()) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No data found")
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "No data found",
+                color = materialColors.onBackground
+            )
         }
         return
     }
@@ -102,16 +106,16 @@ fun CsvPreviewScreen(
     ConstraintLayout(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(materialColors.background)
     ) {
 
-        val (backBtnRef,headingRef, statusBarBox,table, proceedBtn, progress,fileNameRef,modeSelector) = createRefs()
+        val (backBtnRef, headingRef, statusBarBox, table, proceedBtn, progress, fileNameRef, modeSelector) = createRefs()
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                .background(CustomColors.LightGrayBlue)
+                .background(materialColors.surface) // Using Material surface
                 .constrainAs(statusBarBox) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
@@ -121,7 +125,7 @@ fun CsvPreviewScreen(
         IconButton(
             shape = CircleShape,
             onClick = {
-               onBackClick()
+                onBackClick()
             },
             modifier = Modifier.constrainAs(backBtnRef) {
                 start.linkTo(parent.start, margin = 15.dp)
@@ -131,7 +135,8 @@ fun CsvPreviewScreen(
             Icon(
                 imageVector = Icons.Default.ChevronLeft,
                 contentDescription = "back btn",
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(28.dp),
+                tint = materialColors.onBackground
             )
         }
 
@@ -140,6 +145,7 @@ fun CsvPreviewScreen(
             text = "CSV Preview",
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+            color = materialColors.onBackground,
             modifier = Modifier
                 .constrainAs(headingRef) {
                     start.linkTo(backBtnRef.end, margin = 5.dp)
@@ -150,9 +156,9 @@ fun CsvPreviewScreen(
 
         Text(
             maxLines = 1,
-            text = selectedFile?.name ?:"Empty File",
+            text = selectedFile?.name ?: "Empty File",
             fontSize = 14.sp,
-            color = CustomColors.HoneyBronze,
+            color = materialColors.primary, // Using Material primary color
             fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
             modifier = Modifier
                 .constrainAs(fileNameRef) {
@@ -166,32 +172,38 @@ fun CsvPreviewScreen(
                 .heightIn(max = 400.dp)
                 .padding(horizontal = 15.dp)
                 .constrainAs(table) {
-                    top.linkTo(fileNameRef.bottom, margin =20.dp)
+                    top.linkTo(fileNameRef.bottom, margin = 20.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-                .border(1.dp, CustomColors.BlackberryCream.copy(alpha = 0.3f))
+                .border(1.dp, materialColors.outline.copy(alpha = 0.3f))
         ) {
             Column(
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState())
                     .verticalScroll(rememberScrollState())
             ) {
-                Row(modifier = Modifier.background(RichCerulean)) {
+                Row(modifier = Modifier.background(materialColors.primary)) {
                     headers.forEach { header ->
-                        TableCell(text = header, isHeader = true)
+                        TableCell(
+                            text = header,
+                            isHeader = true,
+                        )
                     }
                 }
 
                 rows.forEachIndexed { index, row ->
                     Row(
                         modifier = Modifier.background(
-                            if (index % 2 == 0) Color(0xFFF0F6FA)
-                            else Color.White
+                            if (index % 2 == 0) messonColors.infoContainer
+                            else materialColors.surface
                         )
                     ) {
                         row.forEach { cell ->
-                            TableCell(text = cell, isHeader = false)
+                            TableCell(
+                                text = cell,
+                                isHeader = false
+                            )
                         }
                     }
                 }
@@ -199,25 +211,25 @@ fun CsvPreviewScreen(
         }
 
         FilterChipsRow(
-            modifier= Modifier.constrainAs(modeSelector){
-                top.linkTo(table.bottom, margin = 20.dp)
-                start.linkTo(parent.start, margin = 20.dp)
-                end.linkTo(parent.end, margin = 20.dp)
-            }.padding(horizontal = 15.dp),
-            chips =chips ,
+            modifier = Modifier
+                .constrainAs(modeSelector) {
+                    top.linkTo(table.bottom, margin = 20.dp)
+                    start.linkTo(parent.start, margin = 20.dp)
+                    end.linkTo(parent.end, margin = 20.dp)
+                }
+                .padding(horizontal = 15.dp),
+            chips = chips,
             selectedChips = selected,
             onSelectionChange = {
-                selected=it
+                selected = it
             }
         )
 
         Button(
             onClick = {
                 selectedFile?.let { file ->
-
                     val selectedIndex = selected.firstOrNull() ?: return@Button
                     val mode = chips[selectedIndex]
-
                     selectedMess?.id?.let { messId ->
                         csvUploadViewModel.uploadCsv(
                             file = file,
@@ -235,7 +247,13 @@ fun CsvPreviewScreen(
                     top.linkTo(modeSelector.bottom, margin = 15.dp)
                 },
             colors = ButtonDefaults.buttonColors(
-                containerColor = RichCerulean
+                containerColor = materialColors.primary,
+                contentColor = materialColors.onPrimary,
+                disabledContainerColor = materialColors.surfaceVariant,
+                disabledContentColor = materialColors.onSurfaceVariant
+            ),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = if (isDarkTheme) 2.dp else 4.dp
             )
         ) {
             Text(
@@ -248,24 +266,23 @@ fun CsvPreviewScreen(
             )
         }
 
-
-        when (uploadState){
+        when (uploadState) {
             is CsvState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
+                        .background(materialColors.scrim.copy(alpha = 0.5f))
                         .constrainAs(progress) {
                             top.linkTo(parent.top)
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        color = materialColors.primary
+                    )
                 }
             }
-
             else -> {}
         }
-
     }
 }

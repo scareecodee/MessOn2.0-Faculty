@@ -48,7 +48,7 @@ sealed class Screen(val route: String) {
     object MessBillScreen:Screen("mess_bill_screen")
     object StudentBillScreen:Screen("student_bill_screen")
 
-
+    object ViewComplaintScreen:Screen("view_complaint_screen")
 
 }
 

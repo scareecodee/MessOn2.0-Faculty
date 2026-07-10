@@ -1,4 +1,5 @@
 package com.messon.faculty.app.presentation.ui.screens.students
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -17,14 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.NavController
 import com.messon.faculty.app.presentation.ui.components.CustomInputField
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
-import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
 import com.messon.faculty.app.presentation.ui.uiState.EditStudentState
 import com.messon.faculty.app.presentation.viewmodel.EditStudentVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
-import com.messon.faculty.app.theme.CustomColors
+import com.messon.faculty.app.theme.MessonColors
+import com.messon.faculty.app.theme.MessonPalette
 import kotlinx.coroutines.delay
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
@@ -36,65 +35,64 @@ import org.jetbrains.compose.resources.Font
 fun EditStudentScreen(
     onBackClick: () -> Unit = {},
     studentDetailScreenVM: StudentDetailScreenVM,
-    onConflict:()-> Unit,
-    editStudentVM: EditStudentVM
+    onConflict: () -> Unit,
+    editStudentVM: EditStudentVM,
+    messonColors: MessonColors
 ) {
-
 
     val student by studentDetailScreenVM
         .selectedStudent.collectAsState()
 
     val updateState by editStudentVM.updateState.collectAsState()
 
+    // Get MaterialTheme colors
+    val materialColors = MaterialTheme.colorScheme
+    val isDarkTheme = materialColors.background == MessonPalette.DarkOffWhite
 
-    LaunchedEffect(updateState){
-        if(updateState is EditStudentState.Error){
+    LaunchedEffect(updateState) {
+        if (updateState is EditStudentState.Error) {
             showToast(
-                message =(updateState as EditStudentState.Error).message
+                message = (updateState as EditStudentState.Error).message
             )
             editStudentVM.clearUpdateState()
         }
-        if(updateState is EditStudentState.Success){
-            if((updateState as EditStudentState.Success).editStudentRes.status){
+        if (updateState is EditStudentState.Success) {
+            if ((updateState as EditStudentState.Success).editStudentRes.status) {
                 showToast(
-                    message ="Students updated successfully"
+                    message = "Students updated successfully"
                 )
                 editStudentVM.clearUpdateState()
-            }else{
+            } else {
                 delay(300)
                 onConflict()
             }
         }
     }
 
-
-    student?.let {student->
-        var name by remember { mutableStateOf(student.name ) }
+    student?.let { student ->
+        var name by remember { mutableStateOf(student.name) }
         var rollNumber by remember { mutableStateOf(student.studentId) }
         var email by remember { mutableStateOf(student.email) }
         var branch by remember { mutableStateOf(student.branch) }
         var batch by remember { mutableStateOf(student.batch) }
 
-
-
-
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
+                .background(materialColors.background)
         ) {
-            val (contentRef, buttonRef,statusBarBox,backBtnRef,headingRef) = createRefs()
+            val (contentRef, buttonRef, statusBarBox, backBtnRef, headingRef) = createRefs()
 
             Box(
                 Modifier
                     .fillMaxWidth()
                     .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                    .background(CustomColors.LightGrayBlue)
+                    .background(materialColors.surface)
                     .constrainAs(statusBarBox) {
                         top.linkTo(parent.top)
                     }
             )
-
 
             IconButton(
                 onClick = {
@@ -108,20 +106,22 @@ fun EditStudentScreen(
                 Icon(
                     Icons.Default.ChevronLeft,
                     contentDescription = "back",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(28.dp),
+                    tint = materialColors.onBackground
                 )
             }
-
 
             Text(
                 text = "Update Student",
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                color = materialColors.onBackground, // Material theme text color
                 modifier = Modifier.constrainAs(headingRef) {
                     start.linkTo(backBtnRef.end, 5.dp)
                     centerVerticallyTo(backBtnRef)
                 }
             )
+
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -133,73 +133,67 @@ fun EditStudentScreen(
                         height = Dimension.fillToConstraints
                     }
                     .padding(horizontal = 20.dp)
+                    .background(materialColors.background)
             ) {
-                item{
+                item {
                     ProfilePicWithBadge(
                         imageUrl = student.profileImg,
                         isActive = student.isActive,
                     )
                 }
 
-                item{
+                item {
                     Spacer(modifier = Modifier.height(32.dp))
-
                 }
 
-                item{
+                item {
                     CustomInputField(
                         label = "Full Name",
                         value = name,
                         onValueChange = { name = it },
-                        icon = Icons.Default.Edit
+                        icon = Icons.Default.Edit,
                     )
                 }
 
-
-                item{
+                item {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-
 
                 item {
                     CustomInputField(
                         label = "Student Id",
                         value = rollNumber,
                         onValueChange = { rollNumber = it },
-                        icon = Icons.Default.Info
+                        icon = Icons.Default.Info,
                     )
                 }
 
-
-                item{
+                item {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                item{
+                item {
                     CustomInputField(
                         label = "Email Address",
                         value = email,
                         onValueChange = { email = it },
                         icon = Icons.Default.Email,
-                        keyboardType = KeyboardType.Email
+                        keyboardType = KeyboardType.Email,
                     )
                 }
 
-
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
-
                 }
 
-
-                item{
+                item {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Box(modifier = Modifier.weight(1.5f)) {
                             CustomInputField(
                                 label = "Branch",
                                 value = branch,
-                                onValueChange = { branch=it },
-                                icon = Icons.Default.Place
+                                onValueChange = { branch = it },
+                                icon = Icons.Default.Place,
                             )
                         }
                         Spacer(modifier = Modifier.width(12.dp))
@@ -209,23 +203,20 @@ fun EditStudentScreen(
                                 value = batch.toString(),
                                 onValueChange = { batch = it.toInt() },
                                 icon = Icons.Default.DateRange,
-                                keyboardType = KeyboardType.Number
+                                keyboardType = KeyboardType.Number,
                             )
                         }
                     }
                 }
 
-
-                item{
+                item {
                     Spacer(modifier = Modifier.height(40.dp))
-
                 }
             }
 
             Button(
                 enabled = updateState != EditStudentState.Loading,
                 onClick = {
-
                     val updatedStudent = student.copy(
                         name = name,
                         studentId = rollNumber,
@@ -235,7 +226,6 @@ fun EditStudentScreen(
                     )
 
                     editStudentVM.setUpdateStudent(updatedStudent)
-
                     editStudentVM.editStudent(student.uuid)
                 },
                 modifier = Modifier
@@ -248,25 +238,31 @@ fun EditStudentScreen(
                     }
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = CustomColors.RichCerulean,
-                    contentColor = Color.White
+                    containerColor = materialColors.primary,
+                    contentColor = materialColors.onPrimary,
+                    disabledContainerColor = materialColors.surfaceVariant,
+                    disabledContentColor = materialColors.onSurfaceVariant
                 ),
                 shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = if (isDarkTheme) 2.dp else 4.dp
+                )
             ) {
-                Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = materialColors.onPrimary
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Save Changes",
+                Text(
+                    text = "Save Changes",
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontFamily = FontFamily(Font(Res.font.publicsanssemibold))
+                    fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+                    color = materialColors.onPrimary
                 )
             }
         }
     }
-
-
 }
-
-

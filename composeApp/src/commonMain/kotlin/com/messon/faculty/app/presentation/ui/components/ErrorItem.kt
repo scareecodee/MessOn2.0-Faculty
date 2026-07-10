@@ -16,17 +16,16 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.messon.faculty.app.domain.dataModel.ImportValidationError
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -37,7 +36,7 @@ fun ErrorItem(error: ImportValidationError) {
     Card(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -47,24 +46,29 @@ fun ErrorItem(error: ImportValidationError) {
             Box(
                 modifier = Modifier
                     .size(32.dp)
-                    .background(Color(0xFFFEE2E2), CircleShape),
+                    .background(MaterialTheme.colorScheme.errorContainer, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.Close, contentDescription = null, tint = Color.Red, modifier = Modifier.size(16.dp))
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(16.dp)
+                )
             }
             Spacer(Modifier.width(12.dp))
             Column {
                 Text(
-                    "Row ${error.rowNumber}",
+                    text = "Row ${error.rowNumber}",
                     fontSize = 10.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                    color = Color.Red.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.error
                 )
                 Text(
                     text = error.message,
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                    color = CustomColors.BlackberryCream,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Medium
                 )
             }

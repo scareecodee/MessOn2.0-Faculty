@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.theme.CustomColors.BlackberryCream
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -44,8 +44,7 @@ fun PrimaryHeroCard(
     icon: ImageVector,
     onClick: () -> Unit,
     cardColor: Color,
-    primaryColor: Color,
-    darkTextColor: Color = BlackberryCream
+    primaryColor: Color
 ) {
     Surface(
         modifier = Modifier
@@ -54,7 +53,6 @@ fun PrimaryHeroCard(
             .clickable { onClick() },
         color = cardColor,
         shape = RoundedCornerShape(24.dp),
-        shadowElevation = 8.dp,
         border = androidx.compose.foundation.BorderStroke(1.dp, primaryColor.copy(alpha = 0.2f))
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
@@ -99,7 +97,7 @@ fun PrimaryHeroCard(
             Box(
                 modifier = Modifier
                     .size(56.dp)
-                    .background(Color.White, RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
                     .border(1.dp, primaryColor.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
                     .constrainAs(iconContainer) {
                         start.linkTo(parent.start)
@@ -114,7 +112,7 @@ fun PrimaryHeroCard(
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .background(Color.White, CircleShape)
+                    .background(MaterialTheme.colorScheme.surface, CircleShape)
                     .border(1.dp, primaryColor.copy(alpha = 0.1f), CircleShape)
                     .constrainAs(chevronContainer) {
                         end.linkTo(parent.end)
@@ -137,7 +135,7 @@ fun PrimaryHeroCard(
                 }
             ) {
                 Text(text = title,
-                    color = darkTextColor,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                     fontSize = 14.sp,
                 )
@@ -145,7 +143,7 @@ fun PrimaryHeroCard(
 
             Text(
                 text = description,
-                color = primaryColor.copy(alpha = 0.8f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                 fontFamily = FontFamily(Font((Res.font.publicsansmedium))),
                 fontSize = 12.sp,
                 modifier = Modifier.constrainAs(subtitleText) {
@@ -158,5 +156,3 @@ fun PrimaryHeroCard(
         }
     }
 }
-
-

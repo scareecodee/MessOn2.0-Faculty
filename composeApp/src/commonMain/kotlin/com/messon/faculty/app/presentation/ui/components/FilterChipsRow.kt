@@ -1,4 +1,5 @@
 package com.messon.faculty.app.presentation.ui.components
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
@@ -9,6 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,7 +22,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import org.jetbrains.compose.resources.Font
@@ -30,11 +32,7 @@ fun FilterChipsRow(
     selectedChips: Set<Int>,
     onSelectionChange: (Set<Int>) -> Unit,
     modifier: Modifier = Modifier,
-    multiSelection: Boolean =false,
-    chipContainerColor: Color = Color.LightGray.copy(alpha = 0.5f),
-    chipTextColor: Color = Color.Black,
-    selectedChipContainerColor: Color = CustomColors.RichCerulean.copy(alpha = 0.85f),
-    selectedChipTextColor: Color = Color.White,
+    multiSelection: Boolean = false,
     shape: Shape = RoundedCornerShape(20.dp),
     border: BorderStroke? = null,
     showLeadingCheckIcon: Boolean = true
@@ -53,23 +51,17 @@ fun FilterChipsRow(
             FilterChip(
                 modifier = Modifier.height(38.dp),
                 selected = isSelected,
-
                 onClick = {
-
                     val newSelection = if (multiSelection) {
-
                         if (isSelected)
                             selectedChips - index
                         else
                             selectedChips + index
-
                     } else {
                         setOf(index)
                     }
-
                     onSelectionChange(newSelection)
                 },
-
                 label = {
                     Text(
                         fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
@@ -77,31 +69,24 @@ fun FilterChipsRow(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         text = text,
-                        color = if (isSelected)
-                            selectedChipTextColor
-                        else chipTextColor
                     )
                 },
-
                 leadingIcon = if (showLeadingCheckIcon && isSelected) {
                     {
-                        androidx.compose.material3.Icon(
+                        Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
-                            tint = selectedChipTextColor
+                            tint = Color.White
                         )
                     }
                 } else null,
-
                 shape = shape,
-
                 border = border,
-
                 colors = FilterChipDefaults.filterChipColors(
-                    containerColor = chipContainerColor,
-                    labelColor = chipTextColor,
-                    selectedContainerColor = selectedChipContainerColor,
-                    selectedLabelColor = selectedChipTextColor
+                    containerColor = Color.White,
+                    labelColor = Color.Black,
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = Color.White
                 )
             )
         }

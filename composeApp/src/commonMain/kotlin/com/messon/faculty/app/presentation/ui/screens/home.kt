@@ -1,4 +1,5 @@
 package com.messon.faculty.app.presentation.ui.screens
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -31,7 +32,9 @@ import androidx.compose.material.icons.rounded.Receipt
 import androidx.compose.material.icons.rounded.Restaurant
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,16 +51,8 @@ import com.messon.faculty.app.presentation.ui.components.BrandingCard
 import com.messon.faculty.app.presentation.ui.components.GridCard
 import com.messon.faculty.app.presentation.ui.components.PrimaryHeroCard
 import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
-import com.messon.faculty.app.theme.CustomColors.BlackberryCream
-import com.messon.faculty.app.theme.CustomColors.Cream
-import com.messon.faculty.app.theme.CustomColors.HoneyBronze
-import com.messon.faculty.app.theme.CustomColors.LightBlue
-import com.messon.faculty.app.theme.CustomColors.LightLavender
-import com.messon.faculty.app.theme.CustomColors.Mint
-import com.messon.faculty.app.theme.CustomColors.OffWhite
-import com.messon.faculty.app.theme.CustomColors.RichCerulean
-import com.messon.faculty.app.theme.CustomColors.Teal
-import com.messon.faculty.app.utils.Screen
+import com.messon.faculty.app.theme.MessonColors
+import com.messon.faculty.app.theme.MessonPalette
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansregular
@@ -66,40 +61,45 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun HomeScreen(
-    onAdminCardClick:()->Unit,
-    onMessCardClick:()->Unit,
-    onClosureCardClick:()->Unit,
-    onNoticeCardClick:()->Unit,
-    onFeedbackCardClick:()->Unit,
-    onBillCardClick:()-> Unit,
-    homeScreenVM: HomeScreenVM
-    ) {
+    onAdminCardClick: () -> Unit,
+    onMessCardClick: () -> Unit,
+    onClosureCardClick: () -> Unit,
+    onNoticeCardClick: () -> Unit,
+    onFeedbackCardClick: () -> Unit,
+    onBillCardClick: () -> Unit,
+    messonColors: MessonColors
+) {
+    val materialColors = MaterialTheme.colorScheme
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(OffWhite)
+            .background(materialColors.background)
     ) {
-        val (header, scrollContent,statusBarBox) = createRefs()
+        val (header, scrollContent, statusBarBox) = createRefs()
 
         Box(
             Modifier
                 .fillMaxWidth()
                 .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                .background(HoneyBronze.copy(alpha=0.6f))
+                .background(materialColors.secondary.copy(alpha = 0.6f))
                 .constrainAs(statusBarBox) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    width= Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
                 }
         )
+
         HeaderSection(
             modifier = Modifier.constrainAs(header) {
                 top.linkTo(statusBarBox.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
-            }
+            },
+            messonColors = messonColors,
+            materialColors = materialColors
         )
 
         Column(
@@ -113,11 +113,11 @@ fun HomeScreen(
                     height = Dimension.fillToConstraints
                 }
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 24.dp)
+                .padding(horizontal = 12.dp, vertical = 24.dp)
         ) {
             Text(
                 text = "Administration",
-                color = Color.Gray,
+                color = materialColors.onSurfaceVariant,
                 fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)
@@ -127,8 +127,8 @@ fun HomeScreen(
                 title = "College Admins",
                 description = "Manage admin access & roles",
                 icon = Icons.Rounded.Shield,
-                cardColor = LightBlue,
-                primaryColor = RichCerulean,
+                cardColor = messonColors.infoContainer,
+                primaryColor = materialColors.primary,
                 onClick = onAdminCardClick,
             )
 
@@ -142,8 +142,8 @@ fun HomeScreen(
                     title = "Mess Config",
                     description = "Manage Mess",
                     icon = Icons.Rounded.Restaurant,
-                    cardColor = Mint,
-                    primaryColor = Teal,
+                    cardColor = messonColors.success.copy(alpha = 0.2f),
+                    primaryColor = messonColors.success,
                     modifier = Modifier.weight(1f),
                     onClick = {
                         onMessCardClick()
@@ -154,13 +154,12 @@ fun HomeScreen(
                     title = "Mess Closures",
                     description = "Manage off-days & holidays",
                     icon = Icons.Rounded.DateRange,
-                    cardColor = LightLavender,
-                    primaryColor = BlackberryCream,
+                    cardColor = messonColors.accentContainer,
+                    primaryColor = materialColors.tertiary,
                     modifier = Modifier.weight(1f),
                     onClick = {
                         onClosureCardClick()
                     }
-
                 )
             }
 
@@ -174,8 +173,8 @@ fun HomeScreen(
                     title = "Notice Board",
                     description = "Broadcast updates",
                     icon = Icons.Rounded.Campaign,
-                    cardColor = LightBlue,
-                    primaryColor = RichCerulean,
+                    cardColor = messonColors.infoContainer,
+                    primaryColor = materialColors.primary,
                     modifier = Modifier.weight(1f),
                     onClick = onNoticeCardClick
                 )
@@ -183,8 +182,8 @@ fun HomeScreen(
                     title = "Student Feedback",
                     description = "Review daily meal ratings",
                     icon = Icons.Rounded.Star,
-                    cardColor = Cream,
-                    primaryColor = HoneyBronze,
+                    cardColor = messonColors.warningContainer,
+                    primaryColor = materialColors.secondary,
                     modifier = Modifier.weight(1f),
                     onClick = onFeedbackCardClick
                 )
@@ -196,8 +195,8 @@ fun HomeScreen(
                 title = "Financials & Billing",
                 description = "View Student Bills",
                 icon = Icons.Rounded.Receipt,
-                cardColor = Mint,
-                primaryColor = Teal,
+                cardColor = messonColors.success.copy(alpha = 0.2f),
+                primaryColor = messonColors.success,
                 onClick = onBillCardClick
             )
 
@@ -214,7 +213,7 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "MADE WITH ",
-                    color = Color.Gray.copy(alpha = 0.8f),
+                    color = materialColors.onSurfaceVariant.copy(alpha = 0.8f),
                     fontFamily = FontFamily(Font((Res.font.publicsansregular))),
                     fontSize = 8.sp,
                 )
@@ -228,7 +227,7 @@ fun HomeScreen(
                 )
                 Text(
                     text = " FOR BHARAT",
-                    color = Color.Gray.copy(alpha = 0.8f),
+                    color = materialColors.onSurfaceVariant.copy(alpha = 0.8f),
                     fontFamily = FontFamily(Font((Res.font.publicsansregular))),
                     fontSize = 8.sp,
                 )
@@ -240,12 +239,16 @@ fun HomeScreen(
 }
 
 @Composable
-fun HeaderSection(modifier: Modifier = Modifier) {
+fun HeaderSection(
+    modifier: Modifier = Modifier,
+    messonColors: MessonColors,
+    materialColors: ColorScheme
+) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = Cream,
+        color = messonColors.warningContainer,
         shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp),
-        border = BorderStroke(1.dp, HoneyBronze.copy(alpha = 0.1f))
+        border = BorderStroke(1.dp, materialColors.secondary.copy(alpha = 0.1f))
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -265,12 +268,12 @@ fun HeaderSection(modifier: Modifier = Modifier) {
                 }
             ) {
                 drawCircle(
-                    color = HoneyBronze.copy(alpha = 0.05f),
+                    color = materialColors.secondary.copy(alpha = 0.05f),
                     radius = size.width * 0.3f,
                     center = Offset(size.width, 0f)
                 )
                 drawCircle(
-                    color = HoneyBronze.copy(alpha = 0.05f),
+                    color = materialColors.secondary.copy(alpha = 0.05f),
                     radius = size.width * 0.2f,
                     center = Offset(0f, size.height)
                 )
@@ -278,7 +281,7 @@ fun HeaderSection(modifier: Modifier = Modifier) {
 
             Text(
                 text = "Welcome Back",
-                color = HoneyBronze.copy(alpha = 0.8f),
+                color = materialColors.secondary.copy(alpha = 0.8f),
                 fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                 fontSize = 12.sp,
                 modifier = Modifier.constrainAs(welcomeText) {
@@ -289,7 +292,7 @@ fun HeaderSection(modifier: Modifier = Modifier) {
 
             Text(
                 text = "Bipin Chourasia",
-                color = BlackberryCream,
+                color = materialColors.onBackground,
                 fontFamily = FontFamily(Font((Res.font.publicsansbold))),
                 fontSize = 14.sp,
                 modifier = Modifier.constrainAs(nameText) {
@@ -305,20 +308,20 @@ fun HeaderSection(modifier: Modifier = Modifier) {
                         top.linkTo(nameText.bottom, margin = 12.dp)
                         start.linkTo(parent.start)
                     }
-                    .background(Color.White.copy(alpha = 0.7f), RoundedCornerShape(8.dp))
-                    .border(1.dp, HoneyBronze.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
+                    .background(materialColors.surface.copy(alpha = 0.7f), RoundedCornerShape(8.dp))
+                    .border(1.dp, materialColors.secondary.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Icon(
                     imageVector = Icons.Rounded.LocationOn,
                     contentDescription = null,
-                    tint = HoneyBronze,
+                    tint = materialColors.secondary,
                     modifier = Modifier.size(14.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = "IIIT Bhubaneswar",
-                    color = HoneyBronze,
+                    color = materialColors.secondary,
                     fontFamily = FontFamily(Font((Res.font.publicsansregular))),
                     fontSize = 12.sp,
                 )
@@ -327,8 +330,8 @@ fun HeaderSection(modifier: Modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .size(56.dp)
-                    .background(Color.White, CircleShape)
-                    .border(1.dp, HoneyBronze.copy(alpha = 0.2f), CircleShape)
+                    .background(materialColors.surface, CircleShape)
+                    .border(1.dp, materialColors.secondary.copy(alpha = 0.2f), CircleShape)
                     .constrainAs(profilePic) {
                         end.linkTo(parent.end)
                         top.linkTo(welcomeText.bottom)
@@ -339,7 +342,7 @@ fun HeaderSection(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Rounded.Person,
                     contentDescription = "Profile",
-                    tint = HoneyBronze,
+                    tint = materialColors.secondary,
                     modifier = Modifier.size(32.dp)
                 )
 
@@ -348,13 +351,9 @@ fun HeaderSection(modifier: Modifier = Modifier) {
                         .size(14.dp)
                         .align(Alignment.TopEnd)
                         .background(Color(0xFF34D399), CircleShape)
-                        .border(2.dp, Color.White, CircleShape)
+                        .border(2.dp, materialColors.surface, CircleShape)
                 )
             }
         }
     }
 }
-
-
-
-

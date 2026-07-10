@@ -1,11 +1,14 @@
 package com.messon.faculty.app.domain.repository
+import com.messon.faculty.app.data.remote.network.ComplaintApi
 import com.messon.faculty.app.data.remote.network.MessApi
 import com.messon.faculty.app.domain.dataModel.BillReq
+import com.messon.faculty.app.domain.dataModel.FetchComplaintsRes
 import com.messon.faculty.app.domain.dataModel.Holiday
 import com.messon.faculty.app.domain.dataModel.HolidayRes
 import com.messon.faculty.app.domain.dataModel.MessCreateReq
 import com.messon.faculty.app.domain.dataModel.MessCreateRes
 import com.messon.faculty.app.domain.dataModel.StudentBillingData
+import com.messon.faculty.app.domain.dataModel.UpdateComplaintStatus
 import com.messon.faculty.app.presentation.mapper.toDTo
 import com.messon.faculty.app.presentation.mapper.toDomain
 import com.messon.faculty.app.presentation.mapper.toDto
@@ -13,7 +16,8 @@ import com.messon.faculty.app.utils.NetworkError
 import com.messon.faculty.app.utils.Result
 
 class MessRepository(
-    private val messApi: MessApi
+    private val messApi: MessApi,
+    private val complaintApi: ComplaintApi
 ) {
     suspend fun addMess(
         token: String,
@@ -148,6 +152,59 @@ class MessRepository(
 
                 Result.Success(
                     data =data
+                )
+            }
+            is Result.Error -> Result.Error(result.error)
+        }
+    }
+
+    suspend fun fetchComplaints(
+        token: String,
+        cursor: String?,
+        search: String?,
+        messId: String
+    ): Result<FetchComplaintsRes, NetworkError> {
+
+        return when (
+            val result =complaintApi.fetchComplaints(
+                token = token,
+                cursor = cursor,
+                search = search,
+                messId = messId,
+            )
+        ) {
+            is Result.Success -> {
+
+                val dto = result.data
+
+
+                Result.Success(
+                    data = dto.toDomain()
+                )
+            }
+            is Result.Error -> Result.Error(result.error)
+        }
+    }
+
+
+    suspend fun updateComplaintStatus(
+        updateComplaintStatus: UpdateComplaintStatus,
+        token: String
+    ): Result<UpdateComplaintStatus, NetworkError> {
+
+        return when (
+            val result =complaintApi.updateComplaintStatus(
+                token = token,
+                updateComplaintStatusDto =updateComplaintStatus.toDto()
+            )
+        ) {
+            is Result.Success -> {
+
+                val dto = result.data
+
+
+                Result.Success(
+                    data = dto.toDomain()
                 )
             }
             is Result.Error -> Result.Error(result.error)

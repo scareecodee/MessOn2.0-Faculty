@@ -1,4 +1,5 @@
 package com.messon.faculty.app.presentation.ui.screens.college
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +20,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.CustomInputField
 import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansmedium
@@ -27,7 +27,7 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun AddCollegeAdminScreen(
-    onBackBtnClick:()-> Unit
+    onBackBtnClick: () -> Unit
 ) {
     var collegeAdminName by remember { mutableStateOf("") }
     var mail by remember { mutableStateOf("") }
@@ -36,49 +36,51 @@ fun AddCollegeAdminScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CustomColors.OffWhite)
+            .background(MaterialTheme.colorScheme.background)
     ) {
+        // Decorative circle
         Box(
             modifier = Modifier
                 .offset(x = 200.dp, y = (-100).dp)
                 .size(250.dp)
-                .background(CustomColors.HoneyBronze.copy(alpha = 0.15f), CircleShape)
+                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f), CircleShape)
         )
 
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
-            val (backBtnRef,headingRef, form, footer,statusBarBox,subheading) = createRefs()
+            val (backBtnRef, headingRef, form, statusBarBox, subheading) = createRefs()
 
             Box(
                 Modifier
                     .fillMaxWidth()
                     .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                    .background(CustomColors.LightGrayBlue)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .constrainAs(statusBarBox) {
                         top.linkTo(parent.top)
                     }
             )
 
             IconButton(
-                onClick = {
-                    onBackBtnClick()
-                },
+                onClick = { onBackBtnClick() },
                 modifier = Modifier.constrainAs(backBtnRef) {
                     start.linkTo(parent.start, 15.dp)
                     top.linkTo(statusBarBox.bottom, 10.dp)
                 }
             ) {
-                Icon(Icons.Default.ChevronLeft, contentDescription = "back", modifier = Modifier.size(28.dp)
+                Icon(
+                    Icons.Default.ChevronLeft,
+                    contentDescription = "back",
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
-
 
             Text(
                 text = "Register Admin",
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.constrainAs(headingRef) {
                     start.linkTo(backBtnRef.end, 5.dp)
                     centerVerticallyTo(backBtnRef)
@@ -88,7 +90,7 @@ fun AddCollegeAdminScreen(
             Text(
                 text = "Fill out details to register",
                 fontSize = 14.sp,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                 modifier = Modifier.constrainAs(subheading) {
                     top.linkTo(backBtnRef.bottom, margin = 8.dp)
@@ -97,26 +99,28 @@ fun AddCollegeAdminScreen(
             )
 
             LazyColumn(
-                modifier = Modifier.constrainAs(form) {
-                    top.linkTo(subheading.bottom, margin = 32.dp)
-                    bottom.linkTo(parent.bottom, margin = 7.dp)
-                    start.linkTo(parent.start, margin = 12.dp)
-                    end.linkTo(parent.end, margin = 12.dp)
-                    width = Dimension.fillToConstraints
-                    height= Dimension.fillToConstraints
-                }.imePadding(),
+                modifier = Modifier
+                    .constrainAs(form) {
+                        top.linkTo(subheading.bottom, margin = 32.dp)
+                        bottom.linkTo(parent.bottom, margin = 7.dp)
+                        start.linkTo(parent.start, margin = 12.dp)
+                        end.linkTo(parent.end, margin = 12.dp)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
+                    .imePadding(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                item{
+                item {
                     CustomInputField(
-                        value =collegeAdminName,
-                        onValueChange = { collegeAdminName= it },
+                        value = collegeAdminName,
+                        onValueChange = { collegeAdminName = it },
                         label = "Manager Name",
                         icon = Icons.Default.Home
                     )
                 }
 
-                item{
+                item {
                     CustomInputField(
                         value = mail,
                         onValueChange = { mail = it },
@@ -125,7 +129,7 @@ fun AddCollegeAdminScreen(
                     )
                 }
 
-                item{
+                item {
                     StatusSwitcher(
                         isActive = isActive,
                         onToggle = { isActive = !isActive },
@@ -134,22 +138,19 @@ fun AddCollegeAdminScreen(
                     )
                 }
 
-
-                item{
-                    Spacer(
-                        modifier = Modifier.size(10.dp)
-                    )
+                item {
+                    Spacer(modifier = Modifier.size(10.dp))
                 }
 
-                item{
+                item {
                     Button(
-                        onClick = {   },
+                        onClick = { },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp)
                             .shadow(12.dp, RoundedCornerShape(24.dp)),
                         shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = CustomColors.RichCerulean)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -159,6 +160,7 @@ fun AddCollegeAdminScreen(
                                 "Add Admin",
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Box(
@@ -167,7 +169,11 @@ fun AddCollegeAdminScreen(
                                     .background(Color.White.copy(alpha = 0.2f), CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimary
+                                )
                             }
                         }
                     }
@@ -176,5 +182,3 @@ fun AddCollegeAdminScreen(
         }
     }
 }
-
-

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Restaurant
 import androidx.compose.material.icons.rounded.TrendingUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,12 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.theme.CustomColors.RichCerulean
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -34,10 +32,10 @@ import org.jetbrains.compose.resources.Font
 fun BrandingCard() {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(24.dp),
         shadowElevation = 2.dp,
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color.Gray.copy(alpha = 0.1f))
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -49,7 +47,7 @@ fun BrandingCard() {
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .background(RichCerulean, RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
                     .constrainAs(iconBox) {
                         start.linkTo(parent.start)
                         top.linkTo(parent.top)
@@ -57,7 +55,12 @@ fun BrandingCard() {
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = Icons.Rounded.Restaurant, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                Icon(
+                    imageVector = Icons.Rounded.Restaurant,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
 
             Column(
@@ -67,13 +70,15 @@ fun BrandingCard() {
                     bottom.linkTo(parent.bottom)
                 }
             ) {
-                Text(text = "MessOn",
-                    color = CustomColors.BlackberryCream,
+                Text(
+                    text = "MessOn",
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = FontFamily(Font((Res.font.publicsansbold))),
                     fontSize = 14.sp,
                 )
-                Text(text = "Smart System",
-                    color = Color.Gray,
+                Text(
+                    text = "Smart System",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                     fontSize = 12.sp
                 )
@@ -82,7 +87,7 @@ fun BrandingCard() {
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .background(CustomColors.Mint, CircleShape)
+                    .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape)
                     .constrainAs(trendBox) {
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
@@ -90,7 +95,12 @@ fun BrandingCard() {
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = Icons.Rounded.TrendingUp, contentDescription = null, tint = CustomColors.Teal, modifier = Modifier.size(20.dp))
+                Icon(
+                    imageVector = Icons.Rounded.TrendingUp,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
     }

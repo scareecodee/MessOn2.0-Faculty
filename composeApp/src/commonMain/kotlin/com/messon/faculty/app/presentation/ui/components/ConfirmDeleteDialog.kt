@@ -8,11 +8,9 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.DialogVariant
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansregular
@@ -34,10 +32,11 @@ fun ConfirmDeleteDialog(
 ) {
     if (!isOpen) return
 
-    val (icon, iconColor, containerColor) = when (variant) {
-        DialogVariant.DANGER -> Triple(Icons.Default.Delete, Color.Red, CustomColors.OffWhite)
-        DialogVariant.WARNING -> Triple(Icons.Default.Warning, CustomColors.HoneyBronze, CustomColors.Cream)
-        DialogVariant.INFO -> Triple(Icons.Default.Info, CustomColors.RichCerulean, CustomColors.LightBlue)
+
+    val iconColor = when (variant) {
+        DialogVariant.DANGER -> MaterialTheme.colorScheme.error
+        DialogVariant.WARNING -> MaterialTheme.colorScheme.secondary
+        DialogVariant.INFO -> MaterialTheme.colorScheme.primary
     }
 
     AlertDialog(
@@ -45,7 +44,11 @@ fun ConfirmDeleteDialog(
         onDismissRequest = { if (!isLoading) onDismiss() },
         icon = {
             Icon(
-                imageVector = icon,
+                imageVector = when (variant) {
+                    DialogVariant.DANGER -> Icons.Default.Delete
+                    DialogVariant.WARNING -> Icons.Default.Warning
+                    DialogVariant.INFO -> Icons.Default.Info
+                },
                 contentDescription = null,
                 tint = iconColor,
                 modifier = Modifier.size(30.dp)
@@ -54,7 +57,7 @@ fun ConfirmDeleteDialog(
         title = {
             Text(
                 text = title,
-                color = CustomColors.BlackberryCream,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                 fontSize = 14.sp,
             )
@@ -62,7 +65,7 @@ fun ConfirmDeleteDialog(
         text = {
             Text(
                 text = message,
-                color = CustomColors.BlackberryCream.copy(alpha = 0.8f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontFamily = FontFamily(Font(Res.font.publicsansregular)),
                 fontSize = 12.sp,
             )
@@ -95,7 +98,7 @@ fun ConfirmDeleteDialog(
                 onClick = onDismiss,
                 enabled = !isLoading,
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = CustomColors.LightGrayBlue
+                    contentColor = MaterialTheme.colorScheme.outline
                 )
             ) {
                 Text(
@@ -105,6 +108,6 @@ fun ConfirmDeleteDialog(
                 )
             }
         },
-        containerColor = containerColor,
+        containerColor = MaterialTheme.colorScheme.surface,
     )
 }

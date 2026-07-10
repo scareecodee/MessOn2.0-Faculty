@@ -1,4 +1,5 @@
 package com.messon.faculty.app.presentation.ui.screens.mess
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,12 +47,12 @@ import com.messon.faculty.app.presentation.ui.components.StudentBillCard
 import com.messon.faculty.app.presentation.ui.uiState.CsvDownloadState
 import com.messon.faculty.app.presentation.ui.uiState.FetchMessBillState
 import com.messon.faculty.app.presentation.viewmodel.MessBillVM
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessBillScreen(
@@ -59,27 +62,21 @@ fun MessBillScreen(
 ) {
 
     var query by remember { mutableStateOf("") }
-
     val uiState by messBillVM.fetchMessBillState.collectAsState()
     val downloadState by messBillVM.downloadingState.collectAsState()
     val isDownloading = downloadState is CsvDownloadState.Loading
 
     val students = remember(uiState) {
         when (uiState) {
-            is FetchMessBillState.Success -> {
-                (uiState as FetchMessBillState.Success).bill ?: emptyList()
-            }
+            is FetchMessBillState.Success -> (uiState as FetchMessBillState.Success).bill ?: emptyList()
             else -> emptyList()
         }
     }
 
     val isLoading = uiState is FetchMessBillState.Loading
-
     val filteredStudents = remember(students, query) {
         if (query.isBlank()) students
-        else students.filter {
-            it.name?.contains(query, ignoreCase = true) == true
-        }
+        else students.filter { it.name?.contains(query, ignoreCase = true) == true }
     }
 
     LaunchedEffect(uiState) {
@@ -90,49 +87,30 @@ fun MessBillScreen(
 
     LaunchedEffect(downloadState) {
         when (downloadState) {
-            is CsvDownloadState.Success -> {
-                val path = (downloadState as CsvDownloadState.Success).path
-                showToast("Saved to: $path")
-            }
-
-            is CsvDownloadState.Error -> {
-                showToast((downloadState as CsvDownloadState.Error).message)
-            }
-
+            is CsvDownloadState.Success -> showToast("Saved to: ${(downloadState as CsvDownloadState.Success).path}")
+            is CsvDownloadState.Error -> showToast((downloadState as CsvDownloadState.Error).message)
             else -> Unit
         }
     }
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = Color.White
+        color = MaterialTheme.colorScheme.background
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(CustomColors.OffWhite)
+                    .background(MaterialTheme.colorScheme.background)
             ) {
-
-                val (
-                    statusBarBox, headingRef, listRef,
-                    backBtnRef, searchBarRef,
-                    downloadBtnRef
-                ) = createRefs()
+                val (statusBarBox, headingRef, listRef, backBtnRef, searchBarRef, downloadBtnRef) = createRefs()
 
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .height(
-                            WindowInsets.safeDrawing
-                                .asPaddingValues()
-                                .calculateTopPadding() + 5.dp
-                        )
-                        .background(CustomColors.LightGrayBlue)
-                        .constrainAs(statusBarBox) {
-                            top.linkTo(parent.top)
-                        }
+                        .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .constrainAs(statusBarBox) { top.linkTo(parent.top) }
                 )
 
                 IconButton(
@@ -145,7 +123,8 @@ fun MessBillScreen(
                     Icon(
                         Icons.Default.ChevronLeft,
                         contentDescription = "back",
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -153,6 +132,7 @@ fun MessBillScreen(
                     text = "Mess Bill",
                     fontSize = 18.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.constrainAs(headingRef) {
                         start.linkTo(backBtnRef.end, 5.dp)
                         centerVerticallyTo(backBtnRef)
@@ -161,17 +141,15 @@ fun MessBillScreen(
 
                 Button(
                     onClick = {
-                        if (students.isEmpty()) {
-                            showToast("No data to download")
-                        } else {
-                            messBillVM.downloadMessBillCsv()
-                        }
+                        if (students.isEmpty()) showToast("No data to download")
+                        else messBillVM.downloadMessBillCsv()
                     },
                     shape = RoundedCornerShape(30.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = CustomColors.OffWhite
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.primary
                     ),
-                    border = BorderStroke(1.dp, CustomColors.RichCerulean),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                     modifier = Modifier
                         .height(40.dp)
                         .constrainAs(downloadBtnRef) {
@@ -182,15 +160,13 @@ fun MessBillScreen(
                     Icon(
                         Icons.Default.Download,
                         contentDescription = null,
-                        tint = CustomColors.RichCerulean,
                         modifier = Modifier.size(20.dp)
                     )
-
                     Text(
                         text = "Download Bill",
                         fontSize = 10.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                        color = CustomColors.RichCerulean
+                        modifier = Modifier.padding(start = 4.dp)
                     )
                 }
 
@@ -206,37 +182,29 @@ fun MessBillScreen(
                 )
 
                 if (filteredStudents.isEmpty() && !isLoading) {
-
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .constrainAs(listRef) {
-                                top.linkTo(searchBarRef.bottom)
-                                bottom.linkTo(parent.bottom)
-                            },
+                        modifier = Modifier.fillMaxSize().constrainAs(listRef) {
+                            top.linkTo(searchBarRef.bottom)
+                            bottom.linkTo(parent.bottom)
+                        },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No students found")
+                        Text("No students found", color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-
                 } else {
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .constrainAs(listRef) {
-                                top.linkTo(searchBarRef.bottom, 16.dp)
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                width = Dimension.fillToConstraints
-                                height = Dimension.fillToConstraints
-                            }
+                        modifier = Modifier.fillMaxSize().constrainAs(listRef) {
+                            top.linkTo(searchBarRef.bottom, 16.dp)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                            height = Dimension.fillToConstraints
+                        }
                     ) {
-                        items(
-                            items = filteredStudents
-                        ) { student ->
+                        items(items = filteredStudents) { student ->
                             StudentBillCard(
                                 student = student,
                                 modifier = Modifier.fillMaxWidth()
@@ -246,16 +214,14 @@ fun MessBillScreen(
                 }
             }
 
-            if (isLoading||isDownloading) {
+            if (isLoading || isDownloading) {
                 Box(
                     Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.3f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(
-                        color = CustomColors.RichCerulean
-                    )
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
         }

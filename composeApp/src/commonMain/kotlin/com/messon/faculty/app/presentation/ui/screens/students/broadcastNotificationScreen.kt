@@ -10,13 +10,7 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Subject
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,23 +24,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.theme.CustomColors.BlackberryCream
-import com.messon.faculty.app.theme.CustomColors.LightBlue
-import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
-import com.messon.faculty.app.theme.CustomColors.OffWhite
-import com.messon.faculty.app.theme.CustomColors.RichCerulean
+import com.messon.faculty.app.theme.MessonColors
+import com.messon.faculty.app.theme.MessonPalette
 
 @Composable
 fun BroadcastNotificationScreen(
-    onViewHistoryClick: () -> Unit
+    onViewHistoryClick: () -> Unit,
+    messonColors: MessonColors
 ) {
     var subject by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
+    val materialColors = MaterialTheme.colorScheme
+    val isDarkTheme = materialColors.background == MessonPalette.DarkOffWhite
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(OffWhite)
+            .background(materialColors.background)
     ) {
         val (lazyColumn) = createRefs()
 
@@ -73,14 +68,14 @@ fun BroadcastNotificationScreen(
                     Column {
                         Text(
                             text = "Broadcast",
-                            color = BlackberryCream,
+                            color = materialColors.onBackground, // Material text color
                             fontSize = 34.sp,
                             fontWeight = FontWeight.Black,
                             letterSpacing = (-1).sp
                         )
                         Text(
                             text = "Notify your student community",
-                            color = LightGrayBlue,
+                            color = materialColors.onSurfaceVariant,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -90,13 +85,13 @@ fun BroadcastNotificationScreen(
                         onClick = onViewHistoryClick,
                         modifier = Modifier
                             .clip(RoundedCornerShape(16.dp))
-                            .background(LightBlue)
+                            .background(messonColors.infoContainer)
                             .padding(4.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.History,
                             contentDescription = "History",
-                            tint = RichCerulean
+                            tint = materialColors.primary
                         )
                     }
                 }
@@ -106,8 +101,15 @@ fun BroadcastNotificationScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(20.dp, RoundedCornerShape(32.dp), ambientColor = Color.Black.copy(alpha = 0.1f))
-                        .background(Color.White, RoundedCornerShape(32.dp))
+                        .shadow(
+                            elevation = if (isDarkTheme) 8.dp else 20.dp,
+                            shape = RoundedCornerShape(32.dp),
+                            ambientColor = if (isDarkTheme) Color.Black.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.1f)
+                        )
+                        .background(
+                            color = materialColors.surface,
+                            shape = RoundedCornerShape(32.dp)
+                        )
                         .padding(24.dp)
                 ) {
                     ModernInputField(
@@ -116,7 +118,9 @@ fun BroadcastNotificationScreen(
                         label = "SUBJECT LINE",
                         placeholder = "e.g., Exam Schedule Update",
                         icon = Icons.Default.Subject,
-                        singleLine = false
+                        singleLine = false,
+                        materialColors = materialColors,
+                        messonColors = messonColors
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -128,7 +132,9 @@ fun BroadcastNotificationScreen(
                         placeholder = "Enter the full message...",
                         icon = Icons.Default.Description,
                         singleLine = false,
-                        minLines = 6
+                        minLines = 6,
+                        materialColors = materialColors,
+                        messonColors = messonColors
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
@@ -140,8 +146,14 @@ fun BroadcastNotificationScreen(
                             .height(55.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(
+                            containerColor = materialColors.primary,
+                            contentColor = materialColors.onPrimary,
+                            disabledContainerColor = materialColors.primary.copy(alpha = 0.3f),
+                            disabledContentColor = materialColors.onPrimary.copy(alpha = 0.5f)
                         ),
-                        elevation = ButtonDefaults.buttonElevation(0.dp, 0.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = if (isDarkTheme) 2.dp else 4.dp
+                        ),
                         enabled = subject.isNotBlank() && description.isNotBlank()
                     ) {
                         Row(
@@ -150,7 +162,7 @@ fun BroadcastNotificationScreen(
                         ) {
                             Text(
                                 text = "SEND NOTIFICATION",
-                                color = Color.White,
+                                color = materialColors.onPrimary,
                                 fontWeight = FontWeight.Black,
                                 fontSize = 14.sp,
                                 letterSpacing = 1.sp
@@ -158,7 +170,7 @@ fun BroadcastNotificationScreen(
                             Icon(
                                 imageVector = Icons.Default.Send,
                                 contentDescription = null,
-                                tint = Color.White,
+                                tint = materialColors.onPrimary,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
@@ -177,20 +189,22 @@ fun ModernInputField(
     placeholder: String,
     icon: ImageVector,
     singleLine: Boolean = true,
-    minLines: Int = 1
+    minLines: Int = 1,
+    materialColors: ColorScheme,
+    messonColors: MessonColors
 ) {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = LightGrayBlue,
+                tint = materialColors.onSurfaceVariant,
                 modifier = Modifier.size(14.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = label,
-                color = LightGrayBlue,
+                color = materialColors.onSurfaceVariant,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Black,
                 letterSpacing = 2.sp
@@ -208,12 +222,19 @@ fun ModernInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = LightGrayBlue.copy(alpha = 0.5f),
+                    color = materialColors.onSurfaceVariant.copy(alpha = 0.5f),
                     fontSize = 16.sp
                 )
             },
             colors = TextFieldDefaults.colors(
-
+                focusedContainerColor = materialColors.surfaceVariant,
+                unfocusedContainerColor = materialColors.surfaceVariant,
+                disabledContainerColor = materialColors.surfaceVariant,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedTextColor = materialColors.onBackground,
+                unfocusedTextColor = materialColors.onBackground,
+                disabledTextColor = materialColors.onBackground.copy(alpha = 0.5f)
             ),
             singleLine = singleLine,
             maxLines = if (singleLine) 1 else 10,

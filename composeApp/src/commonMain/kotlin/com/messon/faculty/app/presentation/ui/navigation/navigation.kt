@@ -2,6 +2,7 @@ package com.messon.faculty.app.presentation.ui.navigation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -20,7 +21,8 @@ import com.messon.faculty.app.presentation.ui.screens.mess.*
 import com.messon.faculty.app.presentation.ui.screens.students.*
 import com.messon.faculty.app.presentation.ui.uiState.AuthState
 import com.messon.faculty.app.presentation.viewmodel.*
-import com.messon.faculty.app.theme.CustomColors
+import com.messon.faculty.app.theme.MessonColors
+import com.messon.faculty.app.theme.MessonTheme
 import com.messon.faculty.app.theme.enterLeft
 import com.messon.faculty.app.theme.exitRight
 import com.messon.faculty.app.utils.Screen
@@ -79,7 +81,7 @@ fun AppNav(
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
-                color = CustomColors.RichCerulean,
+                color = MaterialTheme.colorScheme.primary,
                 strokeCap = StrokeCap.Round
             )
         }
@@ -276,6 +278,7 @@ fun AppNav(
                     onBackClick = { navController.popBackStack() },
                     onUploadSuccess = { navController.navigate(Screen.CsvPreviewResScreen.route) },
                     messListVM = messListVM,
+                    messonColors = MessonTheme.colors,
                 )
 
         }
@@ -293,7 +296,8 @@ fun AppNav(
                     navController.popBackStack()
                 },
                 csvUploadViewModel = csvUploadViewModel,
-                messListVM = messListVM
+                messListVM = messListVM,
+                messonColors = MessonTheme.colors
             )
         }
 
@@ -308,7 +312,8 @@ fun AppNav(
                 },
                 studentDetailScreenVM = studentDetailVM,
                 editStudentVM = editStudentVM,
-                onConflict = {navController.navigate(Screen.DataValidityScreen.route)}
+                onConflict = { navController.navigate(Screen.DataValidityScreen.route) },
+                messonColors = MessonTheme.colors
             )
         }
 
@@ -362,8 +367,11 @@ fun AppNav(
                     homeScreenVM.updateScreenRoute(Screen.HolidaysListScreen.route)
                     navController.navigate(Screen.MessListScreen.route)
                 },
-                onFeedbackCardClick = {},
-                homeScreenVM = homeScreenVM
+                onFeedbackCardClick = {
+                    homeScreenVM.updateScreenRoute(Screen.ViewComplaintScreen.route)
+                    navController.navigate(Screen.MessListScreen.route)
+                },
+                messonColors = MessonTheme.colors
             )
         }
 
@@ -488,10 +496,22 @@ fun AppNav(
             exitTransition = exitRight
         ){
            BroadcastNotificationScreen(
-               onViewHistoryClick = {}
+               onViewHistoryClick = {},
+               messonColors = MessonTheme.colors
            )
         }
-
+        composable (
+            route=Screen.ViewComplaintScreen.route,
+            enterTransition = enterLeft,
+            exitTransition = exitRight
+        ){
+            val fetchComplaintsVM: FetchComplaintsVM=koinViewModel()
+            ViewComplaintsScreen(
+                onBackClick = { navController.popBackStack() },
+                fetchComplaintsVM = fetchComplaintsVM,
+                messListVM = messListVM
+            )
+        }
         
     }
 }

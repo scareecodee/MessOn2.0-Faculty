@@ -3,11 +3,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,11 +15,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.MessCreateRes
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -60,7 +55,7 @@ fun MessClosureCard(mess: MessCreateRes,onCardClick:()-> Unit) {
                 modifier = Modifier
                     .size(56.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(if (isOpen) CustomColors.HoneyBronze.copy(alpha =0.1f) else Color.LightGray.copy(0.2f))
+                    .background(if (isOpen) MaterialTheme.colorScheme.secondary.copy(alpha =0.1f) else Color.LightGray.copy(0.2f))
                     .constrainAs(icon) {
                         top.linkTo(parent.top, 24.dp)
                         start.linkTo(parent.start, 24.dp)
@@ -70,7 +65,7 @@ fun MessClosureCard(mess: MessCreateRes,onCardClick:()-> Unit) {
                 Icon(
                     imageVector = if (isOpen) Icons.Default.LockOpen else Icons.Default.Lock,
                     contentDescription = null,
-                    tint = if (isOpen) CustomColors.HoneyBronze else Color.LightGray,
+                    tint = if (isOpen) MaterialTheme.colorScheme.secondary else Color.LightGray,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -113,7 +108,7 @@ fun MessClosureCard(mess: MessCreateRes,onCardClick:()-> Unit) {
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.background(if(isOpen) CustomColors.HoneyBronze.copy(0.1f) else Color.LightGray.copy(0.2f),RoundedCornerShape(20.dp))
+                    modifier = Modifier.background(if(isOpen) MaterialTheme.colorScheme.secondary.copy(0.1f) else Color.LightGray.copy(0.2f),RoundedCornerShape(20.dp))
                         .height(35.dp)
                         .width(65.dp)
                 ){
@@ -121,7 +116,7 @@ fun MessClosureCard(mess: MessCreateRes,onCardClick:()-> Unit) {
                         text = if (isOpen) "Open" else "Closed",
                         fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                         fontSize = 10.sp,
-                        color = if(isOpen) CustomColors.HoneyBronze else Color.LightGray
+                        color = if(isOpen) MaterialTheme.colorScheme.secondary else Color.LightGray
                     )
                 }
                 }

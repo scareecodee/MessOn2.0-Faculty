@@ -32,7 +32,6 @@ import com.messon.faculty.app.presentation.ui.components.BoxedIcon
 import com.messon.faculty.app.presentation.ui.components.ProfilePicWithBadge
 import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
-import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.presentation.ui.uiState.ToggleStatusState
 import com.messon.faculty.app.presentation.viewmodel.StudentBillVM
 import com.messon.faculty.app.utils.PredefinedOptions
@@ -49,7 +48,7 @@ import org.jetbrains.compose.resources.Font
 @Composable
 fun StudentDetailScreen(
     onBackClick: () -> Unit,
-    onEditClick:()-> Unit,
+    onEditClick:() -> Unit,
     studentDetailScreenVM: StudentDetailScreenVM,
     studentBillVM: StudentBillVM,
     navController: NavController
@@ -69,22 +68,25 @@ fun StudentDetailScreen(
 
     val toggleStatusState by studentDetailScreenVM.toggleStatusState.collectAsStateWithLifecycle()
 
+    val themeColors = MaterialTheme.colorScheme
+    val dynamicPrimary = themeColors.primary
+    val dynamicBackground = themeColors.background
+    val dynamicOnBackground = themeColors.onBackground
+    val dynamicOnSurface = themeColors.onSurface
+    val dynamicOutline = themeColors.outline
 
     LaunchedEffect(toggleStatusState) {
-
         when (toggleStatusState) {
-
             is ToggleStatusState.Success -> {
                 showToast(
                     message = "Updated detail of student"
                 )
                 studentDetailScreenVM.clearToggleStatusState()
-
             }
 
             is ToggleStatusState.Error -> {
                 showToast(
-                    message =(toggleStatusState as ToggleStatusState.Error).message
+                    message = (toggleStatusState as ToggleStatusState.Error).message
                 )
                 studentDetailScreenVM.clearToggleStatusState()
             }
@@ -96,7 +98,7 @@ fun StudentDetailScreen(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(dynamicBackground)
             .verticalScroll(scrollState)
     ) {
         val (statusBarBox,headerBg,backBtn, title, profileHeader,
@@ -108,7 +110,7 @@ fun StudentDetailScreen(
             Modifier
                 .fillMaxWidth()
                 .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                .background(CustomColors.LightGrayBlue)
+                .background(dynamicOutline)
                 .constrainAs(statusBarBox) {
                     top.linkTo(parent.top)
                 }
@@ -119,14 +121,13 @@ fun StudentDetailScreen(
                 .fillMaxWidth()
                 .height(110.dp)
                 .background(
-                    CustomColors.LightBlue,
+                    MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
                 )
                 .constrainAs(headerBg) {
                     top.linkTo(statusBarBox.bottom)
                 }
         )
-
 
         IconButton(
             onClick = onBackClick,
@@ -135,14 +136,19 @@ fun StudentDetailScreen(
                 start.linkTo(parent.start, 16.dp)
             }
         ) {
-            Icon(Icons.Default.ChevronLeft, contentDescription = "back", modifier = Modifier.size(28.dp))
+            Icon(
+                Icons.Default.ChevronLeft,
+                contentDescription = "back",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(28.dp)
+            )
         }
 
         Text(
             text = "Profile",
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
-            color =Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.constrainAs(title) {
                 top.linkTo(backBtn.top)
                 bottom.linkTo(backBtn.bottom)
@@ -150,7 +156,6 @@ fun StudentDetailScreen(
                 end.linkTo(parent.end)
             }
         )
-
 
         BoxedIcon(
             modifier = Modifier.constrainAs(editBtn){
@@ -161,18 +166,16 @@ fun StudentDetailScreen(
                 .clip(CircleShape)
                 .clickable{
                     onEditClick()
-                }
-            ,
-            boxColor = CustomColors.RichCerulean.copy(0.2f),
-            iconColor = CustomColors.RichCerulean,
+                },
+            boxColor = MaterialTheme.colorScheme.primary.copy(0.1f),
+            iconColor = MaterialTheme.colorScheme.primary,
             iconsSize = 17.dp,
             painter = rememberVectorPainter(image = Icons.Outlined.Edit),
             contentDescription = "edit btn",
             shape = CircleShape
         )
 
-
-        student?.let {student->
+        student?.let { student ->
             ProfilePicWithBadge(
                 imageUrl = student.profileImg,
                 isActive = student.isActive,
@@ -185,13 +188,12 @@ fun StudentDetailScreen(
             )
         }
 
-
-        student?.let {student->
+        student?.let { student ->
             Text(
                 text = student.name,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color = CustomColors.BlackberryCream,
+                color = dynamicOnBackground,
                 modifier = Modifier.constrainAs(name) {
                     top.linkTo(profileHeader.bottom, 12.dp)
                     start.linkTo(parent.start)
@@ -200,13 +202,12 @@ fun StudentDetailScreen(
             )
         }
 
-
-        student?.let {student->
+        student?.let { student ->
             Text(
                 text = student.email,
                 fontSize = 10.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                color = CustomColors.BlackberryCream.copy(alpha = 0.6f),
+                color = dynamicOnBackground.copy(alpha = 0.6f),
                 modifier = Modifier.constrainAs(email) {
                     top.linkTo(name.bottom, 4.dp)
                     start.linkTo(parent.start)
@@ -215,9 +216,7 @@ fun StudentDetailScreen(
             )
         }
 
-
-
-        student?.let {student->
+        student?.let { student ->
             Row(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
@@ -242,8 +241,6 @@ fun StudentDetailScreen(
                 )
             }
         }
-
-
 
         Box(modifier = Modifier
             .padding(horizontal = 24.dp)
@@ -294,21 +291,21 @@ fun StudentDetailScreen(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            colors = ButtonDefaults.buttonColors(containerColor = CustomColors.LightBlue),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary.copy(0.1f)),
             shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, CustomColors.RichCerulean)
+            border = BorderStroke(0.5.dp, dynamicPrimary)
         ) {
-            Icon(Icons.Default.Receipt, contentDescription = null, tint = CustomColors.RichCerulean)
+            Icon(Icons.Default.Receipt, contentDescription = null, tint = dynamicPrimary)
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 "View Billing",
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color = CustomColors.RichCerulean,
+                color = dynamicPrimary,
                 fontWeight = FontWeight.Black
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = CustomColors.RichCerulean.copy(alpha = 0.4f))
+            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = dynamicPrimary.copy(alpha = 0.4f))
         }
 
     }
@@ -331,7 +328,7 @@ fun StudentDetailScreen(
                     else -> return@BillingBottomSheet
                 }
 
-                    studentBillVM.selectPredefinedOption(selectedOption)
+                studentBillVM.selectPredefinedOption(selectedOption)
             },
 
             fromDate = fromDate,
@@ -358,8 +355,6 @@ fun StudentDetailScreen(
     }
 }
 
-
-
 @Composable
 fun InfoCard(
     label: String,
@@ -367,29 +362,31 @@ fun InfoCard(
     icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
+    val themeColors = MaterialTheme.colorScheme
+
     Column(
         modifier = modifier
-            .background(CustomColors.OffWhite, RoundedCornerShape(16.dp))
+            .background(themeColors.primary.copy(0.1f), RoundedCornerShape(16.dp))
             .padding(16.dp)
     ) {
         Icon(
             icon,
             contentDescription = null,
             modifier = Modifier.size(18.dp),
-            tint = CustomColors.BlackberryCream.copy(alpha = 0.4f)
+            tint = themeColors.primary
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = label,
             fontSize = 14.sp,
             fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-            color = CustomColors.BlackberryCream.copy(alpha = 0.4f)
+            color = themeColors.onBackground
         )
         Text(
             text = value,
             fontSize = 12.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-            color = CustomColors.RichCerulean
+            color = themeColors.primary
         )
     }
 }
@@ -400,20 +397,22 @@ fun FullWidthInfoCard(
     value: String,
     icon: ImageVector
 ) {
+    val themeColors = MaterialTheme.colorScheme
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(CustomColors.OffWhite, RoundedCornerShape(16.dp))
+            .background(themeColors.primary.copy(0.1f), RoundedCornerShape(16.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .size(40.dp)
-                .background(Color.White, RoundedCornerShape(12.dp)),
+                .background(themeColors.primary.copy(0.1f), RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = CustomColors.RichCerulean)
+            Icon(icon, contentDescription = null, tint = themeColors.primary)
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column {
@@ -421,15 +420,14 @@ fun FullWidthInfoCard(
                 text = label,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color = CustomColors.BlackberryCream.copy(alpha = 0.4f)
+                color = themeColors.onBackground
             )
             Text(
                 text = value,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                color = CustomColors.BlackberryCream
+                color = themeColors.primary
             )
         }
     }
 }
-

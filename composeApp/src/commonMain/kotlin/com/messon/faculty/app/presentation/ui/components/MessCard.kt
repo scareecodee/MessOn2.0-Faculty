@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,18 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.messon.faculty.app.domain.dataModel.Mess
 import com.messon.faculty.app.domain.dataModel.MessCreateRes
-import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.theme.CustomColors.BlackberryCream
-import com.messon.faculty.app.theme.CustomColors.LightBlue
-import com.messon.faculty.app.theme.CustomColors.LightGrayBlue
-import com.messon.faculty.app.theme.CustomColors.LightLavender
-import com.messon.faculty.app.theme.CustomColors.RichCerulean
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsansregular
@@ -57,7 +50,7 @@ fun MessCard(
             .clip(RoundedCornerShape(25.dp))
             .clickable { onCardClick() },
         shape = RoundedCornerShape(25.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         ConstraintLayout(
@@ -68,20 +61,26 @@ fun MessCard(
             Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .background(LightBlue, RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primary.copy(0.1f), RoundedCornerShape(12.dp))
                     .constrainAs(icon) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.Restaurant, null, tint = RichCerulean, modifier = Modifier.size(20.dp))
+                Icon(
+                    imageVector = Icons.Default.Restaurant,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
             }
 
             Text(
                 text = mess.name,
                 fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                 fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.constrainAs(title) {
                     top.linkTo(icon.top)
                     start.linkTo(icon.end, 16.dp)
@@ -95,17 +94,25 @@ fun MessCard(
                     start.linkTo(title.start)
                 }
             ) {
-                Icon(Icons.Default.LocationOn,
-                    null, tint = LightGrayBlue, modifier = Modifier.size(12.dp))
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(12.dp)
+                )
                 Spacer(Modifier.width(4.dp))
-                Text(mess.location, color = LightGrayBlue,
+                Text(
+                    text = mess.location,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp,
                     fontFamily = FontFamily(Font((Res.font.publicsansregular))),
                 )
             }
 
             Icon(
-                Icons.Default.ChevronRight, null, tint = CustomColors.RichCerulean,
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.constrainAs(chevron) {
                     top.linkTo(icon.top)
                     bottom.linkTo(footer.bottom)
@@ -121,21 +128,37 @@ fun MessCard(
                     bottom.linkTo(parent.bottom)
                 }
             ) {
-                Surface(color = LightLavender, shape = RoundedCornerShape(8.dp)) {
-                    Row(Modifier.padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.People, null, tint = BlackberryCream, modifier = Modifier.size(12.dp))
+                Surface(
+                    color = MaterialTheme.colorScheme.secondary.copy(0.1f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.People,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(12.dp)
+                        )
                         Spacer(Modifier.width(6.dp))
                     }
                 }
-                Spacer(Modifier.width(12.dp))
-                Box(Modifier.size(6.dp).background(if (mess.isActive) CustomColors.HoneyBronze else Color.LightGray, CircleShape))
+                Spacer(Modifier.width(14.dp))
+                Box(
+                    Modifier.size(6.dp).background(
+                        if (mess.isActive) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outline,
+                        CircleShape
+                    )
+                )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                  text = if( mess.isActive) "Active" else "Inactive",
+                    text = if( mess.isActive) "Active" else "Inactive",
                     fontFamily = FontFamily(Font((Res.font.publicsansregular))),
                     fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
             }
         }
     }

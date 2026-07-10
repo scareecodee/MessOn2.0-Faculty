@@ -30,6 +30,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
@@ -63,7 +64,6 @@ import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.presentation.viewmodel.StudentDetailScreenVM
 import com.messon.faculty.app.presentation.viewmodel.StudentScreenVM
-import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.FilePickerState
 import com.messon.faculty.app.utils.Screen
 import io.github.vinceglb.filekit.PlatformFile
@@ -101,6 +101,14 @@ fun StudentScreen(
     val selectionMode = selectedStudents.isNotEmpty()
 
     val selectedMess by messListVM.selectedMess.collectAsState()
+
+    // Dynamic color tokens mapping standard theme colors
+    val themeColors = MaterialTheme.colorScheme
+    val dynamicPrimary = themeColors.primary
+    val dynamicBackground = themeColors.background
+    val dynamicSurface = themeColors.surface
+    val dynamicOnSurface = themeColors.onSurface
+    val dynamicOutline = themeColors.outline
 
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
@@ -165,13 +173,13 @@ fun StudentScreen(
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = Color.White
+        color = dynamicSurface
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(CustomColors.OffWhite)
+                    .background(dynamicBackground)
             ) {
                 val (
                     statusBarBox, headingRef, listRef,
@@ -183,7 +191,7 @@ fun StudentScreen(
                     Modifier
                         .fillMaxWidth()
                         .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                        .background(CustomColors.LightGrayBlue)
+                        .background(dynamicOutline)
                         .constrainAs(statusBarBox) {
                             top.linkTo(parent.top)
                         }
@@ -202,6 +210,7 @@ fun StudentScreen(
                     Icon(
                         Icons.Default.ChevronLeft,
                         contentDescription = "back",
+                        tint = dynamicOnSurface,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -210,6 +219,7 @@ fun StudentScreen(
                     text = "Students List",
                     fontSize = 18.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+                    color = dynamicOnSurface,
                     modifier = Modifier.constrainAs(headingRef) {
                         start.linkTo(backBtnRef.end, 5.dp)
                         centerVerticallyTo(backBtnRef)
@@ -219,27 +229,29 @@ fun StudentScreen(
                 Button(
                     shape = RoundedCornerShape(30.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = CustomColors.OffWhite
+                        containerColor = dynamicBackground,
+                        contentColor = dynamicPrimary
                     ),
-                    border = BorderStroke(width = 1.dp, color = CustomColors.RichCerulean),
+                    border = BorderStroke(width = 1.dp, color = dynamicPrimary),
                     onClick = { isSheetOpen = true },
-                    modifier = Modifier.constrainAs(addStudentBtnRef) {
-                        end.linkTo(parent.end, 16.dp)
-                        centerVerticallyTo(backBtnRef)
-                    }
+                    modifier = Modifier
+                        .constrainAs(addStudentBtnRef) {
+                            end.linkTo(parent.end, 16.dp)
+                            centerVerticallyTo(backBtnRef)
+                        }
                         .height(40.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add Student",
-                        tint = CustomColors.RichCerulean,
+                        tint = dynamicPrimary,
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
                         text = "Add Students ",
                         fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                         fontSize = 10.sp,
-                        color = CustomColors.RichCerulean,
+                        color = dynamicPrimary,
                     )
                 }
 
@@ -274,12 +286,12 @@ fun StudentScreen(
                                 studentScreenVM.clearSelection()
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = CustomColors.RichCerulean
+                                containerColor = dynamicSurface,
+                                contentColor = dynamicPrimary
                             ),
                             border = BorderStroke(
                                 width = 1.dp,
-                                color = CustomColors.LightGrayBlue
+                                color = dynamicOutline
                             ),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
@@ -289,6 +301,7 @@ fun StudentScreen(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Cancel Selection",
+                                tint = dynamicPrimary,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
@@ -296,7 +309,7 @@ fun StudentScreen(
                                 text = "Cancel (${selectedStudents.size})",
                                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                                 fontSize = 13.sp,
-                                color = CustomColors.RichCerulean
+                                color = dynamicPrimary
                             )
                         }
 
@@ -305,8 +318,8 @@ fun StudentScreen(
                                 studentScreenVM.deleteSelectedStudents()
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = CustomColors.RichCerulean,
-                                contentColor = Color.White
+                                containerColor = dynamicPrimary,
+                                contentColor = dynamicSurface
                             ),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
@@ -316,6 +329,7 @@ fun StudentScreen(
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Delete Selected",
+                                tint = dynamicSurface,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
@@ -323,7 +337,7 @@ fun StudentScreen(
                                 text = "Delete (${selectedStudents.size})",
                                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                                 fontSize = 13.sp,
-                                color = Color.White
+                                color = dynamicSurface
                             )
                         }
                     }
@@ -333,8 +347,8 @@ fun StudentScreen(
                     state = pullToRefreshState,
                     indicator = {
                         PullToRefreshDefaults.Indicator(
-                            containerColor = CustomColors.RichCerulean,
-                            color = Color.White,
+                            containerColor = dynamicPrimary,
+                            color = dynamicSurface,
                             isRefreshing = isRefreshing,
                             state = pullToRefreshState
                         )
@@ -404,7 +418,7 @@ fun StudentScreen(
                                         fetchStudentsState.isLoadingMore -> {
                                             CircularProgressIndicator(
                                                 strokeCap = StrokeCap.Round,
-                                                color = CustomColors.RichCerulean
+                                                color = dynamicPrimary
                                             )
                                         }
                                         fetchStudentsState.error != null -> {
@@ -412,7 +426,7 @@ fun StudentScreen(
                                                 text = "Unable to load more",
                                                 fontSize = 14.sp,
                                                 fontFamily = FontFamily(Font(Res.font.publicsansregular)),
-                                                color = Color.Black,
+                                                color = dynamicOnSurface,
                                             )
                                         }
                                     }
@@ -427,10 +441,10 @@ fun StudentScreen(
                 Box(
                     Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
+                        .background(Color.Black.copy(alpha = 0.4f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = CustomColors.RichCerulean)
+                    CircularProgressIndicator(color = dynamicPrimary)
                 }
             }
         }
@@ -441,7 +455,7 @@ fun StudentScreen(
             onDismissRequest = { isSheetOpen = false },
             sheetState = bottomSheetState,
             shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp),
-            containerColor = Color.White,
+            containerColor = dynamicSurface,
             dragHandle = null
         ) {
             BottomSheetContent(

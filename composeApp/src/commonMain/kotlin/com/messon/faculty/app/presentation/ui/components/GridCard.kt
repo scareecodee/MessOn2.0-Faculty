@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -48,10 +48,10 @@ fun GridCard(
             .clickable {
                 onClick()
             },
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(24.dp),
         shadowElevation = 2.dp,
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color.Gray.copy(alpha = 0.1f))
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -90,7 +90,7 @@ fun GridCard(
 
             Text(
                 text = title,
-                color = CustomColors.BlackberryCream,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontFamily = FontFamily(Font((Res.font.publicsanssemibold))),
                 fontSize = 14.sp,
                 modifier = Modifier.constrainAs(titleText) {
@@ -103,7 +103,7 @@ fun GridCard(
 
             Text(
                 text = description,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontFamily = FontFamily(Font((Res.font.publicsansmedium))),
                 fontSize = 12.sp,
                 modifier = Modifier.constrainAs(descText) {

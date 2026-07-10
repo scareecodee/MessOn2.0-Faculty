@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
-import com.messon.faculty.app.theme.CustomColors
 
 @Composable
 fun ProfilePicWithBadge(
@@ -33,10 +33,10 @@ fun ProfilePicWithBadge(
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
                 .border(
                     width = 2.dp,
-                    color = if (isActive) CustomColors.HoneyBronze else CustomColors.LightGrayBlue,
+                    color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                     shape = CircleShape
                 )
                 .padding(4.dp)
@@ -55,14 +55,14 @@ fun ProfilePicWithBadge(
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape)
-                .background(if (isActive) CustomColors.HoneyBronze else CustomColors.LightGrayBlue)
-                .border(2.dp, Color.White, CircleShape),
+                .background(if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline)
+                .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = if (isActive) Icons.Default.Check else Icons.Default.PriorityHigh,
                 contentDescription = null,
-                tint = Color.White,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(16.dp)
             )
         }

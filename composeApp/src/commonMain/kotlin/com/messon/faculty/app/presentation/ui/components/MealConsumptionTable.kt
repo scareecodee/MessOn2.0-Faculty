@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,7 +20,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.MealDetail
 import com.messon.faculty.app.domain.dataModel.StudentMealDay
-import com.messon.faculty.app.theme.CustomColors
 import com.messon.faculty.app.utils.MealType
 import com.messon.faculty.app.utils.toIsoDate
 import messon_faculty.composeapp.generated.resources.Res
@@ -38,7 +36,7 @@ fun StudentMealTable(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(CustomColors.OffWhite)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         TableHeaderRow()
 
@@ -61,14 +59,14 @@ private fun TableHeaderRow() {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .background(CustomColors.RichCerulean, RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         val (dateRef, bfastRef, lunchRef, dinnerRef) = createRefs()
 
         Text(
             text = "DATE",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(dateRef) {
@@ -78,7 +76,7 @@ private fun TableHeaderRow() {
         )
         Text(
             text = "BREAKFAST",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(bfastRef) {
@@ -88,7 +86,7 @@ private fun TableHeaderRow() {
         )
         Text(
             text = "LUNCH",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(lunchRef) {
@@ -98,7 +96,7 @@ private fun TableHeaderRow() {
         )
         Text(
             text = "DINNER",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 10.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             modifier = Modifier.constrainAs(dinnerRef) {
@@ -114,7 +112,7 @@ private fun TableHeaderRow() {
 private fun MealRow(mealDay: StudentMealDay) {
     Card(
         shape = RoundedCornerShape(0.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier.fillMaxWidth()
     ) {
         ConstraintLayout(
@@ -134,7 +132,7 @@ private fun MealRow(mealDay: StudentMealDay) {
                     text = mealDay.date,
                     fontSize = 10.sp,
                     fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -161,7 +159,7 @@ private fun MealRow(mealDay: StudentMealDay) {
             }
         }
     }
-    Divider(color = CustomColors.LightBlue, thickness = 1.dp)
+    Divider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
 }
 
 @Composable
@@ -169,7 +167,7 @@ private fun MealStatusIndicator(detail: MealDetail) {
     if (!detail.selected) {
         Text(
             text = "—",
-            color = Color.LightGray,
+            color = MaterialTheme.colorScheme.outline,
             fontSize = 12.sp,
             modifier = Modifier.padding(start = 4.dp)
         )
@@ -183,7 +181,7 @@ private fun MealStatusIndicator(detail: MealDetail) {
                 imageVector = if (detail.consumed) Icons.Default.CheckCircle else Icons.Default.Close,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = if (detail.consumed) CustomColors.RichCerulean else CustomColors.HoneyBronze
+                tint = if (detail.consumed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
             )
             val mealType = MealType.from(detail.meaType)
 
@@ -193,7 +191,7 @@ private fun MealStatusIndicator(detail: MealDetail) {
                     MealType.NON_VEG -> "Non-Veg"
                     MealType.NONE -> ""
                 },
-                color = CustomColors.BlackberryCream,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
                 maxLines = 1
@@ -201,4 +199,3 @@ private fun MealStatusIndicator(detail: MealDetail) {
         }
     }
 }
-

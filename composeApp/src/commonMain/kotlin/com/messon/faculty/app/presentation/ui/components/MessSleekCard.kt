@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansmedium
 import messon_faculty.composeapp.generated.resources.publicsanssemibold
@@ -42,7 +41,7 @@ fun MessSleekCard(
         modifier = modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(40.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         ConstraintLayout(
@@ -60,20 +59,20 @@ fun MessSleekCard(
                         width = Dimension.fillToConstraints
                     }
                     .clip(RoundedCornerShape(32.dp))
-                    .background(CustomColors.LightGrayBlue)
+                    .background(MaterialTheme.colorScheme.primary.copy(0.1f))
                     .padding(24.dp)
             ) {
                 Column {
                     Box(
                         modifier = Modifier
                             .size(48.dp)
-                            .background(CustomColors.RichCerulean, RoundedCornerShape(16.dp)),
+                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Restaurant,
                             contentDescription = null,
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(22.dp)
                         )
                     }
@@ -83,7 +82,7 @@ fun MessSleekCard(
                         text = messName,
                         fontSize = 20.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -92,7 +91,7 @@ fun MessSleekCard(
                         Icon(
                             imageVector = Icons.Default.LocationOn,
                             contentDescription = null,
-                            tint = Color.Gray,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(14.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -100,7 +99,7 @@ fun MessSleekCard(
                             text = location,
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(Res.font.publicsansmedium)),
-                            color = Color.Gray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -144,7 +143,7 @@ private fun GlassButton(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .border(1.dp, CustomColors.RichCerulean, RoundedCornerShape(16.dp))
+            .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
             .clickable { onClick() }
             .padding(16.dp)
     ) {
@@ -155,7 +154,7 @@ private fun GlassButton(
                 modifier = Modifier
                     .size(32.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White.copy(alpha = 0.6f))
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
                     .constrainAs(iconContainer) {
                         start.linkTo(parent.start)
                         top.linkTo(parent.top)
@@ -166,7 +165,7 @@ private fun GlassButton(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = CustomColors.RichCerulean,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -175,7 +174,7 @@ private fun GlassButton(
                 text = label,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
-                color = CustomColors.RichCerulean,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.constrainAs(labelText) {
                     start.linkTo(iconContainer.end, margin = 12.dp)
                     top.linkTo(parent.top)
@@ -186,7 +185,7 @@ private fun GlassButton(
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint = CustomColors.RichCerulean.copy(alpha = 0.4f),
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                 modifier = Modifier
                     .size(14.dp)
                     .constrainAs(arrow) {

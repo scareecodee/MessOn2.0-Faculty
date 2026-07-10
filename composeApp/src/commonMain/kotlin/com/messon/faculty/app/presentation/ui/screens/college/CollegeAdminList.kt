@@ -1,6 +1,5 @@
 package com.messon.faculty.app.presentation.ui.screens.college
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,91 +23,57 @@ import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.CollegeAdmin
 import com.messon.faculty.app.presentation.ui.components.CollegeAdminCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
-import com.messon.faculty.app.presentation.viewmodel.MessListVM
-import com.messon.faculty.app.theme.CustomColors
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import org.jetbrains.compose.resources.Font
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollegeAdminScreen(
-    onBackClick:()-> Unit,
-    onFabClick:()-> Unit,
+    onBackClick: () -> Unit,
+    onFabClick: () -> Unit,
 ) {
     val dummyCollegeAdmins = listOf(
-        CollegeAdmin(
-            id = 1,
-            name = "Rahul Sharma",
-            email = "rahul.sharma@college.edu",
-            isActive = true
-        ),
-        CollegeAdmin(
-            id = 2,
-            name = "Ananya Das",
-            email = "ananya.das@college.edu",
-            isActive = true
-        ),
-        CollegeAdmin(
-            id = 3,
-            name = "Amit Patel",
-            email = "amit.patel@college.edu",
-            isActive = false
-        ),
-        CollegeAdmin(
-            id = 4,
-            name = "Sneha Verma",
-            email = "sneha.verma@college.edu",
-            isActive = true
-        ),
-        CollegeAdmin(
-            id = 5,
-            name = "Rohit Singh",
-            email = "rohit.singh@college.edu",
-            isActive = true
-        ),
-        CollegeAdmin(
-            id = 6,
-            name = "Priya Nair",
-            email = "priya.nair@college.edu",
-            isActive = false
-        )
+        CollegeAdmin(id = 1, name = "Rahul Sharma", email = "rahul.sharma@college.edu", isActive = true),
+        CollegeAdmin(id = 2, name = "Ananya Das", email = "ananya.das@college.edu", isActive = true),
+        CollegeAdmin(id = 3, name = "Amit Patel", email = "amit.patel@college.edu", isActive = false),
+        CollegeAdmin(id = 4, name = "Sneha Verma", email = "sneha.verma@college.edu", isActive = true),
+        CollegeAdmin(id = 5, name = "Rohit Singh", email = "rohit.singh@college.edu", isActive = true),
+        CollegeAdmin(id = 6, name = "Priya Nair", email = "priya.nair@college.edu", isActive = false)
     )
-    var searchQuery by remember { mutableStateOf("") }
+
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
 
-
-    ConstraintLayout(modifier = Modifier.fillMaxSize()
-        .background(CustomColors.OffWhite)
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        val (
-            statusBarBox, headingRef, listRef,
-            backBtnRef, searchBarRef,
-            fabRef
-        ) = createRefs()
+        val (statusBarBox, headingRef, listRef, backBtnRef, searchBarRef, fabRef) = createRefs()
 
         Box(
             Modifier
                 .fillMaxWidth()
                 .height(WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() + 5.dp)
-                .background(CustomColors.LightGrayBlue)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .constrainAs(statusBarBox) {
                     top.linkTo(parent.top)
                 }
         )
 
-
         IconButton(
-            onClick = {
-                onBackClick()
-            },
+            onClick = { onBackClick() },
             modifier = Modifier.constrainAs(backBtnRef) {
                 start.linkTo(parent.start, 15.dp)
                 top.linkTo(statusBarBox.bottom, 10.dp)
             }
         ) {
-            Icon(Icons.Default.ChevronLeft, contentDescription = "back", modifier = Modifier.size(28.dp)
+            Icon(
+                Icons.Default.ChevronLeft,
+                contentDescription = "back",
+                modifier = Modifier.size(28.dp),
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -116,6 +81,7 @@ fun CollegeAdminScreen(
             text = "College Admin",
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.constrainAs(headingRef) {
                 start.linkTo(backBtnRef.end, 5.dp)
                 centerVerticallyTo(backBtnRef)
@@ -124,9 +90,7 @@ fun CollegeAdminScreen(
 
         SearchBar(
             query = query,
-            onQueryChange = {
-                query = it
-            },
+            onQueryChange = { query = it },
             modifier = Modifier.constrainAs(searchBarRef) {
                 top.linkTo(backBtnRef.bottom, 10.dp)
                 start.linkTo(parent.start, 8.dp)
@@ -135,20 +99,18 @@ fun CollegeAdminScreen(
             }
         )
 
-
         PullToRefreshBox(
             state = pullToRefreshState,
             indicator = {
                 PullToRefreshDefaults.Indicator(
-                    containerColor = CustomColors.RichCerulean,
-                    color = Color.White,
-                    isRefreshing =false,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    isRefreshing = false,
                     state = pullToRefreshState
                 )
             },
             isRefreshing = false,
-            onRefresh = {
-            },
+            onRefresh = { },
             modifier = Modifier
                 .fillMaxSize()
                 .constrainAs(listRef) {
@@ -160,20 +122,17 @@ fun CollegeAdminScreen(
                     height = Dimension.fillToConstraints
                 },
             contentAlignment = Alignment.TopCenter
-        ){
-            Spacer(modifier= Modifier.height(6.dp))
+        ) {
+            Spacer(modifier = Modifier.height(6.dp))
             LazyColumn(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 items(dummyCollegeAdmins) { admin ->
                     CollegeAdminCard(
                         admin = admin,
-                        onMoreClick = {
-
-                        },
+                        onMoreClick = { },
                         modifier = Modifier
                     )
                 }
@@ -183,8 +142,8 @@ fun CollegeAdminScreen(
         FloatingActionButton(
             shape = CircleShape,
             onClick = onFabClick,
-            containerColor = CustomColors.RichCerulean,
-            contentColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 8.dp,
                 pressedElevation = 12.dp
@@ -196,14 +155,9 @@ fun CollegeAdminScreen(
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "send notification",
+                contentDescription = "Add Admin",
                 modifier = Modifier.size(30.dp)
             )
         }
     }
 }
-
-
-
-
-

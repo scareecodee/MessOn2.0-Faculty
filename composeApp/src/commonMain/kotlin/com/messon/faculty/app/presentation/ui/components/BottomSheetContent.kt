@@ -20,25 +20,17 @@ import androidx.compose.material.icons.outlined.PostAdd
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.messon.faculty.app.presentation.viewmodel.FilePickerViewModel
-import com.messon.faculty.app.theme.CustomColors
-import com.messon.faculty.app.utils.FilePickerState
-import com.messon.faculty.app.utils.Screen
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
 import messon_faculty.composeapp.generated.resources.publicsansregular
@@ -48,23 +40,23 @@ import org.jetbrains.compose.resources.Font
 @Composable
 fun BottomSheetContent(
     modifier: Modifier,
-    onUploadCsvClick:()-> Unit,
-    onAddManuallyClick:()-> Unit
-){
+    onUploadCsvClick: () -> Unit,
+    onAddManuallyClick: () -> Unit
+) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier.fillMaxSize()
-            .padding(start = 16.dp, end=16.dp,top=5.dp, bottom = 15.dp)
-    ){
+            .padding(start = 16.dp, end = 16.dp, top = 5.dp, bottom = 15.dp)
+    ) {
         BoxedIcon(
             modifier = Modifier,
-            boxColor = CustomColors.RichCerulean.copy(alpha = 0.1f),
-            iconColor = CustomColors.RichCerulean,
-            iconsSize =30.dp,
+            boxColor = MaterialTheme.colorScheme.primary.copy(0.1f),
+            iconColor = MaterialTheme.colorScheme.primary,
+            iconsSize = 30.dp,
             painter = rememberVectorPainter(Icons.Outlined.GroupAdd),
-            contentDescription ="Add Students",
+            contentDescription = "Add Students",
             shape = CircleShape,
         )
         Text(
@@ -72,21 +64,21 @@ fun BottomSheetContent(
             fontSize = 16.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansbold)),
             maxLines = 1,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Text(
-            text = "Choose how you want to add \n new students to the mess database."
-            , fontSize = 12.sp,
+            text = "Choose how you want to add \n new students to the mess database.",
+            fontSize = 12.sp,
             fontFamily = FontFamily(Font(Res.font.publicsansregular)),
-            maxLines =2,
-            color = Color.LightGray,
+            maxLines = 2,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
 
         BottomSheetButton(
             onClick = {
-               onUploadCsvClick()
+                onUploadCsvClick()
             },
             painter = rememberVectorPainter(Icons.Outlined.CloudUpload),
             contentDescription = "upload csv",
@@ -110,22 +102,22 @@ fun BottomSheetContent(
 
 @Composable
 fun BottomSheetButton(
-    onClick:()-> Unit,
+    onClick: () -> Unit,
     painter: Painter,
     contentDescription: String,
     title: String
-){
+) {
     Button(
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(width = 1.dp, CustomColors.RichCerulean),
-        onClick =onClick,
+        border = BorderStroke(width = 1.dp, MaterialTheme.colorScheme.primary),
+        onClick = onClick,
         modifier = Modifier.height(65.dp)
             .fillMaxWidth()
-            .padding(horizontal =5.dp)
-    ){
+            .padding(horizontal = 5.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -133,8 +125,8 @@ fun BottomSheetButton(
         ) {
             BoxedIcon(
                 modifier = Modifier,
-                boxColor = CustomColors.RichCerulean.copy(alpha = 0.1f),
-                iconColor = CustomColors.RichCerulean,
+                boxColor = MaterialTheme.colorScheme.primary.copy(0.1f),
+                iconColor = MaterialTheme.colorScheme.primary,
                 iconsSize = 30.dp,
                 painter = painter,
                 shape = RoundedCornerShape(15.dp),
@@ -145,12 +137,12 @@ fun BottomSheetButton(
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
                 maxLines = 1,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = "go to next screen",
-                tint = CustomColors.RichCerulean
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
