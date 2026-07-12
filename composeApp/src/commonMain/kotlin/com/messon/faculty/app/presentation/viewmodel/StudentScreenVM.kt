@@ -240,7 +240,7 @@ class StudentScreenVM(
         }
     }
 
-    fun clearDeleteUsersError(){
+    fun clearDeleteStudentsError(){
         _deleteUserState.value= DeleteUserState.Idle
     }
 }

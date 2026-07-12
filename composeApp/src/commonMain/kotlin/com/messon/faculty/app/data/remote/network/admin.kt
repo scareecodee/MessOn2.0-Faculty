@@ -78,7 +78,7 @@ class AdminApi(
 
         val response=try {
             httpClient.get(
-                urlString = "${BASE_URL}admin/college/messes"
+                urlString = "${BASE_URL}college-admins"
             ) {
 
                 contentType(ContentType.Application.Json)

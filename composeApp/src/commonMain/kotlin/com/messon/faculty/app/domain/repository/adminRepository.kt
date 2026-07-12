@@ -57,7 +57,6 @@ class AdminRepository(
         token: String,
         deleteUsers: DeleteUsers
     ): Result<String, NetworkError> {
-
         return when (val result =adminApi.deleteUsers(
             token = token,
             deleteUsersDto=deleteUsers.toDto()
@@ -65,7 +64,6 @@ class AdminRepository(
         )
 
         {
-
             is Result.Success -> {
 
                 val dto = result.data

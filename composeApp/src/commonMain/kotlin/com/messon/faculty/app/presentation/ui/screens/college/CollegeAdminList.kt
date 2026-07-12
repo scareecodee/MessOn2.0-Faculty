@@ -1,10 +1,12 @@
 package com.messon.faculty.app.presentation.ui.screens.college
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,17 +16,18 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.messon.faculty.app.domain.dataModel.CollegeAdmin
 import com.messon.faculty.app.presentation.ui.components.CollegeAdminCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
+import com.messon.faculty.app.presentation.ui.uiState.FetchAdminState
+import com.messon.faculty.app.presentation.viewmodel.AdminVM
 import messon_faculty.composeapp.generated.resources.Res
 import messon_faculty.composeapp.generated.resources.publicsansbold
+import messon_faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,15 +35,22 @@ import org.jetbrains.compose.resources.Font
 fun CollegeAdminScreen(
     onBackClick: () -> Unit,
     onFabClick: () -> Unit,
+    adminVM: AdminVM
 ) {
-    val dummyCollegeAdmins = listOf(
-        CollegeAdmin(id = 1, name = "Rahul Sharma", email = "rahul.sharma@college.edu", isActive = true),
-        CollegeAdmin(id = 2, name = "Ananya Das", email = "ananya.das@college.edu", isActive = true),
-        CollegeAdmin(id = 3, name = "Amit Patel", email = "amit.patel@college.edu", isActive = false),
-        CollegeAdmin(id = 4, name = "Sneha Verma", email = "sneha.verma@college.edu", isActive = true),
-        CollegeAdmin(id = 5, name = "Rohit Singh", email = "rohit.singh@college.edu", isActive = true),
-        CollegeAdmin(id = 6, name = "Priya Nair", email = "priya.nair@college.edu", isActive = false)
-    )
+
+    val fetchAdminState by adminVM.fetchState.collectAsState()
+    val selectedAdmins by adminVM.selectedAdmins.collectAsState()
+    val selectionMode = selectedAdmins.isNotEmpty()
+
+
+    val themeColors = MaterialTheme.colorScheme
+    val dynamicPrimary = themeColors.primary
+    val dynamicSurface = themeColors.surface
+    val dynamicOutline = themeColors.outline
+
+    LaunchedEffect(Unit){
+        adminVM.fetchAdmin()
+    }
 
     var query by remember { mutableStateOf("") }
     val pullToRefreshState = rememberPullToRefreshState()
@@ -50,7 +60,7 @@ fun CollegeAdminScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        val (statusBarBox, headingRef, listRef, backBtnRef, searchBarRef, fabRef) = createRefs()
+        val (statusBarBox, headingRef, listRef, backBtnRef, searchBarRef, fabRef,selectionButtonsRef) = createRefs()
 
         Box(
             Modifier
@@ -99,6 +109,81 @@ fun CollegeAdminScreen(
             }
         )
 
+        if (selectionMode) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .constrainAs(selectionButtonsRef) {
+                        top.linkTo(searchBarRef.bottom, 12.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    },
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    onClick = {
+                        adminVM.clearSelection()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = dynamicSurface,
+                        contentColor = dynamicPrimary
+                    ),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = dynamicOutline
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Cancel Selection",
+                        tint = dynamicPrimary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Cancel (${selectedAdmins.size})",
+                        fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+                        fontSize = 13.sp,
+                        color = dynamicPrimary
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        adminVM.deleteSelectedAdmins()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = dynamicPrimary,
+                        contentColor = dynamicSurface
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Selected",
+                        tint = dynamicSurface,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Delete (${selectedAdmins.size})",
+                        fontFamily = FontFamily(Font(Res.font.publicsanssemibold)),
+                        fontSize = 13.sp,
+                        color = dynamicSurface
+                    )
+                }
+            }
+        }
+
         PullToRefreshBox(
             state = pullToRefreshState,
             indicator = {
@@ -124,17 +209,33 @@ fun CollegeAdminScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             Spacer(modifier = Modifier.height(6.dp))
-            LazyColumn(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(dummyCollegeAdmins) { admin ->
-                    CollegeAdminCard(
-                        admin = admin,
-                        onMoreClick = { },
-                        modifier = Modifier
-                    )
+            if(fetchAdminState is FetchAdminState.Success){
+                LazyColumn(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items((fetchAdminState as FetchAdminState.Success).admins) { admin ->
+                        CollegeAdminCard(
+                            admin = admin,
+                            onMoreClick = { },
+                            modifier = Modifier,
+                            isSelected = admin.id in selectedAdmins,
+                            selectionMode = selectionMode,
+                            onLongClick = {
+                                adminVM.toggleSelection(admin.id)
+                            },
+                            onClick ={
+                                if(selectionMode){
+                                    adminVM.toggleSelection(admin.id)
+                                }
+                                else{
+//                                    adminVM.selectAdmin(student)
+//                                    onAdminClick()
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }

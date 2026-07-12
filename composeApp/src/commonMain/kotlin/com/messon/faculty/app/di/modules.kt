@@ -18,6 +18,7 @@ import com.messon.faculty.app.domain.repository.MessRepository
 import com.messon.faculty.app.domain.repository.StudentRepository
 import com.messon.faculty.app.presentation.viewmodel.AddManagerVM
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
+import com.messon.faculty.app.presentation.viewmodel.AdminVM
 import com.messon.faculty.app.presentation.viewmodel.AuthViewModel
 import com.messon.faculty.app.presentation.viewmodel.CollegeScreenVM
 import com.messon.faculty.app.presentation.viewmodel.CreateMessVM
@@ -163,6 +164,10 @@ val sharedModule = module {
 
     viewModel {
         FetchComplaintsVM(get(),get())
+    }
+
+    viewModel {
+        AdminVM(get(),get())
     }
 
 }

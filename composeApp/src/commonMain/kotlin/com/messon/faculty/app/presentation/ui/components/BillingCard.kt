@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -55,7 +56,7 @@ fun StudentBillCard(
                 modifier = Modifier
                     .weight(0.35f)
                     .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(MaterialTheme.colorScheme.primary.copy(0.1f))
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -69,7 +70,7 @@ fun StudentBillCard(
                 ) {
                     Text(
                         text = student.name.take(1),
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = Color.White,
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(Res.font.publicsansbold)),
                     )

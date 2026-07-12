@@ -8,10 +8,8 @@ data class AdminCreateReq(
 
 
 data class AdminCreateRes(
-
     val id: String,
     val name: String,
     val mailId: String,
     val isActive: Boolean
-
 )

@@ -234,14 +234,15 @@ fun AppNav(
             enterTransition = enterLeft,
             exitTransition = exitRight
         ) {
-
+            val adminVM: AdminVM=koinViewModel()
             CollegeAdminScreen(
                 onBackClick = { navController.popBackStack() },
                 onFabClick = {
-                    navController.navigate(Screen.AddCollegeAdminScreen.route){
-                        launchSingleTop=true
+                    navController.navigate(Screen.AddCollegeAdminScreen.route) {
+                        launchSingleTop = true
                     }
-                }
+                },
+                adminVM =adminVM
             )
         }
 

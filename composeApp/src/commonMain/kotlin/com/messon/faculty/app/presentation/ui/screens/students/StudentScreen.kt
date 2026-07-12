@@ -102,7 +102,6 @@ fun StudentScreen(
 
     val selectedMess by messListVM.selectedMess.collectAsState()
 
-    // Dynamic color tokens mapping standard theme colors
     val themeColors = MaterialTheme.colorScheme
     val dynamicPrimary = themeColors.primary
     val dynamicBackground = themeColors.background
