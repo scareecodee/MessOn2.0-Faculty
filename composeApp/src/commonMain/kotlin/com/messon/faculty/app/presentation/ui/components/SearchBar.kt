@@ -18,9 +18,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.platform.annotation.SuppressLint
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansmedium
-import messon_faculty.composeapp.generated.resources.publicsansregular
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.publicsansregular
 import org.jetbrains.compose.resources.Font
 
 @SuppressLint("UnusedBoxWithConstraintsScope")

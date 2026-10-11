@@ -19,13 +19,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.core.auth.GoogleAuth
+import com.messon.faculty.app.domain.dataModel.NotificationState
+import com.messon.faculty.app.domain.provider.DeviceInfoProvider
 import com.messon.faculty.app.presentation.ui.uiState.AuthState
 import com.messon.faculty.app.presentation.viewmodel.AuthViewModel
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.google
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansmedium
-import messon_faculty.composeapp.generated.resources.publicsansregular
+import com.messon.faculty.app.presentation.viewmodel.NotificationViewModel
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.google
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.publicsansregular
 import multiplatform.network.cmptoast.ToastGravity
 import multiplatform.network.cmptoast.ToastPadding
 import multiplatform.network.cmptoast.showToast
@@ -208,13 +211,14 @@ fun SignInScreen(
 fun SignInRoute(
     googleAuth: GoogleAuth,
     viewModel: AuthViewModel,
+    notificationViewModel: NotificationViewModel,
+    deviceInfoProvider: DeviceInfoProvider,
     onLoginSuccess: () -> Unit
 ) {
-    var isVisible by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val state = viewModel.uiState.value
-
-    isVisible = state is AuthState.Loading
+    val state by viewModel.uiState.collectAsState()
+    val notificationState by notificationViewModel.uiState.collectAsState()
+    val isVisible = state is AuthState.Loading
 
     SignInScreen(
         onBtnClick = {
@@ -225,17 +229,34 @@ fun SignInRoute(
 
     LaunchedEffect(state) {
         if (state is AuthState.Success) {
-            onLoginSuccess()
+            val user = (state as AuthState.Success).user
+            val deviceInfo = deviceInfoProvider.getDeviceInfo()
+            notificationViewModel.onLogin(deviceInfo)
         }
         if (state is AuthState.Error) {
             showToast(
                 textSize = 14.sp,
-                message = state.message,
+                message = (state as AuthState.Error).message,
                 backgroundColor = Color.DarkGray,
                 textColor = Color.White,
                 gravity = ToastGravity.Top,
                 padding = ToastPadding(12),
             )
+        }
+    }
+
+    LaunchedEffect(notificationState.notificationState) {
+        when (val ns = notificationState.notificationState) {
+            is NotificationState.Registered -> {
+                onLoginSuccess()
+            }
+            is NotificationState.PermissionDenied -> {
+                onLoginSuccess()
+            }
+            is NotificationState.Error -> {
+                onLoginSuccess()
+            }
+            else -> Unit
         }
     }
 }

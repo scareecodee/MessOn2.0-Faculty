@@ -53,10 +53,10 @@ import com.messon.faculty.app.presentation.ui.components.PrimaryHeroCard
 import com.messon.faculty.app.presentation.viewmodel.HomeScreenVM
 import com.messon.faculty.app.theme.MessonColors
 import com.messon.faculty.app.theme.MessonPalette
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansregular
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansregular
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 @Composable

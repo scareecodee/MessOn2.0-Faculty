@@ -71,10 +71,10 @@ import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.name
 import kotlinx.coroutines.flow.distinctUntilChanged
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansregular
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansregular
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 

@@ -25,9 +25,9 @@ import com.messon.faculty.app.presentation.ui.components.CollegeAdminCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.uiState.FetchAdminState
 import com.messon.faculty.app.presentation.viewmodel.AdminVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 @OptIn(ExperimentalMaterial3Api::class)

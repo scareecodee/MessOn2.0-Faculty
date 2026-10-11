@@ -23,8 +23,8 @@ import com.messon.faculty.app.presentation.ui.components.CollegeCard
 import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.uiState.FetchCollegesState
 import com.messon.faculty.app.presentation.viewmodel.CollegeScreenVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 

@@ -26,9 +26,9 @@ import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.presentation.ui.components.ConflictItem
 import com.messon.faculty.app.presentation.viewmodel.AddStudentManuallyVM
 import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
 import org.jetbrains.compose.resources.Font
 
 @Composable

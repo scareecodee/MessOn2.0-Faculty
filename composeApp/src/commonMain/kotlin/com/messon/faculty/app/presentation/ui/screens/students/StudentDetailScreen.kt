@@ -37,10 +37,10 @@ import com.messon.faculty.app.presentation.viewmodel.StudentBillVM
 import com.messon.faculty.app.utils.PredefinedOptions
 import com.messon.faculty.app.utils.Screen
 import com.messon.faculty.app.utils.toIsoDate
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansmedium
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 

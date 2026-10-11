@@ -34,10 +34,10 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil3.compose.AsyncImage
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansmedium
-import messon_faculty.composeapp.generated.resources.publicsansregular
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.publicsansregular
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 

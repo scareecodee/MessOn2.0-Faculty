@@ -22,10 +22,10 @@ import androidx.constraintlayout.compose.Dimension
 import com.messon.faculty.app.domain.dataModel.ManageItem
 import com.messon.faculty.app.presentation.ui.components.MyCard
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansmedium
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 @Composable

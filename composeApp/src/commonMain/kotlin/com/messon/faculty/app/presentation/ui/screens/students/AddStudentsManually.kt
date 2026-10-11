@@ -26,9 +26,9 @@ import com.messon.faculty.app.presentation.ui.uiState.AddStudentsManuallyState
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
 import com.messon.faculty.app.utils.Screen
 import kotlinx.coroutines.delay
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 

@@ -39,10 +39,10 @@ import com.messon.faculty.app.presentation.viewmodel.FetchComplaintsVM
 import com.messon.faculty.app.utils.backgroundColor
 import com.messon.faculty.app.utils.textColor
 import com.messon.faculty.app.utils.toFilter
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansregular
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansregular
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 @Composable

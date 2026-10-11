@@ -25,8 +25,8 @@ import com.messon.faculty.app.presentation.ui.components.SearchBar
 import com.messon.faculty.app.presentation.ui.uiState.FetchManagerState
 import com.messon.faculty.app.presentation.viewmodel.ManagerListVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
 import org.jetbrains.compose.resources.Font
 
 @OptIn(ExperimentalMaterial3Api::class)

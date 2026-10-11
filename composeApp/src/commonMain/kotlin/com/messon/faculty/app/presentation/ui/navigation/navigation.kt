@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.messon.faculty.app.core.auth.GoogleAuth
+import com.messon.faculty.app.domain.provider.DeviceInfoProvider
 import com.messon.faculty.app.presentation.ui.screens.HomeScreen
 import com.messon.faculty.app.presentation.ui.screens.auth.SignInRoute
 import com.messon.faculty.app.presentation.ui.screens.college.*
@@ -26,6 +27,7 @@ import com.messon.faculty.app.theme.MessonTheme
 import com.messon.faculty.app.theme.enterLeft
 import com.messon.faculty.app.theme.exitRight
 import com.messon.faculty.app.utils.Screen
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -45,35 +47,17 @@ fun AppNav(
     val messClosureVM: MessClosureVM=koinViewModel()
     val messBillVM: MessBillVM=koinViewModel()
     val studentBillVM: StudentBillVM=koinViewModel()
+    val notificationViewModel: NotificationViewModel=koinViewModel()
+    val deviceInfoProvider: DeviceInfoProvider= koinInject()
     val authState by authViewModel.uiState.collectAsStateWithLifecycle()
 
     var hasNavigated by rememberSaveable{ mutableStateOf(false) }
-
-    LaunchedEffect(authState) {
-
-        if (hasNavigated) return@LaunchedEffect
-
-        when (authState) {
-
-            is AuthState.Success -> {
-                hasNavigated = true
-                navController.navigate(Screen.HomeScreen.route) {
-                    popUpTo(0) { inclusive = true }
-                    launchSingleTop = true
-                }
-            }
-
-            AuthState.Unauthenticated -> {
-                hasNavigated = true
-                navController.navigate(Screen.CollegeListScreen.route) {
-                    popUpTo(0) { inclusive = true }
-                    launchSingleTop = true
-                }
-            }
-
-            else -> Unit
-        }
+    val startDestination = when (authState) {
+        is AuthState.Success -> Screen.HomeScreen.route
+        AuthState.Unauthenticated -> Screen.CollegeListScreen.route
+        else -> Screen.CollegeListScreen.route
     }
+
 
     if (authState is AuthState.Idle || authState is AuthState.Loading) {
         Box(
@@ -90,7 +74,7 @@ fun AppNav(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.CollegeListScreen.route,
+        startDestination = startDestination,
         modifier = Modifier.fillMaxSize()
     ) {
         
@@ -130,7 +114,9 @@ fun AppNav(
                     navController.navigate(Screen.HomeScreen.route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                notificationViewModel = notificationViewModel,
+                deviceInfoProvider = deviceInfoProvider
             )
         }
 
@@ -497,8 +483,7 @@ fun AppNav(
             exitTransition = exitRight
         ){
            BroadcastNotificationScreen(
-               onViewHistoryClick = {},
-               messonColors = MessonTheme.colors
+
            )
         }
         composable (

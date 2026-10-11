@@ -23,9 +23,9 @@ import com.messon.faculty.app.presentation.ui.components.CustomInputField
 import com.messon.faculty.app.presentation.ui.components.StatusSwitcher
 import com.messon.faculty.app.presentation.ui.uiState.AddMessState
 import com.messon.faculty.app.presentation.viewmodel.CreateMessVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 

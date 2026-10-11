@@ -24,8 +24,8 @@ import com.messon.faculty.app.presentation.ui.components.StudentBillCard
 import com.messon.faculty.app.presentation.ui.components.StudentMealTable
 import com.messon.faculty.app.presentation.ui.uiState.StudentBillState
 import com.messon.faculty.app.presentation.viewmodel.StudentBillVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 

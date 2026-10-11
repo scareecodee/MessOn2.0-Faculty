@@ -1,13 +1,16 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+group="com.messon.faculty"
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
 
     id("org.jetbrains.kotlin.plugin.serialization")
-//    id("org.jetbrains.kotlin.native.cocoapods")
     id("org.jetbrains.kotlin.plugin.compose")
 
     alias(libs.plugins.ksp)
@@ -30,6 +33,18 @@ kotlin {
             isStatic = true
         }
     }
+
+
+    swiftPMDependencies {
+        swiftPackage(
+            url = url("https://github.com/firebase/firebase-ios-sdk.git"),
+            version = from("12.5.0"),
+            products = listOf(
+                product("FirebaseMessaging"),
+                product("FirebaseCore")
+            )
+        )
+    }
     
     sourceSets {
         androidMain.dependencies {
@@ -50,6 +65,8 @@ kotlin {
             implementation(libs.play.services.auth)
 
             implementation("androidx.security:security-crypto:1.1.0-alpha06")
+            implementation(libs.firebase.messaging)
+
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

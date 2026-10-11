@@ -47,9 +47,9 @@ import com.messon.faculty.app.presentation.ui.components.StudentBillCard
 import com.messon.faculty.app.presentation.ui.uiState.CsvDownloadState
 import com.messon.faculty.app.presentation.ui.uiState.FetchMessBillState
 import com.messon.faculty.app.presentation.viewmodel.MessBillVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 

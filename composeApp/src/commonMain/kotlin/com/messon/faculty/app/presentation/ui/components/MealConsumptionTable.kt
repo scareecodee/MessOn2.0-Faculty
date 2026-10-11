@@ -22,10 +22,10 @@ import com.messon.faculty.app.domain.dataModel.MealDetail
 import com.messon.faculty.app.domain.dataModel.StudentMealDay
 import com.messon.faculty.app.utils.MealType
 import com.messon.faculty.app.utils.toIsoDate
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
-import messon_faculty.composeapp.generated.resources.publicsansmedium
-import messon_faculty.composeapp.generated.resources.publicsanssemibold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.publicsansmedium
+import com.messon.faculty.composeapp.generated.resources.publicsanssemibold
 import org.jetbrains.compose.resources.Font
 
 @Composable

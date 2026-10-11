@@ -23,8 +23,8 @@ import com.messon.faculty.app.presentation.ui.components.HolidayCard
 import com.messon.faculty.app.presentation.ui.uiState.FetchHolidaysState
 import com.messon.faculty.app.presentation.viewmodel.MessClosureVM
 import com.messon.faculty.app.presentation.viewmodel.MessListVM
-import messon_faculty.composeapp.generated.resources.Res
-import messon_faculty.composeapp.generated.resources.publicsansbold
+import com.messon.faculty.composeapp.generated.resources.Res
+import com.messon.faculty.composeapp.generated.resources.publicsansbold
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.Font
 
