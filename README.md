@@ -638,7 +638,7 @@ MessOn Faculty is one of three interconnected applications.
 |---|---|
 | **MessOn Student** | Student-facing application for meal management, coupons, complaints, and other mess services. |
 | **MessOn Faculty** | Centralized faculty administration, student management, mess managers, billing, holidays, and notifications. |
-| **MessOn Mess** | Mess-side application for operational activities, including meal coupon scanning and validation. |
+| **MessOn Admin** | Mess-side application for operational activities, including meal coupon scanning and validation. |
 | **MessOn Backend** | Centralized API, database, and notification infrastructure. |
 
 All applications work together to provide a unified digital mess management experience.
